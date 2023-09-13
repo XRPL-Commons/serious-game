@@ -13,15 +13,20 @@ const count = computed(() => projects.value.length)
 
 <template>
   <div :class="`w-${gridSize}`" class="flex-none">
-    <h1 class="text-xl">{{ category }} ({{ count }})</h1>
+    <div class="text-xl rounded-md">{{ category }} ({{ count }})</div>
 
     <div class="flex" :class="`w-${gridSize}`">
       <template v-for="item in projects">
         <NuxtLink :to="'/projects/' + item._id">
           <div
-            class="w-32 h-32 rounded overflow-hidden shadow-lg inline-block m-1 border-1 relative inline-flex justify-center items-center border-2 border-black">
+            class="w-32 h-32 overflow-hidden shadow-lg inline-block m-1 border-2 relative inline-flex justify-center items-center border-black rounded flex-col">
+            <div v-if="item.thumbnail" class="bg-contain bg-center w-full h-[50px] bg-no-repeat"
+              :style="`background-image: url(${item.thumbnail})`">
+            </div>
+
+            <!-- <img v-if="item.thumbnail" :src="item.thumbnail" class="w-[60px]"> -->
             <div class="px-2 py-2 ">
-              <div class="font-bold text-md mb-2 text-center bg-gray-100">{{ item.Project }}</div>
+              <div class="font-bold text-md text-center text-gray-900">{{ item.name }}</div>
             </div>
           </div>
         </NuxtLink>
