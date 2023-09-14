@@ -3,5 +3,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxtjs/tailwindcss'],
   plugins: [{ src: 'plugins/oruga.js' }],
-  ssr: false
+  ssr: false,
+  css: [
+    '~/assets/fonts/clash-display.css',
+    '~/assets/css/style.css'
+  ]
 })

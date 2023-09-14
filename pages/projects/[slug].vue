@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 const route = useRoute()
 
-const { data } = await useFetch('/api/projects/' + route.params.id)
+const { data } = await useFetch('/api/projects/' + route.params.slug)
 const item = computed(() => data)
 </script>
 

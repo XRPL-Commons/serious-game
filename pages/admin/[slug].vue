@@ -240,7 +240,7 @@ const deleteProject = async ({ confirmed = false }) => {
   <ProjectDetails :item="record" />
   <hr />
 
-  Edit this record
+  <div class="font-title text-xl py-2 font-bold">Edit this record</div>
 
   <section v-if="loaded">
 
@@ -309,7 +309,7 @@ const deleteProject = async ({ confirmed = false }) => {
     <br />
     <br />
     <br />
-    <o-notification>Delete the record, this action cannot be undone.
+    <o-notification class="border-2">Delete the record, this action cannot be undone.
       <br />
       <br />
       <o-button label="Delete Record..." variant="danger" @click="deleteProject" size="medium" />
