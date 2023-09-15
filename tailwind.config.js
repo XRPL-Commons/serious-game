@@ -1,7 +1,17 @@
 /** @type {import('tailwindcss').Config} */
+const colors = require('tailwindcss/colors')
+
 module.exports = {
   theme: {
     colors: {
+      transparent: 'transparent',
+      current: 'currentColor',
+      black: colors.black,
+      white: colors.white,
+      gray: colors.gray,
+      emerald: colors.emerald,
+      indigo: colors.indigo,
+      yellow: colors.yellow,
       'persian-rose': {
         '50': '#fff0f9',
         '100': '#ffe3f5',
@@ -10,6 +20,7 @@ module.exports = {
         '400': '#ff58bf',
         '500': '#ff27a4',
         '600': '#ff1a8b',
+        'DEFAULT': '#ff1a8b',
         '700': '#df0062',
         '800': '#b80051',
         '900': '#980346',
@@ -21,6 +32,7 @@ module.exports = {
         '200': '#b8e1ff',
         '300': '#78c9ff',
         '400': '#1aa4ff',
+        'DEFAULT': '#1aa4ff',
         '500': '#0693f1',
         '600': '#0073ce',
         '700': '#005ca7',
@@ -34,6 +46,7 @@ module.exports = {
         '200': '#aeffd4',
         '300': '#6fffb4',
         '400': '#19ff83',
+        'DEFAULT': '#19ff83',
         '500': '#00e96a',
         '600': '#00c255',
         '700': '#009846',

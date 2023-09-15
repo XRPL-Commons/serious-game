@@ -14,6 +14,7 @@ interface recordType {
   tags: [string],
   slug: string
 }
+
 const dataSource = computed(() => {
   const dataItems = JSON.parse(JSON.stringify(data.value))
   return dataItems.map((record: recordType) => ({
@@ -127,22 +128,7 @@ const createProject = async ({ Project = false }: createProjectParams) => {
 </script>
 
 <template>
-  <o-button label="Create Record" @click="createProject" />
-  <!-- <o-table :data="dataSource" @select="selectProject" v-if="data">
-    <o-table-column v-for="column in columns" v-bind="column" #default="props">
-      <template v-if="column.field === 'thumbnail'">
-        <img :src="props.row.thumbnail" class="w-[40px]">
-      </template>
-      <template v-else-if="column.field === 'tags' && props.row.tags">
-        <template v-for="tag in props.row.tags.split(' ')">
-          <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{{
-            tag }}</span>
-        </template>
-      </template>
-      <template v-else>{{ props?.row[column.field] }}</template>
-      {{ props?.row[column.field] }}
-    </o-table-column>
-  </o-table> -->
+  <o-button label="Create Record" @click="createProject" class="mb-2" />
   <o-table :data="dataSource" @select="selectProject" v-if="data">
     <o-table-column field="thumbnail" label="Thumb" v-slot="props">
       <img :src="props.row.thumbnail" class="w-[40px]">

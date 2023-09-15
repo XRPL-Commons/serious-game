@@ -77,9 +77,9 @@ export default defineEventHandler(async (event) => {
 
   // create thumbnail
   const thumbnailFile = await sharp(fileContent).resize({
-    width: 100,
+    width: 200,
     height: 100,
-    fit: 'contain',
+    fit: 'inside',
     background: { r: 255, g: 255, b: 255, alpha: 0 }
   }).toBuffer()
   const thumbnail = await saveFile({
@@ -94,9 +94,9 @@ export default defineEventHandler(async (event) => {
 
   // create main logo
   const logoFile = await sharp(fileContent).resize({
-    width: 400,
-    height: 400,
-    fit: 'contain',
+    width: 600,
+    height: 300,
+    fit: 'inside',
     background: { r: 255, g: 255, b: 255, alpha: 0 }
   }).toBuffer()
   const logo = await saveFile({

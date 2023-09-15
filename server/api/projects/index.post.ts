@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
     // lets set some default to get things going
     const record = {
       name: projectName,
-      description: 'Description of the project',
+      description: 'Description of the project...',
       section: 'Main',
       category: 'New',
       grants: false,

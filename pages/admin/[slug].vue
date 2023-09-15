@@ -3,28 +3,15 @@ import { ref, computed } from 'vue'
 import { useProgrammatic } from '@oruga-ui/oruga-next'
 import ModalConfirm from '/components/ModalConfirm.vue';
 import ModalFileInput from '/components/ModalFileInput.vue';
+import { ProjectRecord } from '~/types'
+import { sections } from '~/lib/vars'
 
-interface ProjectRecord {
-  name: string,
-  description: string,
-  section: string,
-  category: string,
-  tags: [string],
-  url: string,
-  grants: string,
-  status: string,
-  thumbnail: string,
-  logo: string,
-  visible: boolean,
-}
-
+// tooling
 const { oruga } = useProgrammatic()
-
 const route = useRoute()
 const router = useRouter()
 
-// const { data } = await useFetch('/api/projects/' + route.params.slug)
-// const item = computed(() => data)
+// ui variables
 const errorMessage = ref('')
 const loaded = ref(false)
 
@@ -42,18 +29,11 @@ const thumbnail = ref('')
 const logo = ref('')
 const visible = ref(false)
 
-// watch(data, (newData: Ref) => {
-//   console.log('NEW DATA', newData)
-//   visible.value = newData.value.visible
-//   name.value = newData.value.name
-//   console.log(visible.value)
-// })
 onMounted(async () => {
   await reload()
 })
 
 const reload = async () => {
-  console.log('HERE')
   const fetchResult = await useFetch('/api/projects/' + route.params.slug)
   const recordInfo = fetchResult.data.value as ProjectRecord
   console.log('fetchResult', recordInfo)
@@ -73,31 +53,6 @@ const reload = async () => {
 }
 
 const saveProject = async () => {
-
-  // const record = value
-
-  // const projectId = record?._id
-  // const name = record?.name
-  // const description = record?.description
-  // const section = record?.section
-  // const category = record?.category
-  // const tags = record?.tags
-  // const link = record?.link
-  // const grants = record?.grants
-  // const status = record?.status
-
-  console.log({
-    name,
-    description,
-    section,
-    category,
-    tags,
-    url,
-    grants,
-    status,
-    visible
-  })
-
   try {
     const response = await useFetch('/api/projects/' + route.params.slug, {
       method: 'PUT',
@@ -113,6 +68,7 @@ const saveProject = async () => {
         visible
       }
     })
+    await reload()
     oruga.notification.open({
       duration: 5000,
       message: 'Record saved!',
@@ -120,6 +76,7 @@ const saveProject = async () => {
       variant: 'success',
       position: 'top'
     })
+
   } catch (e) {
     console.log(e)
     if (e instanceof Error) {
@@ -128,7 +85,6 @@ const saveProject = async () => {
       errorMessage.value = 'An error occured while saving...'
     }
   }
-
 }
 
 const file = ref<File | null>(null)
@@ -254,10 +210,20 @@ const deleteProject = async ({ confirmed = false }) => {
 
     <o-field label="Section" message="The main section">
       <o-input v-model="section" maxlength="30"></o-input>
+      <o-select placeholder="Select a section" v-model="section">
+        <template v-for="item in sections">
+          <option :value="item.name">{{ item.name }}</option>
+        </template>
+      </o-select>
     </o-field>
 
     <o-field label="Category" message="The category or sub-section">
       <o-input v-model="category" maxlength="30"></o-input>
+      <o-select placeholder="Select a category" v-model="category">
+        <template v-for="item in sections.find(f => f.name === section)?.categories">
+          <option :value="item">{{ item }}</option>
+        </template>
+      </o-select>
     </o-field>
 
     <o-field label="Tags" message="List tags seperated by a space">
@@ -309,7 +275,7 @@ const deleteProject = async ({ confirmed = false }) => {
     <br />
     <br />
     <br />
-    <o-notification class="border-2">Delete the record, this action cannot be undone.
+    <o-notification class="border-2 border-">Delete the record, this action cannot be undone.
       <br />
       <br />
       <o-button label="Delete Record..." variant="danger" @click="deleteProject" size="medium" />

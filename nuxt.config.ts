@@ -5,6 +5,7 @@ export default defineNuxtConfig({
   plugins: [{ src: 'plugins/oruga.js' }],
   ssr: false,
   css: [
+    '@oruga-ui/theme-bulma/dist/bulma.css',
     '~/assets/fonts/clash-display.css',
     '~/assets/css/style.css'
   ]

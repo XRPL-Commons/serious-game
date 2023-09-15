@@ -12,5 +12,9 @@ export default defineEventHandler(async (event) => {
   // console.log('routerParams', routerParams)
   // const config = useRuntimeConfig()
   // console.log('config', config)
+  const query = getQuery(event)
+  if (query) {
+    console.log('query', query)
+  }
 
 })

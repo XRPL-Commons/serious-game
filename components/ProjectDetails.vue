@@ -4,9 +4,11 @@ const { item } = toRefs(props)
 </script>
 
 <template>
-  <div class="max-w-sm rounded overflow-hidden shadow-lg border-black border-2 bg-dodger-blue-50">
-    <div class="inline-block my-2 mx-6 p-2 bg-grey-50">
-      <img v-if="item?.logo" class="w-[200px] p-0 m-0 " :src="item.logo" alt="Project logo">
+  <div class="max-w-sm rounded overflow-hidden shadow-lg border-black border-2 bg-white">
+    <div class="relative inline-block p-4 bg-yellow-100 w-full aspect-[2/1]">
+      <div v-if="item.logo" class="bg-contain bg-center bg-no-repeat w-full aspect-[2/1]"
+        :style="`background-image: url(${item.logo})`">
+      </div>
     </div>
     <div class="px-6 py-4">
       <div class="font-bold text-xl mb-2">{{ item.name }}</div>

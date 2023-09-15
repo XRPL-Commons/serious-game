@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-const props = defineProps(['category', 'projects'])
-const { category, projects } = toRefs(props)
+const props = defineProps(['category', 'projects', 'color', 'textColor'])
+const { category, projects, color, textColor } = toRefs(props)
 
 const gridSize = computed(() => {
   const itemCount = projects?.value?.length
@@ -12,15 +12,16 @@ const count = computed(() => projects?.value.length)
 </script>
 
 <template>
-  <div class="inline-block items-bottom m-4">
+  <div class="inline-block items-bottom m-4 align-top">
 
-    <div class="text-xl rounded-md border-2 px-2 bg-dodger-blue-300">{{ category }}</div>
-    <span class="inline-grid" :class="`grid-cols-${gridSize}`">
+    <div class="text-xl rounded-md border-2 px-2" :style="`background-color: ${color}; color: ${textColor}`">{{ category
+    }}</div>
+    <div class="inline-grid" :class="`grid-cols-${gridSize}`">
       <template v-for="item in projects">
         <NuxtLink :to="'/projects/' + item.slug">
           <div
-            class="w-[124px] h-[124px] overflow-hidden shadow-lg m-[2px] border-[1px] justify-center  border-[#000] rounded flex flex-col bg-[#fff] opacity-80 hover:opacity-100">
-            <div v-if="item.thumbnail" class="bg-contain bg-center w-full h-[50px] bg-no-repeat"
+            class="w-[124px] h-[124px] overflow-hidden shadow-lg m-[2px] border-[1px] justify-center items-center border-[#000] rounded flex flex-col bg-[#fff] opacity-80 hover:opacity-100">
+            <div v-if="item.thumbnail" class="bg-contain bg-center mt-[5px] w-[100px] h-[50px] bg-no-repeat"
               :style="`background-image: url(${item.thumbnail})`">
             </div>
 
@@ -30,7 +31,7 @@ const count = computed(() => projects?.value.length)
           </div>
         </NuxtLink>
       </template>
-    </span>
+    </div>
 
     <span class="grid-cols-1"></span>
     <span class="grid-cols-2"></span>
@@ -43,5 +44,6 @@ const count = computed(() => projects?.value.length)
     <span class="grid-cols-9"></span>
     <span class="grid-cols-10"></span>
     <span class="grid-cols-11"></span>
+
   </div>
 </template>
