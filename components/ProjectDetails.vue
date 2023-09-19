@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import dayjs from 'dayjs'
 const props = defineProps(['item'])
 const { item } = toRefs(props)
 </script>
@@ -22,11 +23,17 @@ const { item } = toRefs(props)
           tag }}</span>
       </template>
     </div>
-    <div class="px-6 pt-4 pb-2" v-if="item.grants === 'Yes'">
-      Grant recipient
+    <div class="px-6 pt-4 pb-2 italic" v-if="item.launchDate">
+      Launched in {{ dayjs(item.launchDate).format('MMMM YYYY') }}
     </div>
+    <span class="inline-block mx-6 my-2 rounded-full px-3 py-1 bg-spring-green-200" v-if="item.grants === 'Yes'">
+      Grant recipient
+    </span>
+    <span class="inline-block mx-6 my-2 rounded-full px-3 py-1 bg-spring-green-300" v-if="item.accelerator === 'Yes'">
+      Accelerator participant
+    </span>
     <div class="px-6 pt-4 pb-2">
-      This project is {{ item.status }}
+      This project is <strong>{{ item.status }}</strong>
     </div>
     <div class="px-6 pt-4 pb-2">
       <a :href="item.url" target="_blank" class="text-blue-800">{{ item.url }}</a>

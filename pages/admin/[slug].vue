@@ -5,6 +5,9 @@ import ModalConfirm from '/components/ModalConfirm.vue';
 import ModalFileInput from '/components/ModalFileInput.vue';
 import { ProjectRecord } from '~/types'
 import { sections } from '~/lib/vars'
+import dayjs from 'dayjs'
+import advancedFormat from 'dayjs/plugin/advancedFormat'
+dayjs.extend(advancedFormat)
 
 // tooling
 const { oruga } = useProgrammatic()
@@ -25,7 +28,9 @@ const tags = ref('')
 const url = ref('')
 const grants = ref('')
 const status = ref('')
+const accelerator = ref('')
 const thumbnail = ref('')
+const launchDate = ref(new Date())
 const logo = ref('')
 const visible = ref(false)
 
@@ -45,8 +50,10 @@ const reload = async () => {
   category.value = recordInfo.category
   url.value = recordInfo.url
   grants.value = recordInfo.grants
+  accelerator.value = recordInfo.accelerator
   status.value = recordInfo.status
   thumbnail.value = recordInfo.thumbnail
+  launchDate.value = recordInfo.launchDate ? new Date(recordInfo.launchDate) : new Date()
   logo.value = recordInfo.logo
   visible.value = recordInfo.visible
   tags.value = recordInfo?.tags.join(' ') || ''
@@ -64,6 +71,8 @@ const saveProject = async () => {
         tags: tags.value.split(' '),
         url,
         grants,
+        accelerator,
+        launchDate,
         status,
         visible
       }
@@ -234,9 +243,21 @@ const deleteProject = async ({ confirmed = false }) => {
       <o-input v-model="url"></o-input>
     </o-field>
 
-    <o-field label="Grants">
+    <o-field label="Grant Recipient">
       <o-radio v-model="grants" name="grant_recipient" native-value="Yes">Yes</o-radio>
       <o-radio v-model="grants" name="grant_recipient" native-value="No">No</o-radio>
+    </o-field>
+
+    <o-field label="Accelerator Participant">
+      <o-radio v-model="accelerator" name="accelerator" native-value="Yes">Yes</o-radio>
+      <o-radio v-model="accelerator" name="accelerator" native-value="No">No</o-radio>
+    </o-field>
+
+    <o-field label="Project creation date">
+      <o-datepicker v-model="launchDate" :show-week-number="false" locale="en-US" placeholder="Click to select..."
+        trap-focus>
+      </o-datepicker>
+      <o-button disabled>{{ dayjs(launchDate).format('MMMM Do YYYY') }}</o-button>
     </o-field>
 
     <o-field label="Status">
@@ -244,7 +265,6 @@ const deleteProject = async ({ confirmed = false }) => {
       <o-radio v-model="status" name="status" native-value="Active">Active</o-radio>
       <o-radio v-model="status" name="status" native-value="Inactive">Inactive</o-radio>
     </o-field>
-
 
     <o-field label="Logo">
       <div class="inline-block m-1 border-2 border-grey-300 p-2 bg-grey-50">

@@ -23,6 +23,7 @@
     "@aws-sdk/client-s3": "^3.32.0",
     "@oruga-ui/oruga-next": "^0.6.0",
     "@oruga-ui/theme-bulma": "^0.2.11",
+    "dayjs": "^1.11.10",
     "mongodb": "^5.8.1",
     "sharp": "^0.32.5"
   }

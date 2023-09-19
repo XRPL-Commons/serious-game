@@ -11,26 +11,25 @@ const emit = defineEmits(['update:modelValue'])
 
 const onChange = (clickedItem: { name: string, selected: boolean } | null, all?: boolean | undefined) => {
   console.log('clickedItem', clickedItem)
-  if (!clickedItem) {
-    return
-  }
   let newValue: Array<string>
-
-  // must deal with all / none
-  if (all !== undefined && all === true) {
-    newValue = ['all']
-  } else if (all !== undefined && all === false) {
-    newValue = []
-    // @ts-ignore
-  } else if (modelValue.value.indexOf(clickedItem.name) !== -1) {
-    newValue = modelValue.value.filter(i => i !== clickedItem.name)
-    console.log({ newValue })
-
+  if (clickedItem === null) {
+    if (all === true) {
+      newValue = ['all']
+    } else if (all === false) {
+      newValue = []
+    } else {
+      return
+    }
   } else {
-    modelValue.value.push(clickedItem.name)
-    newValue = modelValue.value
-    console.log({ newValue })
+    // must deal with all / none
+    if (modelValue.value.indexOf(clickedItem.name) !== -1) {
+      newValue = modelValue.value.filter(i => i !== clickedItem.name)
+    } else {
+      modelValue.value.push(clickedItem.name)
+      newValue = modelValue.value
+    }
   }
+  console.log({ newValue })
   emit('update:modelValue', newValue)
 }
 

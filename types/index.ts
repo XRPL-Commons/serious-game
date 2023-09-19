@@ -7,8 +7,10 @@ export interface ProjectRecord {
   tags: [string],
   url: string,
   grants: string,
+  accelerator: string,
   status: string,
   thumbnail: string,
+  launchDate: Date,
   logo: string,
   visible: boolean,
 }

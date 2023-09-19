@@ -32,7 +32,8 @@ export default defineEventHandler(async (event) => {
       category: 'New',
       grants: false,
       status: 'Pre-launch',
-      visible: false
+      visible: false,
+      launchDate: new Date()
     }
 
     // insert
