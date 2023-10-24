@@ -38,6 +38,7 @@ export const sections = [
       "DEX & Listings",
       "ESG & Sustainability",
       "Gaming",
+      "Investment Platform",
       "NFT Marketplaces",
       "ODL Users",
       "On Chain Notarisation",
