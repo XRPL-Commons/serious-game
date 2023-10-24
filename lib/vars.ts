@@ -5,10 +5,10 @@ export const sections = [
     primaryColorName: 'dodger-blue',
     textColor: '#F5F4E7',
     categories: [
-      "Research & Analysis",
       "Job Boards",
       "Learning and Documentation",
       "News & Media",
+      "Research & Analysis",
     ]
   },
   {

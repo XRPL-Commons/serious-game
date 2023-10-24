@@ -144,7 +144,7 @@ const createProject = async ({ Project = false }: createProjectParams) => {
     </o-table-column>
     <o-table-column field="tags" label="Tags" :searchable="true" v-slot="props">
       <template v-for="tag in props.row.tags">
-        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{{
+        <span v-if="tag" class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{{
           tag }}</span>
       </template>
     </o-table-column>
