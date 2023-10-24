@@ -5,10 +5,10 @@ export const sections = [
     primaryColorName: 'dodger-blue',
     textColor: '#F5F4E7',
     categories: [
+      "Analysis & Research",
+      "Job Boards",
+      "Learning and Documentation",
       "News & Media",
-      "List",
-      "Job boards",
-      "Learn XRPL"
     ]
   },
   {
@@ -17,32 +17,31 @@ export const sections = [
     textColor: '#F5F4E7',
     primaryColorName: 'persian-rose',
     categories: [
-      "Core Infrastructure",
-      "XRPL Infrastructure & Tools",
-      "Learn XRPL",
-      "XRPL Explorer",
-      "Wallets",
-      "Security",
-      "L2 & Smart Contracts",
-      "Interoperability",
       "API / Dev Tools",
-      "XRP trading platforms",
-      "Oracle",
-      "XRP trading platforms "
+      "Core Infrastructure",
+      "Explorers",
+      "Interoperability",
+      "L2 & Smart Contracts",
+      "On/Off Ramping",
+      "Oracles",
+      "Security",
+      "Wallets",
     ]
   },
   {
-    name: 'XRPL Use cases',
+    name: 'XRPL Use Cases',
     primaryColor: '#19FF83',
     textColor: '#000637',
     primaryColorName: 'spring-green',
     categories: [
-      "Real estate ",
       "DeFi",
-      "DEX & Lists",
-      "Market places, DEX & Lists",
-      "API / Dev Tools",
-      "Asset"
+      "DEX & Listings",
+      "ESG & Sustainability",
+      "Gaming",
+      "NFT Marketplaces",
+      "ODL Users",
+      "On Chain Notarisation",
+      "Real Estate ",
     ]
   },
 ]
