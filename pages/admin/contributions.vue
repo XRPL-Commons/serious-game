@@ -128,7 +128,7 @@ const createProject = async ({ Project = false }: createProjectParams) => {
 </script>
 
 <template>
-  <o-button label="Create Record" @click="createProject" class="mb-2" variant="primary" />
+  <o-button label="Create Record" @click="createProject" class="mb-2" />
   <o-table :data="dataSource" @select="selectProject" v-if="data">
     <o-table-column field="thumbnail" label="Thumb" v-slot="props">
       <img :src="props.row.thumbnail" class="w-[40px]">

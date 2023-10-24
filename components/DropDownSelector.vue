@@ -5,8 +5,9 @@ const props = defineProps<{
   name: string
   options: Array<string>
   modelValue: Array<string>
+  count: number
 }>()
-const { name, modelValue, options } = toRefs(props)
+const { name, modelValue, options, count } = toRefs(props)
 const emit = defineEmits(['update:modelValue'])
 
 const onChange = (clickedItem: { name: string, selected: boolean } | null, all?: boolean | undefined) => {
@@ -46,7 +47,8 @@ const localOptions = computed(() => {
     <template #trigger="{ active }">
       <span variant=""
         class="flex flex-rows cursor-pointer scale-90 hover:scale-100 transition-all duration-500 hover:text-spring-green-700"
-        :class="{ 'scale-100': active, 'text-spring-green-700': active }">
+        :class="{ 'scale-100': active, 'text-spring-green-700': active, 'text-spring-green-600': modelValue.indexOf('all') === -1  }">
+        <!-- <span v-if="count" class="bg-black rounded-full text-ecru-white-50 py-1 px-2 mr-1 text-xs inline-block">{{count}}</span> -->
         <span class="pr-2">{{ name }}</span>
         <template v-if="!active">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"

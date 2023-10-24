@@ -4,6 +4,8 @@ import { ProjectRecord } from '~/types'
 import { sections, grants, statuses } from '~/lib/vars'
 import { report } from 'process';
 
+const search = ref('')
+
 const localRecords = ref<Array<ProjectRecord>>([])
 const selectedTags = ref<Array<string>>(['all'])
 const selectedStatus = ref<Array<string>>(['Pre-launch', 'Active'])
@@ -16,15 +18,6 @@ const filterGrants = ref<Array<string>>(grants)
 const categoriesBySection = ref({})
 const projectsByCategoryBySection = ref({})
 
-// const pullValues = ({ records, key }: { records: [ProjectRecord], key: string }) => {
-//   const oKeys = records.reduce((r, i) => {
-//     if (i[key]) {
-//       i[key].forEach(t => r[t] = true)
-//     }
-//     return r
-//   }, {})
-//   return Object.keys(oKeys).sort()
-// }
 
 const loadRecords = async () => {
   const queryString = `?tags=${selectedTags.value.join(',')}` +
@@ -41,7 +34,16 @@ const loadRecords = async () => {
   filterTags.value = fTags
 }
 const projectsByCategory = computed(() => {
-  const records = localRecords.value.filter(r => {
+  const records = localRecords.value
+
+  .filter(r => {
+    if (search) {
+      return `${r.name}${r.tags}`.toLowerCase().includes(search.value.toLowerCase())
+    } else {
+      return true
+    }
+})
+  .filter(r => {
     if (!selectedStatus.value.includes('all') && !selectedStatus.value.includes(r.status)) {
       return false
     }
@@ -92,11 +94,12 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    <DropDownSelector v-model="selectedTags" name="Tags" :options="filterTags" />
+  <div class="flex justify-end items-center">
+    <DropDownSelector v-model="selectedTags" name="Tags" :options="filterTags" :count="selectedTags && selectedTags.length"/>
     <DropDownSelector v-model="selectedGrants" name="Grants" :options="filterGrants" />
     <DropDownSelector v-model="selectedStatus" name="Project Status" :options="filterStatus" />
     <!-- <div>{{ selectedTags }} {{ selectedGrants }} {{ selectedStatus }}</div> -->
+    <input placeholder="Search..." v-model="search" type="search" icon="search" class="px-4 py-2 text-sm rounded-full"/>  
   </div>
   <template v-for="section in projectsByCategory">
     <div class="text-2xl bg-yellow-200 mt-4 p-2 rounded-md mb-4">{{ section.name }}</div>

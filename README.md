@@ -61,3 +61,38 @@ yarn preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+
+# Contribution Flow
+
+User roles:
+   - reader (no credentials)
+   - contributor (can propose new projects and edits to existing projects)
+      x owner (can edit a specific project)
+   - admin (can approve changes from contributors)
+
+
+## Basic edit flow:
+
+1. Ask for contributor credentials
+This is the upgrade path from reader to contributor. This step will be quite manual as we will have to add the user to Heirloom and generate an api key. 
+   - VC from Heirloom
+   - API key
+
+2. Once authenticated, contributors can:
+   - Propose new projects
+   - Edit other projects
+
+3. Proposed changes are queued in a special collection and approved by admins
+
+
+## Project Owner Flow:
+
+1. Ask for owner credentials
+From the project page, readers can claim projects to become project owners.
+
+2. Once authenticated, owners can:
+   - propose edits to their project
+
+3. Proposed changes are queued in a special collection and approved by admins
+
