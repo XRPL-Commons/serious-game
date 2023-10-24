@@ -19,13 +19,13 @@ const { item } = toRefs(props)
     </div>
     <div class="px-6 pt-4 pb-2" v-if="item.tags">
       <template v-for="tag in item.tags">
-        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{{
+        <span v-if="tag !== ''" class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{{
           tag }}</span>
       </template>
     </div>
-    <div class="px-6 pt-4 pb-2 italic" v-if="item.launchDate">
+    <!-- <div class="px-6 pt-4 pb-2 italic" v-if="item.launchDate">
       Launched in {{ dayjs(item.launchDate).format('MMMM YYYY') }}
-    </div>
+    </div> -->
     <span class="inline-block mx-6 my-2 rounded-full px-3 py-1 bg-spring-green-200" v-if="item.grants === 'Yes'">
       Grant recipient
     </span>
