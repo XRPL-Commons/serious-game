@@ -39,7 +39,7 @@ export const sections = [
       "DeFi",
       "DEX & Listings",
       "ESG & Sustainability",
-      "Gaming",
+      "Gaming & Music",
       "Investment Platform",
       "NFT Marketplaces",
       "ODL Users",
