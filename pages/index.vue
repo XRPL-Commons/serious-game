@@ -94,13 +94,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex justify-end items-center">
+  <div class="flex justify-end items-center fixed w-full z-20 backdrop-blur-md bg-white-100/75 shadow shadow-gray-200 pr-6 py-2 left-[-0.5rem] bg-ecru-white-50/25">
     <DropDownSelector v-model="selectedTags" name="Tags" :options="filterTags" :count="selectedTags && selectedTags.length"/>
     <DropDownSelector v-model="selectedGrants" name="Grants" :options="filterGrants" />
     <DropDownSelector v-model="selectedStatus" name="Project Status" :options="filterStatus" />
     <!-- <div>{{ selectedTags }} {{ selectedGrants }} {{ selectedStatus }}</div> -->
     <input placeholder="Search..." v-model="search" type="search" icon="search" class="px-4 py-2 text-sm rounded-full"/>  
   </div>
+  <div class="pt-[3rem]"></div>
   <template v-for="section in projectsByCategory">
     <div class="text-2xl bg-yellow-200 mt-4 p-2 rounded-md mb-4">{{ section.name }}</div>
     <div class="text-gray-900 align-top relative">

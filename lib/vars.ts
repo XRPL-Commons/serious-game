@@ -34,6 +34,8 @@ export const sections = [
     textColor: '#000637',
     primaryColorName: 'spring-green',
     categories: [
+      "Crowdfunding",
+      "Identity",
       "DeFi",
       "DEX & Listings",
       "ESG & Sustainability",

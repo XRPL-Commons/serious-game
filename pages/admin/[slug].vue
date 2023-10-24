@@ -127,7 +127,7 @@ const uploadImage = async (e: any) => {
     await reload()
   } catch (e) {
     console.error(e)
-    let message = 'An error occured while uploading file...'
+    let message = 'An error occured while uploading file: ' + e.toString()
     if (e instanceof Error) {
       message = e.toString()
     }

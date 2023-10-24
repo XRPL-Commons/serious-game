@@ -3,11 +3,11 @@
 
   <body class=" font-body">
       <div
-        class=" text-xl px-4 py-2 font-bold block w-full fixed top-0 z-20  border-transparent lg:block backdrop-blur-md bg-white-100/75 shadow shadow-gray-200 text-gray-900 m-0">
+        class="text-xl px-4 py-2 font-bold block w-full fixed top-0 z-20  border-transparent lg:block backdrop-blur-md bg-white-100/75  text-gray-900 m-0">
         <div class="bg-spring-green-400 text-stratos-950 text-3xl rounded-full px-5 py-2 font-title inline-block">XRPL Ecosystem Map</div>
       </div>
 
-      <div class="p-4 mt-16 ">
+      <div class="mt-16 pr-4 pl-4 relative">
         <NuxtLayout>
           <NuxtPage :search="search"/>
         </NuxtLayout>

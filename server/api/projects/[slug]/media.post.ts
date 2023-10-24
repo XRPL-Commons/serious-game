@@ -64,12 +64,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Image format should be png, jpeg or webp!' })
   }
 
-  // check for minimum dimensions
-  if (!metadata.width || !metadata.height || (metadata.width < 400 && metadata.height < 400)) {
-    if (metadata.format !== 'svg') {
-      throw createError({ statusCode: 400, statusMessage: 'One of the image dimensions should be at least 400px!' })
-    }
-  }
+  // // check for minimum dimensions
+  // if (!metadata.width || !metadata.height || (metadata.width < 400 && metadata.height < 400)) {
+  //   if (metadata.format !== 'svg') {
+  //     throw createError({ statusCode: 400, statusMessage: 'One of the image dimensions should be at least 400px!' })
+  //   }
+  // }
 
 
   // create imageId
