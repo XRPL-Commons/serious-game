@@ -2,6 +2,7 @@ import { PutObjectCommand, PutObjectCommandInput, S3Client } from '@aws-sdk/clie
 import { ProjectsCollection, ObjectId } from '@/server/connectors/mongo'
 import { s3Client } from "@/server/connectors/spaces";
 import sharp from 'sharp'
+import { useAuth } from '~/lib/auth'
 
 interface saveFileProps {
   fileName: string;
@@ -36,6 +37,13 @@ const saveFile = async ({ fileName, fileContent, metadata = {} }: saveFileProps)
 
 export default defineEventHandler(async (event) => {
   console.log('uploading media')
+  // requires authentication
+  const auth = useAuth(event?.context?.auth)
+
+  if (!auth.isAdmin) {
+    throw createError({ statusCode: 401, statusMessage: 'Not authorized' })
+  }
+
   const files = await readMultipartFormData(event)
   if (!files) {
     throw createError({ statusCode: 400, statusMessage: 'No data' })

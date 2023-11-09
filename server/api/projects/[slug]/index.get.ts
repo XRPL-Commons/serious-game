@@ -7,4 +7,3 @@ export default defineEventHandler(async (event) => {
   const result = await Projects.findOne({ slug })
   return result || []
 })
-

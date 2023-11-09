@@ -14,9 +14,9 @@ defineEmits(['confirm', 'close'])
       {{ message }}
     </section>
     <footer class="modal-card-foot">
-      <o-button :label="cancelText || 'Cancel'" @click="$emit('close')" />
+      <o-button :label="cancelText || 'Cancel'" @click="$emit('close')" rounded />
       <o-button :variant="type || 'primary'" :label="confirmText || 'OK'" type="is-primary"
-        @click="$emit('confirm'); $emit('close');" />
+        @click="$emit('confirm'); $emit('close');" rounded />
     </footer>
   </div>
 </template>

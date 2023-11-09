@@ -6,6 +6,10 @@ import ModalInput from '/components/ModalInput.vue'
 const { oruga } = useProgrammatic()
 const { data } = await useFetch('/api/projects')
 
+// authentication
+const apiKey = ref<string | null>('')
+apiKey.value = localStorage.getItem('xrpl_map_api_key')
+
 interface recordType {
   thumbnail: string,
   name: string,
@@ -67,9 +71,11 @@ const selectProject = ({ slug }: selectRow) => {
 interface createProjectParams {
   Project: string | boolean
 }
+
 interface ModalInputResult {
   value: string
 }
+
 const createProject = async ({ Project = false }: createProjectParams) => {
   if (!Project) {
     oruga.modal.open({
@@ -94,6 +100,9 @@ const createProject = async ({ Project = false }: createProjectParams) => {
   try {
     const { error, data } = await useFetch('/api/projects/', {
       method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey.value}`
+      },
       body: {
         projectName: Project
       }
@@ -120,33 +129,37 @@ const createProject = async ({ Project = false }: createProjectParams) => {
       message,
       rootClass: 'toast-notification',
       variant: 'danger',
-      position: 'top'
+      position: 'top',
+      duration: 5000
     })
   }
 }
-
 </script>
 
 <template>
-  <o-button label="Create Record" @click="createProject" class="mb-2" variant="primary" />
-  <o-table :data="dataSource" @select="selectProject" v-if="data">
-    <o-table-column field="thumbnail" label="Thumb" v-slot="props">
-      <img :src="props.row.thumbnail" class="w-[40px]">
-    </o-table-column>
-    <o-table-column field="name" label="Project" :searchable="true" v-slot="props">
-      {{ props.row.name }}
-    </o-table-column>
-    <o-table-column field="section" label="Section" :searchable="true" v-slot="props">
-      {{ props.row.section }}
-    </o-table-column>
-    <o-table-column field="category" label="Category" :searchable="true" v-slot="props">
-      {{ props.row.category }}
-    </o-table-column>
-    <o-table-column field="tags" label="Tags" :searchable="true" v-slot="props">
-      <template v-for="tag in props.row.tags">
-        <span v-if="tag" class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{{
-          tag }}</span>
-      </template>
-    </o-table-column>
-  </o-table>
+  <div v-if="!apiKey">This page requires authentication. Please reach out to an administrator for access.</div>
+  <template v-else>
+    <o-button label="Create Record" @click="createProject" class="mb-2" variant="primary" rounded />
+    <o-table :data="dataSource" @select="selectProject" v-if="data">
+      <o-table-column field="thumbnail" label="Thumb" v-slot="props">
+        <img :src="props.row.thumbnail" class="w-[40px]">
+      </o-table-column>
+      <o-table-column field="name" label="Project" :searchable="true" v-slot="props">
+        {{ props.row.name }}
+      </o-table-column>
+      <o-table-column field="section" label="Section" :searchable="true" v-slot="props">
+        {{ props.row.section }}
+      </o-table-column>
+      <o-table-column field="category" label="Category" :searchable="true" v-slot="props">
+        {{ props.row.category }}
+      </o-table-column>
+      <o-table-column field="tags" label="Tags" :searchable="true" v-slot="props">
+        <template v-for="tag in props.row.tags">
+          <span v-if="tag"
+            class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#{{
+              tag }}</span>
+        </template>
+      </o-table-column>
+    </o-table>
+  </template>
 </template>

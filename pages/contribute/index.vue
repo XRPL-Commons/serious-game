@@ -4,7 +4,7 @@ import { useProgrammatic } from '@oruga-ui/oruga-next'
 import ModalConfirm from '/components/ModalConfirm.vue';
 import ModalFileInput from '/components/ModalFileInput.vue';
 import { ProjectRecord } from '~/types'
-import { sections } from '~/lib/vars'
+import { sections } from '~/models'
 import dayjs from 'dayjs'
 import advancedFormat from 'dayjs/plugin/advancedFormat'
 dayjs.extend(advancedFormat)
@@ -199,16 +199,15 @@ const deleteProject = async ({ confirmed = false }) => {
 </script>
 
 <template >
-
   <div class="font-title text-xl py-2 font-bold">Contribute to the XRPL Ecosystem Map</div>
 
-    <o-field label="Project" message="The unique project name">
-      <o-input v-model="name"></o-input>
-    </o-field>
-    <o-field label="Project" message="The unique project name">
-      <o-input v-model="name"></o-input>
-    </o-field>
-    
+  <o-field label="Project" message="The unique project name">
+    <o-input v-model="name"></o-input>
+  </o-field>
+  <o-field label="Project" message="The unique project name">
+    <o-input v-model="name"></o-input>
+  </o-field>
+
   <section v-if="loaded">
 
 

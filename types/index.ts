@@ -4,7 +4,7 @@ export interface ProjectRecord {
   description: string,
   section: string,
   category: string,
-  tags: [string],
+  tags: string[],
   url: string,
   grants: string,
   accelerator: string,
@@ -12,5 +12,6 @@ export interface ProjectRecord {
   thumbnail: string,
   launchDate: Date,
   logo: string,
+  hideName: boolean,
   visible: boolean,
 }

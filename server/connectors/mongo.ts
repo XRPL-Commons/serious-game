@@ -13,7 +13,7 @@ export const ProjectsCollection = async () => {
   return client.db('map').collection('Projects')
 }
 
-export const TokenCollection = async () => {
+export const TokensCollection = async () => {
   await client.connect()
   return client.db('map').collection('Tokens')
 }
@@ -25,5 +25,5 @@ export default {
   MongoClient,
   ObjectId,
   ProjectsCollection,
-  TokenCollection
+  TokensCollection
 }

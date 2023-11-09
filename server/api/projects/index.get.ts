@@ -26,9 +26,9 @@ export default defineEventHandler(async (event) => {
   if (query?.grants && query.grants !== 'all') {
     filter.grants = { $in: query.grants.split(',') }
   }
-  console.log('filter', filter)
+  //console.log('filter', filter)
   const Projects = await ProjectsCollection()
   const result = await Projects.find(filter).toArray()
-  console.log(result)
+  //console.log(result)
   return result
 })

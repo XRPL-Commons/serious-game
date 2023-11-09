@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { emit } from 'process';
 import { ref } from 'vue'
 const props = defineProps(['title', 'message', 'projectId', 'cancelText', 'confirmText', 'type', 'projectId'])
 const { title, message, projectId } = toRefs(props)
@@ -24,7 +23,7 @@ const confirmFile = async () => {
   }
 }
 
-const onChange = async (e) => {
+const onChange = async (e: any) => {
   const files = e.target.files;
   const formData = new FormData();
   formData.append('file', files[0]);
@@ -57,8 +56,9 @@ const onChange = async (e) => {
         </span>
       </section>
       <footer class="modal-card-foot">
-        <o-button :label="cancelText || 'Cancel'" @click="$emit('close')" />
-        <o-button :variant="type || 'primary'" :label="confirmText || 'OK'" type="is-primary" @click="confirmFile" />
+        <o-button :label="cancelText || 'Cancel'" @click="$emit('close')" rounded />
+        <o-button :variant="type || 'primary'" :label="confirmText || 'OK'" type="is-primary" @click="confirmFile"
+          rounded />
       </footer>
     </div>
   </form>

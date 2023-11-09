@@ -1,8 +1,19 @@
 import { ProjectsCollection, ObjectId } from '@/server/connectors/mongo'
 import { generateSlug } from '@/server/lib/generateSlug'
+import { useAuth } from '~/lib/auth'
 
 export default defineEventHandler(async (event) => {
-  console.log('creating project...')
+
+  console.log('creating project...', event?.context)
+
+  // requires authentication
+  const auth = useAuth(event?.context?.auth)
+  console.log(auth)
+
+  if (!auth.isAdmin) {
+    throw createError({ statusCode: 401, statusMessage: 'Not authorized' })
+  }
+
   const body = await readBody(event)
   const projectName = body?.projectName
 
@@ -26,6 +37,7 @@ export default defineEventHandler(async (event) => {
 
     // lets set some default to get things going
     const record = {
+      accelerator: false,
       name: projectName,
       description: 'Description of the project...',
       section: 'Main',
@@ -33,6 +45,7 @@ export default defineEventHandler(async (event) => {
       grants: false,
       status: 'Pre-launch',
       visible: false,
+      slug,
       launchDate: new Date()
     }
 

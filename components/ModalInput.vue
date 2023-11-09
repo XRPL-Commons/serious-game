@@ -17,9 +17,9 @@ const value = ref('')
         <o-input v-model="value" />
       </section>
       <footer class="modal-card-foot">
-        <o-button :label="cancelText || 'Cancel'" @click="$emit('close')" />
+        <o-button :label="cancelText || 'Cancel'" @click="$emit('close')" rounded />
         <o-button :variant="type || 'primary'" :label="confirmText || 'OK'" type="is-primary"
-          @click="$emit('confirm', { value }); $emit('close');" />
+          @click="$emit('confirm', { value }); $emit('close');" rounded />
       </footer>
     </div>
   </form>
