@@ -284,7 +284,7 @@ const openOnFocus = ref(false);
         class="w-6 h-6 mr-2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
       </svg>
-      <span>Back to List</span>
+      <span>Admin List</span>
     </NuxtLink>
     <br />
     <br />

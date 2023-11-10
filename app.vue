@@ -4,8 +4,10 @@
   <body class=" font-body">
     <div
       class="text-xl px-4 py-2 font-bold block w-full fixed top-0 z-20  border-transparent lg:block backdrop-blur-md bg-white-100/75  text-gray-900 m-0">
-      <div class="bg-spring-green-400 text-stratos-950 text-3xl rounded-full px-5 py-2 font-title inline-block">XRPL
-        Ecosystem Map</div>
+      <NuxtLink to="/"
+        class="bg-spring-green-400 text-stratos-950 text-3xl rounded-full px-5 py-2 font-title inline-block hover:bg-spring-green-500 transition-all cursor-pointer">
+        XRPL
+        Ecosystem Map</NuxtLink>
       <ManageAPIKey class="absolute top-4 right-4" />
     </div>
 
