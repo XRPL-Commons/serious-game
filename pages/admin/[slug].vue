@@ -7,6 +7,8 @@ import { ProjectRecord } from '~/types'
 import { sections } from '~/models'
 import dayjs from 'dayjs'
 import advancedFormat from 'dayjs/plugin/advancedFormat'
+import debounce from '~/lib/debounce'
+
 dayjs.extend(advancedFormat)
 
 // authentication
@@ -92,7 +94,7 @@ const reload = async () => {
   }
 }
 
-const saveProject = async () => {
+const saveProject = debounce(async () => {
   try {
     working.value = true
     const { data, error }: { data: any, error: any } = await useFetch('/api/projects/' + route.params.slug, {
@@ -119,9 +121,9 @@ const saveProject = async () => {
       throw new Error(error.value.toString())
     }
     oruga.notification.open({
-      duration: 5000,
+      duration: 3000,
       message: 'Record saved!',
-      rootClass: 'toast-notification',
+      rootClass: 'toast-notification !bg-black px-4 py-2',
       variant: 'success',
       position: 'top'
     })
@@ -144,7 +146,7 @@ const saveProject = async () => {
   } finally {
     working.value = false
   }
-}
+}, 1000)
 
 const file = ref<File | null>(null)
 
@@ -230,8 +232,8 @@ const deleteProject = async ({ confirmed = false }) => {
       oruga.notification.open({
         duration: 5000,
         message: 'Record deleted successfully!',
-        rootClass: 'toast-notification',
-        variant: 'success',
+        rootClass: 'toast-notification !bg-black',
+        variant: '',
         position: 'top'
       })
       router.push('/admin')
@@ -301,16 +303,16 @@ const openOnFocus = ref(false);
           <section class="p-5">
 
             <o-field label="Project" message="The unique project name">
-              <o-input v-model="name"></o-input>
+              <o-input v-model="name" @change="saveProject"></o-input>
             </o-field>
 
             <o-field label="Description" message="Please describe the project in as much detail as possible">
-              <o-input type="textarea" v-model="description" maxlength="1000"> </o-input>
+              <o-input type="textarea" v-model="description" maxlength="1000" @keyup="saveProject"> </o-input>
             </o-field>
 
             <o-field label="Section" message="The main section">
               <!-- <o-input v-model="section" maxlength="30"></o-input> -->
-              <o-select placeholder="Select a section" v-model="section">
+              <o-select placeholder="Select a section" v-model="section" @change="saveProject">
                 <template v-for="item in sections">
                   <option :value="item.name">{{ item.name }}</option>
                 </template>
@@ -319,7 +321,7 @@ const openOnFocus = ref(false);
 
             <o-field label="Category" message="The category or sub-section">
               <!-- <o-input v-model="category" maxlength="30"></o-input> -->
-              <o-select placeholder="Select a category" v-model="category">
+              <o-select placeholder="Select a category" v-model="category" @change="saveProject">
                 <template v-for="item in sections.find(f => f.name === section)?.categories">
                   <option :value="item">{{ item }}</option>
                 </template>
@@ -329,35 +331,36 @@ const openOnFocus = ref(false);
             <o-field label="Tags" message="List tags seperated by a space">
               <!-- <o-input v-model="tags"></o-input> -->
               <o-inputitems v-model="tags" :data="filteredTags" :allow-autocomplete="true" :allow-new="true"
-                :open-on-focus="true" field="tag" placeholder="Start typing..." @typing="getFilteredTags" />
+                :open-on-focus="true" field="tag" placeholder="Start typing..." @typing="getFilteredTags"
+                @add="saveProject" @remove="saveProject" />
 
             </o-field>
 
             <o-field label="Link" message="Link to the project">
-              <o-input v-model="url"></o-input>
+              <o-input v-model="url" @change="saveProject"></o-input>
             </o-field>
 
             <o-field label="Grant Recipient">
-              <o-radio v-model="grants" name="grant_recipient" native-value="Yes">Yes</o-radio>
-              <o-radio v-model="grants" name="grant_recipient" native-value="No">No</o-radio>
+              <o-radio v-model="grants" name="grant_recipient" native-value="Yes" @change="saveProject">Yes</o-radio>
+              <o-radio v-model="grants" name="grant_recipient" native-value="No" @change="saveProject">No</o-radio>
             </o-field>
 
             <o-field label="Accelerator Participant">
-              <o-radio v-model="accelerator" name="accelerator" native-value="Yes">Yes</o-radio>
-              <o-radio v-model="accelerator" name="accelerator" native-value="No">No</o-radio>
+              <o-radio v-model="accelerator" name="accelerator" native-value="Yes" @change="saveProject">Yes</o-radio>
+              <o-radio v-model="accelerator" name="accelerator" native-value="No" @change="saveProject">No</o-radio>
             </o-field>
 
             <o-field label="Project creation date">
               <o-datepicker v-model="launchDate" :show-week-number="false" locale="en-US" placeholder="Click to select..."
-                trap-focus>
+                trap-focus @blur="saveProject">
               </o-datepicker>
               <o-button disabled>{{ dayjs(launchDate).format('MMMM Do YYYY') }}</o-button>
             </o-field>
 
             <o-field label="Status">
-              <o-radio v-model="status" name="status" native-value="Pre-launch">Pre-launch</o-radio>
-              <o-radio v-model="status" name="status" native-value="Active">Active</o-radio>
-              <o-radio v-model="status" name="status" native-value="Inactive">Inactive</o-radio>
+              <o-radio v-model="status" name="status" native-value="Pre-launch" @change="saveProject">Pre-launch</o-radio>
+              <o-radio v-model="status" name="status" native-value="Active" @change="saveProject">Active</o-radio>
+              <o-radio v-model="status" name="status" native-value="Inactive" @change="saveProject">Inactive</o-radio>
             </o-field>
 
             <o-field label="Logo">
@@ -370,20 +373,20 @@ const openOnFocus = ref(false);
               <!-- <o-button variant="primary" label="Add logo..." @click="uploadImage"></o-button> -->
 
               <o-upload @change="uploadImage" rounded>
-                <o-button variant="primary" class="m-1 !rounded-full" rounded>
+                <o-button tag="a" variant="primary" class="m-1 !rounded-full" rounded>
                   <span>Update logo...</span>
                 </o-button>
               </o-upload>
             </o-field>
 
             <o-field label="Hide Name" message="if the logo already contains the project name, its best to hide it">
-              <o-switch v-model="hideName">
+              <o-switch v-model="hideName" @change="saveProject">
                 {{ hideName }}
               </o-switch>
             </o-field>
 
             <o-field label="Visible">
-              <o-switch v-model="visible">
+              <o-switch v-model="visible" @change="saveProject">
                 {{ visible }}
               </o-switch>
             </o-field>
