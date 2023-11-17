@@ -11,7 +11,12 @@ interface userIntoType {
 export const useAuth = (userInfo: userIntoType) => {
   console.log({ userInfo })
   if (!userInfo) {
-    throw createError({ statusCode: 401, statusMessage: 'Unauthorized!' })
+    // throw createError({ statusCode: 401, statusMessage: 'Unauthorized!' })
+    return {
+      isReader: true,
+      isContributor: false,
+      isAdmin: false
+    }
   }
   return {
     isReader: true,
