@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ProjectRecord } from 'types'
 import { computed, ref } from 'vue'
 const props = defineProps<{
   name: string
@@ -47,7 +46,7 @@ const localOptions = computed(() => {
     <template #trigger="{ active }">
       <span variant=""
         class="flex flex-rows cursor-pointer scale-90 hover:scale-100 transition-all duration-500 hover:text-spring-green-700"
-        :class="{ 'scale-100': active, 'text-spring-green-700': active, 'text-spring-green-600': modelValue.indexOf('all') === -1  }">
+        :class="{ 'scale-100': active, 'text-spring-green-700': active, 'text-spring-green-600': modelValue.indexOf('all') === -1 }">
         <!-- <span v-if="count" class="bg-black rounded-full text-ecru-white-50 py-1 px-2 mr-1 text-xs inline-block">{{count}}</span> -->
         <span class="pr-2">{{ name }}</span>
         <template v-if="!active">

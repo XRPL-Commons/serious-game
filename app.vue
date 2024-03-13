@@ -1,36 +1,49 @@
+
 <template>
-  <html class="bg-ecru-white-50">
-
-  <body class=" font-body">
-    <div
-      class="text-xl px-4 py-2 font-bold block w-full fixed top-0 z-20  border-transparent lg:block backdrop-blur-md bg-white-100/75  text-gray-900 m-0">
-      <NuxtLink to="/"
-        class="bg-spring-green-400 text-stratos-950 text-3xl rounded-full px-5 py-2 font-title inline-block hover:bg-spring-green-500 transition-all cursor-pointer">
-        XRPL
-        Ecosystem Map</NuxtLink>
-      <ManageAPIKey class="absolute top-4 right-4" />
-    </div>
-
-    <div class="mt-20 pr-4 pl-4 relative">
-      <NuxtLayout>
-        <NuxtPage :search="search" />
-      </NuxtLayout>
-    </div>
-
-    <!-- <div class="text-center p-4">
-        <NuxtLink to="/contribute">Contribute</NuxtLink>
-      </div> -->
-  </body>
-
-  </html>
+  <NuxtLayout>
+    <NuxtPage />
+    <SearchModal />
+  </NuxtLayout>
 </template>
-<script setup>
-import { ref, onMounted } from 'vue'
-const search = ref('')
+
+<script setup lang="ts">
+import { ref, provide, readonly } from 'vue'
+import type { ProjectRecord } from '@/types'
+
+// app globals
 useHead({
+  htmlAttrs: {
+    class: 'dark:bg-black min-h-[100vh]'
+  },
   bodyAttrs: {
-    class: 'bg-ecru-white-50 min-h-[100vh]',
-    style: '{ background-color: #bbff00; }'
+    class: 'font-body bg-white dark:bg-black  min-h-[100vh]'
   }
 })
+
+// fetch records and compute existing tags
+const fetchResult = await useFetch<Array<ProjectRecord>>('/api/projects')
+const records: ProjectRecord[] = fetchResult.data.value ?? []
+const existingTags = ref<Array<string>>(Array.from(new Set(records.flatMap(i => i.tags ?? []).filter(tag => tag !== ''))).sort())
+
+// facilitate search modal
+const isOpen = ref(false)
+const searchQuery = ref('')
+const handleSearchSubmit = async () => {
+  console.log('handleSearch')
+  await navigateTo(`/projects?search=${searchQuery.value}`)
+  isOpen.value = false
+  // searchQuery.value = ''
+}
+
+const handleSearchKeyUp = async () => {
+  if (searchQuery.value === '') {
+    isOpen.value = false
+  } else {
+    isOpen.value = true
+  }
+}
+// provide these variables to app components
+provide('records', records)
+provide('tags', readonly(existingTags))
+provide('globalSearchModal', { isOpen, searchQuery, handleSearchSubmit, handleSearchKeyUp })
 </script>

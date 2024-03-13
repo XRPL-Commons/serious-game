@@ -18,12 +18,18 @@ export const TokensCollection = async () => {
   return client.db('map').collection('Tokens')
 }
 
+export const GetCollection = async (collectionName: string) => {
+  await client.connect()
+  return client.db('map').collection(collectionName)
+}
+
 export { ObjectId }
 
 export default {
   DB,
   MongoClient,
   ObjectId,
+  GetCollection,
   ProjectsCollection,
   TokensCollection
 }

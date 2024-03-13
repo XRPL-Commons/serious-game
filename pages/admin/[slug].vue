@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { useProgrammatic } from '@oruga-ui/oruga-next'
 import ModalConfirm from '/components/ModalConfirm.vue';
 import ModalFileInput from '/components/ModalFileInput.vue';
-import { ProjectRecord } from '~/types'
+import type { ProjectRecord } from '@/types'
 import { sections } from '~/models'
 import dayjs from 'dayjs'
 import advancedFormat from 'dayjs/plugin/advancedFormat'

@@ -1,6 +1,7 @@
 
 export interface ProjectRecord {
   name: string,
+  slug: string,
   description: string,
   section: string,
   category: string,

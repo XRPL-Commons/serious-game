@@ -1,14 +1,22 @@
 export const sections = [
   {
-    name: 'XRPL Content',
-    primaryColor: '#1aa4ff',
-    primaryColorName: 'dodger-blue',
-    textColor: '#F5F4E7',
+    name: 'XRPL Use Cases',
+    primaryColor: '#19FF83',
+    textColor: '#000637',
+    primaryColorName: 'spring-green',
     categories: [
-      "Job Boards",
-      "Learning and Documentation",
-      "News & Media",
-      "Research & Analysis",
+      "Crowdfunding",
+      "Identity",
+      "DeFi",
+      "DEX & Listings",
+      "ESG & Sustainability",
+      "Gaming & Music",
+      "Investment Platform",
+      "NFT Marketplaces",
+      "ODL Users",
+      "On Chain Notarisation",
+      "Oracles",
+      "Real Estate ",
     ]
   },
   {
@@ -29,22 +37,15 @@ export const sections = [
     ]
   },
   {
-    name: 'XRPL Use Cases',
-    primaryColor: '#19FF83',
-    textColor: '#000637',
-    primaryColorName: 'spring-green',
+    name: 'XRPL Content',
+    primaryColor: '#1aa4ff',
+    primaryColorName: 'dodger-blue',
+    textColor: '#F5F4E7',
     categories: [
-      "Crowdfunding",
-      "Identity",
-      "DeFi",
-      "DEX & Listings",
-      "ESG & Sustainability",
-      "Gaming & Music",
-      "Investment Platform",
-      "NFT Marketplaces",
-      "ODL Users",
-      "On Chain Notarisation",
-      "Real Estate ",
+      "Job Boards",
+      "Learning and Documentation",
+      "News & Media",
+      "Research & Analysis",
     ]
   },
 ]

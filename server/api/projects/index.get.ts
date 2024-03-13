@@ -1,5 +1,5 @@
 import { ProjectsCollection, ObjectId } from '@/server/connectors/mongo'
-import { useAuth } from '~/lib/auth'
+import { useAuth } from '@/lib/auth'
 
 interface filterProjects {
   visible?: boolean,
@@ -19,22 +19,24 @@ export default defineEventHandler(async (event) => {
   const query: queryObject = getQuery(event)
   const auth = useAuth(event?.context?.auth)
   const filter: filterProjects = {}
-  if (query?.tags && query.tags !== 'all') {
+  if (query?.tags && query.tags !== '') {
     filter.tags = { $in: query.tags.split(',') }
   }
-  if (query?.status && query.status !== 'all') {
+  if (query?.status && query.status !== '') {
     filter.status = { $in: query.status.split(',') }
   }
-  if (query?.grants && query.grants !== 'all') {
+  if (query?.grants && query.grants !== '') {
     filter.grants = { $in: query.grants.split(',') }
   }
-  if (query?.visible === 'all' && auth.isContributor) {
+  if (query?.visible === '' && auth.isContributor) {
     // only authenticated users can see hidden items
     filter.visible = true
   }
 
+  console.log(filter)
+
   const Projects = await ProjectsCollection()
   const result = await Projects.find(filter).toArray()
-  //console.log(result)
+  console.log(result.length)
   return result
 })
