@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxt/ui', '@nuxtjs/color-mode'],
-  plugins: [{ src: 'plugins/oruga.js' }],
+  plugins: [],
   ssr: false,
   css: [
     '~/assets/fonts/clash-display.css',
