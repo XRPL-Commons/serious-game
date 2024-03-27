@@ -2,6 +2,7 @@
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
+  <UModals />
 </template>
 
 <script setup lang="ts">

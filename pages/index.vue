@@ -1,5 +1,6 @@
 <template>
   <div class="w-full">
+
     <div class="rounded-full bg-transparent p-2 transition-all flex justify-center items-center mt-20">
       <img src="/xrpl.png" class="h-10 opacity-80 hidden dark:block" />
       <img src="/xrplb.png" class="h-10 opacity-80 dark:invisible dark:hidden" />
@@ -7,54 +8,52 @@
       </div>
     </div>
     <br />
-    <div class="text-center relative">
-      <div class="inline-block">
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="546px" height="221px">
-          <path fill-rule="evenodd" fill="rgb(250, 255, 26)"
-            d="M30.999,0.0 C131.446,88.488 201.220,153.178 227.0,163.0 C257.846,174.752 304.845,170.361 331.0,158.0 C371.662,138.780 488.114,22.910 513.999,0.0 C514.666,0.333 515.333,0.666 515.999,1.0 C525.998,12.332 536.0,23.667 545.999,35.0 C545.999,35.666 545.999,36.333 545.999,36.999 C531.1,50.332 515.998,63.668 501.0,77.0 C453.514,116.362 410.851,168.516 355.999,198.999 C203.941,283.505 79.871,95.428 0.0,36.999 C0.333,35.666 0.666,34.333 0.999,33.0 C10.998,22.1 21.1,10.998 30.999,0.0 Z" />
-        </svg>
-      </div>
-      <br />
-      <div class="inline-block">
-
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="808px" height="256px">
-          <path fill-rule="evenodd" fill="rgb(255, 103, 26)"
-            d="M392.999,0.0 C408.998,0.0 425.1,0.0 440.999,0.0 C447.96,101.563 572.713,55.796 653.0,67.999 C733.843,80.288 808.617,148.157 807.999,256.0 C792.1,255.666 775.998,255.333 759.999,255.0 C760.781,172.97 704.934,119.787 639.999,115.0 C573.209,108.472 506.543,132.912 444.0,92.999 C434.106,86.686 423.111,79.30 417.999,67.999 C417.333,68.666 416.666,69.333 415.999,69.999 C392.549,88.661 376.883,107.202 340.0,113.999 C277.108,125.590 191.958,98.887 141.0,122.999 C43.323,169.218 52.752,234.7 48.0,256.0 C32.1,255.666 15.998,255.333 0.0,255.0 C0.0,254.666 0.0,254.333 0.0,254.0 C9.874,150.138 71.438,92.436 139.0,72.999 C226.938,47.701 387.81,108.502 392.999,0.0 Z" />
-        </svg>
-      </div>
-      <br />
-      <div class="inline-block">
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="263px" height="263px">
-          <path fill-rule="evenodd" fill="rgb(255, 26, 139)"
-            d="M131.500,47.0 C178.168,47.0 215.999,84.831 215.999,131.500 C215.999,178.168 178.168,215.999 131.500,215.999 C84.831,215.999 47.0,178.168 47.0,131.500 C47.0,84.831 84.831,47.0 131.500,47.0 ZM131.500,0.0 C204.125,0.0 262.999,58.874 262.999,131.500 C262.999,204.125 204.125,262.999 131.500,262.999 C58.874,262.999 0.0,204.125 0.0,131.500 C0.0,58.874 58.874,0.0 131.500,0.0 Z" />
-        </svg>
-      </div>
-      <br />
-      <div class="inline-block">
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="268px" height="257px">
-          <path fill-rule="evenodd" fill="rgb(26, 164, 255)"
-            d="M110.0,0.0 C125.998,0.0 142.1,0.0 157.999,0.0 C157.999,33.329 157.999,66.669 157.999,99.999 C186.647,90.589 186.754,90.551 252.999,67.999 C255.27,75.637 265.52,104.451 268.0,111.999 C237.3,122.665 202.996,135.334 171.999,145.999 C185.178,162.613 192.299,173.96 231.0,227.0 C231.0,229.666 213.676,241.649 193.999,256.0 C182.281,241.687 172.930,228.792 134.999,175.0 C130.999,177.666 150.666,150.333 75.999,257.0 C63.1,248.0 49.998,238.999 36.999,229.999 C56.664,202.2 76.335,173.997 96.0,145.999 C64.3,135.1 31.996,123.998 0.0,112.999 C5.332,98.1 10.667,82.998 15.999,67.999 C47.330,78.665 78.669,89.334 110.0,99.999 C110.0,66.669 110.0,33.329 110.0,0.0 Z" />
-        </svg>
-      </div>
-      <br />
-      <div class="inline-block">
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="228px" height="219px">
-          <path fill-rule="evenodd" fill="rgb(25, 255, 131)"
-            d="M194.0,0.0 C205.332,11.332 216.667,22.667 228.0,33.999 C227.666,34.666 227.333,35.333 227.0,36.0 C162.339,96.993 97.660,158.6 32.999,218.999 C32.0,218.666 30.999,218.333 29.999,217.999 C20.0,206.334 9.998,194.665 0.0,182.999 C64.660,122.6 129.339,60.993 194.0,0.0 Z" />
-        </svg>
+    <div class="text-center">
+      <div class="w-lg inline-block">
+        <UInput color="primary" variant="outline" v-model="secret" placeholder="Enter the secret word..." type=""
+          class="text-center" size="lg" />
+        <br />
+        <UButton label="Submit Answer" @click="submit" size="lg" :loading="checking" />
       </div>
     </div>
-
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, inject } from 'vue'
-import { sections } from '@/models'
-import type { ProjectRecord } from '@/types';
+import { ref, provide, readonly } from 'vue'
+import API from '~/server/client'
+
+const router = useRouter()
+const secret = ref('')
+const checking = ref(false)
 
 definePageMeta({
   layout: 'home'
 })
 
+const submit = async () => {
+  if (checking.value === true) {
+    return
+  }
+  checking.value = true
+
+  try {
+    const check = await API.checkSecret({ secret: secret.value })
+    console.log({ check })
+
+    if (check === true) {
+      console.log('success!')
+      localStorage.setItem('mag_secret', secret.value)
+      router.push('/albers')
+    } else {
+      console.error(`Wrong secret! Try again.`)
+    }
+
+  } catch (e) {
+    console.error(e)
+  } finally {
+    checking.value = false
+  }
+
+}
 </script>
