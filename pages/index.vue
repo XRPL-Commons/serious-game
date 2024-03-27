@@ -1,10 +1,14 @@
 <template>
   <div class="w-full">
-    <div class="rounded-full bg-transparent p-2 transition-all flex justify-center items-center mt-20">
-      <img src="/xrpl.png" class="h-10 opacity-80 hidden dark:block" />
-      <img src="/xrplb.png" class="h-10 opacity-80 dark:invisible dark:hidden" />
-      <div class=" ml-2 md:text-4xl text-xl font-title text-black dark:text-white">Community Quest
+    <div class="flex flex-col items-center mt-20">
+      <div class="flex items-center">
+        <img src="/xrpl.png" class="h-10 opacity-80 hidden dark:block" />
+        <img src="/xrplb.png" class="h-10 opacity-80 dark:invisible dark:hidden" />
+        <div class="ml-2 md:text-4xl text-xl font-title text-black dark:text-white">Community Quest</div>
       </div>
+      <button class="bg-black text-white px-4 py-2 rounded-md mt-4">
+        <NuxtLink to="/mint">Claim my NFT</NuxtLink>        
+      </button>
     </div>
     <br />
     <div class="text-center relative">
