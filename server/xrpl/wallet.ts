@@ -4,7 +4,7 @@ import { NFTokenCreateOfferMetadata } from 'xrpl/dist/npm/models/transactions/NF
 
 import { getWallet, getExplorerClient } from '../utils';
 
-export async function mintNft() {
+export async function mintNft(): Promise<string> {
     const wallet = getWallet();
     const client = await getExplorerClient();    
 
@@ -22,12 +22,12 @@ export async function mintNft() {
     
     console.log(`NFT Mint transaction result: ${JSON.stringify(result, null, 2)}`);
 
-    const nftId = (result.result.meta as NFTokenMintMetadata)?.nftoken_id;
+    const nftId = (result.result.meta as NFTokenMintMetadata)?.nftoken_id as string;
     console.log(nftId);
     return nftId;
 }
 
-export async function createOffer(destination: string, nftId: string) {
+export async function createOffer(destination: string, nftId: string): Promise<string> {
     const wallet = getWallet();    
     const client = await getExplorerClient();
 
@@ -45,7 +45,7 @@ export async function createOffer(destination: string, nftId: string) {
     const result = await client.submitAndWait(signed.tx_blob);
     
     console.log(`NFT Create transaction result: ${JSON.stringify(result, null, 2)}`);
-    const offerId = (result.result.meta as NFTokenCreateOfferMetadata)?.offer_id;
+    const offerId = (result.result.meta as NFTokenCreateOfferMetadata)?.offer_id as string;
     console.log(offerId);
     return offerId;
 }
