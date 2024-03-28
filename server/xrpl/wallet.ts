@@ -12,7 +12,7 @@ export async function mintNft() {
         TransactionType: "NFTokenMint",
         Account: wallet.address,
         URI: convertStringToHex("https://assets-global.website-files.com/640f20bd091411ea6a488ea6/6411d98a4c9e464a1dac4805_Frame%2034.png"),
-        Flags: NFTokenMintFlags.tfBurnable, // Burnable in case no one is buying it
+        Flags: NFTokenMintFlags.tfBurnable + NFTokenMintFlags.tfTransferable, // Burnable in case no one is buying it
         NFTokenTaxon: 0, // Unique identifier for the NFT type
     };
 

@@ -1,4 +1,5 @@
 import { createOffer, mintNft }  from '@/server/xrpl/wallet'
+import { getXumm } from '@/server/utils'
 
 export default defineEventHandler((event) => {
     return handler(event)
@@ -7,12 +8,24 @@ export default defineEventHandler((event) => {
 async function handler(event: any) {
     try { 
         const query = getQuery(event)
+        const runtimeConfig = useRuntimeConfig()
+        let xumm = getXumm();
 
         if (typeof query.xrpAddress === 'string') {                                            
             const nftId = await mintNft();
             if (typeof nftId === 'string') {
-                const result = await createOffer(query.xrpAddress, nftId);
-                return nftId;                        
+                const offerId = await createOffer(query.xrpAddress, nftId);                                
+
+                const payload = await xumm.payload?.create({
+                    user_token: query.userToken, // Doc: https://docs.xumm.dev/concepts/payloads-sign-requests/delivery/push
+                    txjson: {
+                        TransactionType: "NFTokenAcceptOffer",
+                        NFTokenSellOffer: offerId, 
+                    },
+                } as any);
+                console.log(payload)
+                return payload;
+
             } else {
                 throw new Error('Problem generating NFT');
             }
