@@ -3,12 +3,13 @@
         <div class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>Scan to connect</h2>
                     <span class="close" @click="closeModal">&times;</span>
+                    <h2>Scan to connect</h2>
                 </div>
                 <div class="modal-body">
                     <img :src="qrCodeSrc" alt="QR Code" class="qr-code-img">
-                    <p>Open your mobile wallet and scan this QR code or wait for a notification</p>                    
+                    <p v-if="isConnection">Open Xaman wallet app and scan this QR code</p>
+                    <p v-if="!isConnection">Open Xaman wallet app and scan this QR code or wait for a notification</p>
                 </div>
             </div>
         </div> 
@@ -17,7 +18,7 @@
   
 <script>
 export default {
-props: ['visible', 'qrCodeSrc'],
+props: ['visible', 'qrCodeSrc', 'isConnection'],
 methods: {
     closeModal() {
         this.$emit('close');
@@ -76,6 +77,9 @@ methods: {
 }
 
 .qr-code-img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
   width: 80%; /* Adjust as needed */
   margin-top: 20px;
   margin-bottom: 10px;
@@ -89,5 +93,9 @@ methods: {
 .verification-logo {
   font-size: 24px;
   margin-top: 20px;
+}
+
+.modal-body p, .modal-header h2 {
+  color: black;
 }
 </style>
