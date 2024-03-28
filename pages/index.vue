@@ -10,10 +10,14 @@
     <br />
     <div class="text-center">
       <div class="w-lg inline-block">
-        <UInput color="primary" variant="outline" v-model="secret" placeholder="Enter the secret word..." type=""
+        Hey there early bird, you're in the right place but you are early!
+        <br />
+        Check back on this page <strong>soon</strong> to earn your
+        reward.
+        <!-- <UInput color="primary" variant="outline" v-model="secret" placeholder="Enter the secret word..." type=""
           class="text-center" size="lg" />
         <br />
-        <UButton label="Submit Answer" @click="submit" size="lg" :loading="checking" />
+        <UButton label="Submit Answer" @click="submit" size="lg" :loading="checking" /> -->
       </div>
     </div>
   </div>
