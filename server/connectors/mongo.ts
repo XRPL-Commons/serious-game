@@ -61,11 +61,29 @@ export const UpdateObject = async (nftId: string, nftObject: NFT) => {
   }
 }
 
+export const GetObjects = async (xrplAddress?: string): Promise<Array<NFT>> => {
+  try {
+    await client.connect();
+    const collection = client.db('albers').collection<NFT>('nfts');
+
+    const query = xrplAddress ? { xrplAddress: xrplAddress } : {};
+    const nfts = await collection.find(query).toArray();
+
+    return nfts;
+  } catch (error) {
+    console.error('Failed to fetch NFT objects:', error);
+    throw error;
+  } finally {
+    await client.close();
+  }
+}
+
 export default {
   DB,
   MongoClient,
   ObjectId,
   GetCollection,
   AddObject,
-  UpdateObject
+  UpdateObject,
+  GetObjects
 }
