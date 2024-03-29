@@ -2,34 +2,42 @@
   <div v-if="!magSecret">This page requires the mag secret.</div>
   <template v-else>
     <div>
-      <p class="absolute">{{ xrplAddress }}</p>
-      <div ref="canvas" class="w-full h-[800px]"></div>
+      <div ref="canvas" class="w-full scale-75"></div>
     </div>
   </template>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from "vue"
-import p5 from "p5"
 import { useRoute } from 'vue-router'
-import sketch from '~/assets/sketches/example'
+import { sketch } from '~/sketches/xalbers'
+import p5 from "p5"
+
+definePageMeta({
+  layout: 'fullscreen'
+})
 
 const { params } = useRoute();
-const xrplAddress = computed(() => params.xrplAddress || 'rwtBc9qqMHwfaYhfEq6Eek7fnR2x4qc2VK')
+const xrplAddress = computed(() => params.xrplAddress || 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh')
+const colors = ref()
 
 // authentication
 const magSecret = ref<string | null>(null)
 magSecret.value = localStorage.getItem('mag_secret')
 
-
 const canvas = ref(null)
-
 
 const sketchContainer = ref(null);
 let myp5: any = null;
 
 onMounted(() => {
-  myp5 = new p5(sketch, canvas.value);
+  myp5 = new p5(sketch({
+    xrplAddress: xrplAddress.value,
+    colorCallback: (sketchColors: any) => {
+      colors.value = sketchColors
+      console.log(sketchColors)
+    }
+  }), canvas.value);
 });
 
 onUnmounted(() => {
@@ -70,4 +78,4 @@ canvas {
   object-fit: contain;
   /* Ensures that the canvas content is scaled correctly to fit within its box while preserving aspect ratio. The entire canvas is visible, but it may be letterboxed if its aspect ratio differs from its container. */
 }
-</style>
+</style>~/sketches/xalbers~/assets/sketches/xalbers~/sketches/xalbers

@@ -10,7 +10,7 @@
     <br />
     <div class="text-center">
       <div class="w-lg inline-block p-8">
-        Hey there, you're in the right place but you are early!
+        Hey there early bird, you're in the right place !
         <br />
         Check back on this page <strong>soon</strong> to earn your
         reward.

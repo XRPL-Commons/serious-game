@@ -16,6 +16,7 @@
     "@nuxt/devtools": "latest",
     "@nuxtjs/color-mode": "^3.3.2",
     "@types/node": "^18.17.3",
+    "@types/p5": "^1.7.6",
     "nuxt": "^3.10.3",
     "sass": "^1.66.1"
   },

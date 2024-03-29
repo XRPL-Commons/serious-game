@@ -1,3 +1,5 @@
+import { GetCollection } from '~/server/connectors/mongo'
+
 const commonsAddress = process.env.COMMONS_XRPL_ADDRESS
 
 const createNFT = async ({ xrplAddress, imageData }) => {
@@ -6,6 +8,7 @@ const createNFT = async ({ xrplAddress, imageData }) => {
 	// mint new NFT with image
 
 	// insert into DB
+	const Arts = GetCollection('arts')
 
 	// create offer
 
