@@ -8,6 +8,10 @@
       <div class="nft-grid">
         <div v-for="nft in nfts" :key="nft.nftObject.nftId" class="nft-item">
           <img :src="nft.nftObject.uri" alt="NFT Image" class="nft-image"/>
+          <div class="nft-info">
+            <p class="nft-address">{{ nft.nftObject.xrplAddress }}</p>
+            <p class="nft-date">Created at</p>
+          </div>
         </div>
       </div>
     </div>
@@ -60,4 +64,15 @@ onUnmounted(() => {
   height: 400px;
   object-fit: cover;
 }
+
+.nft-info p {
+  text-align: center;
+}
+
+.nft-address, .nft-date {
+  font-style: italic;
+  font-size: 0.75rem;
+  display: block;
+}
+
 </style>
