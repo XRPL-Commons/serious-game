@@ -21,14 +21,27 @@ const actions = [
   }
 ]
 
+type Headers = {
+  [key: string]: string;
+}
+
 const api: any = {}
 actions.forEach(action => {
   api[action.name] = async (props: any) => {
+    const headers: Headers = {
+      'content-type': 'application/json'
+    }
+    const secret = localStorage.getItem('mag_secret')
+
+    if (action.secretRequired) {
+      if (!secret) {
+        throw new Error('secret is required')
+      }
+      headers['x-secret'] = secret
+    }
     const result = await fetch(action.path, {
       method: action.method,
-      headers: {
-        'content-type': 'application/json'
-      },
+      headers,
       body: JSON.stringify(props)
     })
     return result.json()

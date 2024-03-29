@@ -2,7 +2,7 @@
   <div v-if="!magSecret">This page requires the mag secret.</div>
   <template v-else>
     <div>
-      Claim your NFT Button
+      <UButton label="Claim your NFT" @click="$router.push('/albers/mint')" />
 
       <br><br>
       List latest mints

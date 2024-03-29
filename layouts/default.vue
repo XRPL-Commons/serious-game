@@ -16,29 +16,13 @@
 
       <div class="pl-1 flex">
         <ColorMode />
+        <Secret />
       </div>
     </div>
   </div>
-  <div
-    class="blur-3xl -z-10 absolute w-full top-0 right-0 bottom-0 left-0 overflow-hidden grid grid-flow-row-dense grid-cols-3 grid-rows-3">
-    <template v-for="shape in shapes">
-      <div class="inline-block">
-        <component :is="shape" />
-      </div>
-      <br />
-    </template>
-  </div>
+  <ShapesBackground />
 
   <div class="pt-20 pr-4 pl-4 sm:pr-4 sm:pl-4 relative">
     <slot />
   </div>
 </template>
-
-<script setup>
-import { ref, onMounted } from 'vue'
-import { ShapesOrange, ShapesYellow, ShapesBlue, ShapesGreen, ShapesPink } from '#components'
-
-const shapes = [ShapesOrange, ShapesYellow, ShapesBlue, ShapesGreen, ShapesPink]
-  .map(x => [Math.random(), x]).sort(([a], [b]) => a - b).map(([_, x]) => x)
-
-</script>

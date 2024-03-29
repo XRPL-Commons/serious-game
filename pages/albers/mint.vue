@@ -56,6 +56,7 @@ const nftId = ref('');
 
 // authentication
 const magSecret = ref<string | null>(null)
+magSecret.value = localStorage.getItem('mag_secret')
 
 
 // onMounted(() => {

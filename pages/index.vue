@@ -14,10 +14,10 @@
         <br />
         Check back on this page <strong>soon</strong> to earn your
         reward. -->
-        <UInput color="primary" variant="outline" v-model="secret" placeholder="Enter the secret word..." type=""
-          class="text-center" size="lg" />
+        <UInput color="primary" variant="outline" v-model="secret" placeholder="Enter the secret word..." type="text"
+          class="text-center" size="xl" :class="{ 'input-error': isSecretIncorrect }" @keyup.enter="submit" />
         <br />
-        <UButton label="Submit Answer" @click="submit" size="lg" :loading="checking" />
+        <UButton label="Submit Answer" @click="submit" size="lg" :disabled="checking" />
       </div>
     </div>
   </div>
@@ -30,6 +30,8 @@ import API from '~/server/client'
 const router = useRouter()
 const secret = ref('')
 const checking = ref(false)
+const isSecretIncorrect = ref(false)
+let timeout: any
 
 const magSecret = ref<string | null>(null)
 magSecret.value = localStorage.getItem('mag_secret')
@@ -51,9 +53,14 @@ const submit = async () => {
     if (check === true) {
       console.log('success!')
       localStorage.setItem('mag_secret', secret.value)
-      router.push('/albers/mint')
+      router.push('/albers')
     } else {
       console.error(`Wrong secret! Try again.`)
+      isSecretIncorrect.value = true
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        isSecretIncorrect.value = false;
+      }, 820);
     }
 
   } catch (e) {
@@ -69,3 +76,34 @@ onMounted(() => {
   }
 })
 </script>
+
+<style>
+/* Shake keyframe animation */
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-10px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(10px);
+  }
+}
+
+/* Class that applies the shake animation and red border */
+.input-error {
+  animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
+}
+</style>
