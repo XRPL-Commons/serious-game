@@ -10,5 +10,5 @@ const listArt = async ({ hallOfFame = true }) => {
 
 export default defineEventHandler((event) => {
   console.log('listArt')
-  return listArt()
+  return listArt({ hallOfFame: true })
 })

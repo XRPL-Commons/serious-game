@@ -10,14 +10,14 @@
     <br />
     <div class="text-center">
       <div class="w-lg inline-block p-8">
-        Hey there early bird, you're in the right place !
+        <!-- Hey there early bird, you're in the right place !
         <br />
         Check back on this page <strong>soon</strong> to earn your
-        reward.
-        <!-- <UInput color="primary" variant="outline" v-model="secret" placeholder="Enter the secret word..." type=""
+        reward. -->
+        <UInput color="primary" variant="outline" v-model="secret" placeholder="Enter the secret word..." type=""
           class="text-center" size="lg" />
         <br />
-        <UButton label="Submit Answer" @click="submit" size="lg" :loading="checking" /> -->
+        <UButton label="Submit Answer" @click="submit" size="lg" :loading="checking" />
       </div>
     </div>
   </div>
@@ -30,6 +30,9 @@ import API from '~/server/client'
 const router = useRouter()
 const secret = ref('')
 const checking = ref(false)
+
+const magSecret = ref<string | null>(null)
+magSecret.value = localStorage.getItem('mag_secret')
 
 definePageMeta({
   layout: 'home'
@@ -48,7 +51,7 @@ const submit = async () => {
     if (check === true) {
       console.log('success!')
       localStorage.setItem('mag_secret', secret.value)
-      router.push('/albers')
+      router.push('/albers/mint')
     } else {
       console.error(`Wrong secret! Try again.`)
     }
@@ -58,6 +61,11 @@ const submit = async () => {
   } finally {
     checking.value = false
   }
-
 }
+
+onMounted(() => {
+  if (magSecret.value) {
+    router.push('/albers')
+  }
+})
 </script>

@@ -78,4 +78,4 @@ canvas {
   object-fit: contain;
   /* Ensures that the canvas content is scaled correctly to fit within its box while preserving aspect ratio. The entire canvas is visible, but it may be letterboxed if its aspect ratio differs from its container. */
 }
-</style>~/sketches/xalbers~/assets/sketches/xalbers~/sketches/xalbers
+</style>
