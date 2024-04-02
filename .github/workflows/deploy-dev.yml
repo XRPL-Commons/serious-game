@@ -41,5 +41,5 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       - name: Securely copy build directory to remote
-        run: scp -r .output/* ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/etc/opt/albers
+        run: scp -i ~/.ssh/id_rsa -r .output/* ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/etc/opt/albers
 
