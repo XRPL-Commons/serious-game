@@ -44,22 +44,6 @@ jobs:
         with:
           name: node-build
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Install Ansible
-        run: |
-          python -m pip install --upgrade pip
-          pip install ansible
-
-      - name: Set up SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
       - name: Deploy Application using Ansible
         run: ansible-playbook -i inventory.yaml deploy_playbook.yaml -l ${{ github.event.inputs.servers_to_deploy }}
         env:
