@@ -1,0 +1,66 @@
+name: Deploy Node Application
+
+on:
+  push:
+    branches:
+      - dev # or any other branch you use for production releases
+  workflow_dispatch:
+    inputs:
+        servers_to_deploy:
+            description: 'Server group name to deploy. Default: all'
+            required: false
+            default: 'all'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20' # specify your Node.js version
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Application
+        run: npm run build
+
+      - name: Archive Production Build
+        uses: actions/upload-artifact@v2
+        with:
+          name: node-build
+          path: build/ # adjust this to the build directory of your Node application
+
+  deploy:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: node-build
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Deploy Application using Ansible
+        run: ansible-playbook -i inventory.yaml deploy_playbook.yaml -l ${{ github.event.inputs.servers_to_deploy }}
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: False
