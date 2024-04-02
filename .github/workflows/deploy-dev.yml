@@ -1,0 +1,51 @@
+name: Deploy Node Application
+
+on:
+  push:
+    branches:
+      - dev # or any other branch you use for production releases
+  workflow_dispatch:
+    inputs:
+        servers_to_deploy:
+            description: 'Server group name to deploy. Default: all'
+            required: false
+            default: 'all'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20' # specify your Node.js version
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Application
+        run: npm run build
+
+      - name: Archive Production Build
+        uses: actions/upload-artifact@v2
+        with:
+          name: node-build
+          path: build/ # adjust this to the build directory of your Node application
+
+      - name: Create env file from secret
+        run: |
+          echo "${{ secrets.ENV_CONTENT }}" > ./build/.env
+        shell: bash
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ANSIBLE_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Securely copy build directory to remote
+        run: scp -r ./build/* ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ DEV_TARGET_HOST }}:/etc/opt/albers
+
