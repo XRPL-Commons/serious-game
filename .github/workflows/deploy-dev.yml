@@ -29,17 +29,9 @@ jobs:
       - name: Build Application
         run: npm run build
 
-      - name: Archive Production Build
-        uses: actions/upload-artifact@v2
-        with:
-          name: node-build
-          path: build/ # adjust this to the build directory of your Node application
-
       - name: Create env file from secret
         run: |
-          touch build/.env
-          echo "${{ secrets.ENV_CONTENT }}" > build/.env
-          
+          echo "${{ secrets.ENV_CONTENT }}" > .output/server/.env
         shell: bash
 
       - name: Set up SSH
@@ -49,5 +41,5 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       - name: Securely copy build directory to remote
-        run: scp -r ./build/* ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/etc/opt/albers
+        run: scp -r .output/* ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/etc/opt/albers
 
