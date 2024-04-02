@@ -12,9 +12,11 @@ export const DB = async () => {
 // Define an interface for the NFT data
 export interface NFT {
   xrplAddress: string;
+  owner: string;
   uri: string;
   nftId: string;
-  nftOfferId: string;
+  nftOfferId: string; 
+  mintedAt: string; 
 }
 
 export const GetCollection = async (collectionName: string) => {
@@ -67,7 +69,7 @@ export const GetObjects = async (xrplAddress?: string): Promise<Array<NFT>> => {
     const collection = client.db('albers').collection<NFT>('nfts');
 
     const query = xrplAddress ? { xrplAddress: xrplAddress } : {};
-    const nfts = await collection.find(query).toArray();
+    const nfts = await collection.find(query).sort({ mintedAt: -1 }).toArray();
 
     return nfts;
   } catch (error) {

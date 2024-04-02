@@ -14,9 +14,27 @@ const actions = [
     secretRequired: true
   },
   {
+    name: 'redeemNFT',
+    path: '/api/art/redeem',
+    method: 'POST',
+    secretRequired: true
+  },
+  {
     name: 'listCollection',
     path: '/api/art',
     method: 'GET',
+    secretRequired: true
+  },
+  {
+    name: 'signInXaman',
+    path: '/api/xaman/sign-in',
+    method: 'POST',
+    secretRequired: true
+  },
+  {
+    name: 'createImage',
+    path: '/api/art/image/create',
+    method: 'POST',
     secretRequired: true
   }
 ]

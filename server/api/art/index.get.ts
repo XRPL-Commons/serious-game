@@ -3,8 +3,6 @@ import { GetObjects } from '~/server/connectors/mongo'
 const listArt = async (xrplAddress?: string, hallOfFame = true) => {
   // list existing art
   let arts = await GetObjects(xrplAddress);
-  console.log("Arts")
-  console.log(arts)
   return arts;  
 }
 

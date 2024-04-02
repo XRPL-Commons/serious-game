@@ -19,22 +19,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue"
-import { useRoute } from 'vue-router'
+import { ref, onMounted, onUnmounted } from "vue"
 import API from '~/server/client'
+const router = useRouter()
 
-const { params } = useRoute();
-const xrplAddress = computed(() => params.xrplAddress || 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh')
-const colors = ref()
-const nfts = ref([])
+const nfts = ref<Nft[]>([]);
 
 // authentication
 const magSecret = ref<string | null>(null)
 magSecret.value = localStorage.getItem('mag_secret')
 
+interface NftObject {
+  nftId: string;
+  uri: string;
+  xrplAddress: string;
+  // Add other properties as needed
+}
+
+interface Nft {
+  nftObject: NftObject;
+}
 
 onMounted(async () => {
   try {
+    if (!magSecret) {
+      router.push('/')
+    }
     const result = await API.listCollection({})
     nfts.value = result
     console.log(nfts)
