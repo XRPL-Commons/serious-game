@@ -6,10 +6,10 @@
       <br><br>
       List latest mints
       <div class="nft-grid">
-        <div v-for="nft in nfts" :key="nft.nftObject.nftId" class="nft-item">
-          <img :src="nft.nftObject.uri" alt="NFT Image" class="nft-image"/>
+        <div v-for="nft in nfts" :key="nft.nftId" class="nft-item">
+          <img :src="nft.uri" alt="NFT Image" class="nft-image"/>
           <div class="nft-info">
-            <p class="nft-address">{{ nft.nftObject.xrplAddress }}</p>
+            <p class="nft-address">{{ nft.xrplAddress }}</p>
             <p class="nft-date">Created at</p>
           </div>
         </div>
@@ -23,7 +23,7 @@ import { ref, onMounted, onUnmounted } from "vue"
 import API from '~/server/client'
 const router = useRouter()
 
-const nfts = ref<Nft[]>([]);
+const nfts = ref<NftObject[]>([]);
 
 // authentication
 const magSecret = ref<string | null>(null)

@@ -14,6 +14,12 @@ const actions = [
     secretRequired: true
   },
   {
+    name: 'claimNFT',
+    path: '/api/art/claim',
+    method: 'POST',
+    secretRequired: true
+  },
+  {
     name: 'redeemNFT',
     path: '/api/art/redeem',
     method: 'POST',
@@ -69,12 +75,24 @@ actions.forEach(action => {
       body = JSON.stringify(props);
     }
 
-    const result = await fetch(url, {
-      method: action.method,
-      headers,
-      ...(body ? { body } : {})
-    });
-    return result.json();
+    try {
+      const response = await fetch(url, {
+        method: action.method,
+        headers,
+        ...(body ? { body } : {})
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.json();
+        throw new Error(errorBody.message || 'An error occurred with the request.');
+      }
+
+      return response.json();
+    } catch (error: any) {
+      // This catch block will handle fetch errors as well as errors thrown from non-ok responses
+      console.error(`Error with the ${action.name} action:`, error.message);
+      throw error; // Rethrow the error so that the calling code can handle it
+    }
   }
 })
 export default api

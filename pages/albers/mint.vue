@@ -74,10 +74,10 @@ onMounted(async () => {
   const localXrpAddress = localStorage.getItem('xrp_address');
   if (localUserToken && localXrpAddress) {
     isConnected.value = true;
-    await getItem();
-    isConnection.value = false;
     userToken.value = localUserToken;
     xrplAddress.value = localXrpAddress;
+    isConnection.value = false;
+    await getItem();
   } else {
     try {
       const payload = await API.signInXaman({});
@@ -117,49 +117,24 @@ async function initializeWebSocket(url: string) {
         }
       }
       if (data.value.payload.tx_type == 'NFTokenAcceptOffer') {
-        ownsNft.value = true;
-        await API.redeemNFT({ xrplAddress: xrplAddress.value })
+        await redeemNft();
       }
     }
   };
 };
 
-
-
-
 async function claimNft() {
   try {
-    isMintingNFT.value = true;   
-    const { data: payload, error } = await useFetch(`/api/art/create?xrplAddress`, {
-      method: 'POST',
-      body: JSON.stringify({
-        // Your payload here. If xrplAddress is the only thing you're sending and you're already passing it as a query, this might not be needed.
-        // Example payload, adjust according to your needs:
-        xrplAddress: xrplAddress.value
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    // const { data: payload, error } = await useFetch(`/api/art/create?xrplAddress`, {
-    //         method: 'POST'
-    // }, {
-    //   xrplAddress: xrplAddress.value
-    // });
-    if (error) {
-      
-    }
-    console.log(error)
-    // const { payload } = await API.createNFT({ userToken: userToken.value, xrplAddress: xrplAddress.value })
-    // console.log("Payload:" + payload)
-    isMintingNFT.value = false;    
+    isMintingNFT.value = true;  
+    const { payload } = await API.claimNFT({ userToken: userToken.value, xrplAddress: xrplAddress.value })
+    console.log(payload);
     qrCodeSrc.value = payload.refs.qr_png;
     modalVisible.value = true;
-    initializeWebSocket(payload.refs.websocket_status);
-  } catch (e) {
-    console.log("here")
-    console.log(e)
-    alert("Error getting transaction details: " + e);
+    isMintingNFT.value = false;
+    initializeWebSocket(payload.refs.websocket_status);    
+  } catch (error) {
+    console.log(error)
+    alert("Error claiming NFT");
   }
 };
 
@@ -174,7 +149,18 @@ async function mintNft() {
     nftDate.value = mintedAt
     isMintingNFT.value = false;
   } catch (error) {
-    alert("Error minting NFT: " + error);
+    console.log(error)
+    alert("Error minting NFT");
+  }
+}
+
+async function redeemNft() {
+  try {    
+    await API.redeemNFT({ xrplAddress: xrplAddress.value })
+    ownsNft.value = true;
+  } catch (error) {
+    console.log(error)
+    alert("Error redeeming NFT");
   }
 }
 
@@ -183,10 +169,10 @@ async function getItem() {
     const result = await API.listCollection({})
     if (result && result.length > 0) {
       hasNft.value = true;
-      nftUri.value = result[0].nftObject.uri;
-      nftId.value = result[0].nftObject.nftId;
-      nftDate.value = result[0].nftObject.mintedAt;      
-      if (result[0].nftObject.owner === result[0].nftObject.xrplAddress) {
+      nftUri.value = result[0].uri;
+      nftId.value = result[0].nftId;
+      nftDate.value = result[0].mintedAt;      
+      if (result[0].owner === result[0].xrplAddress) {
         ownsNft.value = true;
       }
     } else {
