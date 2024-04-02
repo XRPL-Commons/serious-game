@@ -5,11 +5,6 @@ on:
     branches:
       - dev # or any other branch you use for production releases
   workflow_dispatch:
-    inputs:
-        servers_to_deploy:
-            description: 'Server group name to deploy. Default: all'
-            required: false
-            default: 'all'
 
 jobs:
   build-and-deploy:
