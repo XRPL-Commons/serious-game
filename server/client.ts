@@ -18,6 +18,12 @@ const actions = [
     path: '/api/art',
     method: 'GET',
     secretRequired: true
+  },
+  {
+    name: 'createAlbers',
+    path: '/api/art',
+    method: 'POST',
+    secretRequired: true
   }
 ]
 

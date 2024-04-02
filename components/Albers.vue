@@ -1,27 +1,69 @@
 <template>
   <div v-if="!magSecret">This page requires the mag secret.</div>
   <template v-else>
-    <albers :xrpl-address="xrplAddress" />
+    <div>
+      <ClientOnly>
+
+        <div ref="canvas" class="w-full scale-75 none"></div>
+        <template v-if="albersURI">
+          <image :src="albersURI" />
+        </template>
+      </ClientOnly>
+
+    </div>
   </template>
+
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue"
-import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+import API from '~/server/client'
 import { sketch } from '~/sketches/xalbers'
 import p5 from "p5"
 
-definePageMeta({
-  layout: 'fullscreen'
+// define xrplAddress 
+
+const props = defineProps({
+  xrplAddress: String
 })
 
-const { params } = useRoute();
-const xrplAddress = computed(() => params.xrplAddress || 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh')
+const { xrplAddress } = props
 
 // authentication
 const magSecret = ref<string | null>(null)
 magSecret.value = localStorage.getItem('mag_secret')
 
+const canvas = ref(null)
+
+let myp5: any = null
+const colors = ref()
+
+const albersURI = ref(null)
+
+onMounted(() => {
+  myp5 = new p5(sketch({
+    xrplAddress,
+    colorCallback: (sketchColors: any) => {
+      colors.value = sketchColors
+      console.log(sketchColors)
+    }
+  }), canvas.value);
+  console.log(myp5)
+  setTimeout(async () => {
+    let imageData = myp5.canvas.toDataURL(); // Defaults to PNG format
+    console.log(imageData); // This is your Base64 string
+    albersURI.value = await API.getAlbersURL({
+      xrplAddress,
+      imageData
+    })
+  }, 2000)
+});
+
+onUnmounted(() => {
+  if (myp5) {
+    myp5.remove()
+  }
+});
 
 </script>
 <style>
@@ -43,7 +85,7 @@ body {
 }
 
 canvas {
-  display: block;
+  display: none;
   /* Changes the default display to block, which removes extra space beneath the canvas typical of inline elements */
   max-width: 100%;
   /* Sets the maximum width to 100% of the parent element, preventing the canvas from exceeding the width of the viewport */
