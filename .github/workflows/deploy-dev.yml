@@ -36,7 +36,15 @@ jobs:
       - name: Disable strict host key checking
         run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
         shell: bash
+      
+      - name: Archive .output directory contents
+        run: tar -czvf output.tar.gz -C .output .
+        shell: bash
 
       - name: Securely copy build directory to remote
-        run: scp -i ~/.ssh/id_rsa -r .output/* ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/var/opt/albers
+        run: scp -i ~/.ssh/id_rsa output.tar.gz ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/var/opt/albers
+        shell: bash
+
+      - name: Extract build directory on remote
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'tar -xzvf /var/opt/albers/output.tar.gz -C /var/opt/albers'
         shell: bash
