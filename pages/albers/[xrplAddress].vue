@@ -27,7 +27,6 @@ magSecret.value = localStorage.getItem('mag_secret')
 
 const canvas = ref(null)
 
-const sketchContainer = ref(null);
 let myp5: any = null;
 
 onMounted(() => {
@@ -38,6 +37,10 @@ onMounted(() => {
       console.log(sketchColors)
     }
   }), canvas.value);
+  console.log(myp5)
+  setTimeout(() => {
+    myp5.save("alberX-" + xrplAddress.value + ".png")
+  }, 2000)
 });
 
 onUnmounted(() => {
