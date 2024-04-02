@@ -38,6 +38,5 @@ jobs:
         shell: bash
 
       - name: Securely copy build directory to remote
-        run: scp -i ~/.ssh/id_rsa -r .output/* ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/etc/opt/albers
+        run: scp -i ~/.ssh/id_rsa -r .output/* ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/var/opt/albers
         shell: bash
-
