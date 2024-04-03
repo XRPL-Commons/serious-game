@@ -5,23 +5,16 @@ on:
     branches:
       - dev # or any other branch you use for production releases
   workflow_dispatch:
-    inputs:
-        servers_to_deploy:
-            description: 'Server group name to deploy. Default: all'
-            required: false
-            default: 'all'
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20' # specify your Node.js version
+        uses: actions/setup-node@v4
 
       - name: Install Dependencies
         run: npm install
@@ -29,15 +22,9 @@ jobs:
       - name: Build Application
         run: npm run build
 
-      - name: Archive Production Build
-        uses: actions/upload-artifact@v2
-        with:
-          name: node-build
-          path: build/ # adjust this to the build directory of your Node application
-
       - name: Create env file from secret
         run: |
-          echo "${{ secrets.ENV_CONTENT }}" > ./build/.env
+          echo "${{ secrets.ENV_CONTENT }}" > .output/server/.env
         shell: bash
 
       - name: Set up SSH
@@ -46,6 +33,83 @@ jobs:
           echo "${{ secrets.ANSIBLE_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-      - name: Securely copy build directory to remote
-        run: scp -r ./build/* ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ DEV_TARGET_HOST }}:/etc/opt/albers
+      - name: Disable strict host key checking
+        run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
+        shell: bash
+      
+      - name: Create albers.app.service.tmp
+        run: |
+          echo "[Unit]
+          Description=Albers Application Service
+          After=syslog.target network.target
 
+          [Service]
+          Type=simple
+          ExecStart=/usr/bin/node index.mjs
+          WorkingDirectory=/var/opt/albers/server
+          EnvironmentFile=/var/opt/albers/server/.env
+          KillSignal=process
+          User=nodejs
+          Group=nodejs
+          Restart=always
+          RestartSec=10
+          StandardOutput=syslog
+          StandardError=syslog
+          SyslogIdentifier=albers.app
+
+          [Install]
+          WantedBy=multi-user.target" > albers.app.service.tmp
+        shell: bash
+
+      - name: Upload albers.app.service.tmp to remote tmp
+        run: scp -i ~/.ssh/id_rsa albers.app.service.tmp ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/tmp/albers.app.service
+        shell: bash
+
+      - name: Check if albers.app.service exists or is different
+        run: |
+            ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'if ! cmp -s /tmp/albers.app.service.tmp /etc/systemd/system/albers.app.service; then
+            sudo mv /tmp/albers.app.service /etc/systemd/system/albers.app.service
+            sudo systemctl daemon-reload
+            fi'
+        shell: bash
+        
+      - name: Archive .output directory contents
+        run: tar -czvf output.tar.gz -C .output .
+        shell: bash
+
+      - name: Create albers_new directory
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo mkdir -p /var/opt/albers_new'
+        shell: bash
+
+      - name: Change ownership and permissions of albers_new directory
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo chown -R nodejs:nodejs /var/opt/albers_new && sudo chmod -R 0775 /var/opt/albers_new'
+        shell: bash
+
+      - name: Securely copy build directory to remote
+        run: scp -i ~/.ssh/id_rsa output.tar.gz ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/var/opt/albers_new
+        shell: bash
+
+      - name: Extract build directory on remote
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo -u nodejs tar -xzvf /var/opt/albers_new/output.tar.gz -C /var/opt/albers_new'
+        shell: bash
+
+      - name: Change ownership of all files to nodejs:nodejs
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo chown -R nodejs:nodejs /var/opt/albers_new'
+        shell: bash
+
+      - name: Switch directories
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo rm -rf /var/opt/albers_old'
+          ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo mv /var/opt/albers /var/opt/albers_old'
+          ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo mv /var/opt/albers_new /var/opt/albers'
+        shell: bash
+
+      - name: Install dependencies
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'cd /var/opt/albers/server && sudo -u nodejs npm install --production'
+        shell: bash
+      
+      - name: Start the application
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo systemctl restart albers.app'
+        shell: bash
