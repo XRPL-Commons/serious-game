@@ -47,6 +47,7 @@ jobs:
           Type=simple
           ExecStart=/usr/bin/node index.mjs
           WorkingDirectory=/var/opt/albers/server
+          EnvironmentFile=/var/opt/albers/server/.env
           KillSignal=process
           User=nodejs
           Group=nodejs
