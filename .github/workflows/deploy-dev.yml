@@ -42,11 +42,13 @@ jobs:
           if [ ! -f /etc/systemd/system/albers.app.service ]; then
             echo "[Unit]
             Description=Albers Application Service
-            After=network.target
+            After=syslog.target network.target
 
             [Service]
+            Type=simple
             ExecStart=/usr/bin/npm run start
             WorkingDirectory=/var/opt/albers/server
+            KillSignal=process
             User=nodejs
             Group=nodejs
             Restart=always
