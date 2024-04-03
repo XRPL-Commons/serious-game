@@ -37,29 +37,36 @@ jobs:
         run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
         shell: bash
       
-      - name: Check if albers.app.service exists
+      - name: Create albers.app.service.tmp
         run: |
-          if [ ! -f /etc/systemd/system/albers.app.service ]; then
-            echo "[Unit]
-            Description=Albers Application Service
-            After=syslog.target network.target
+          echo "[Unit]
+          Description=Albers Application Service
+          After=syslog.target network.target
 
-            [Service]
-            Type=simple
-            ExecStart=/usr/bin/npm run start
-            WorkingDirectory=/var/opt/albers/server
-            KillSignal=process
-            User=nodejs
-            Group=nodejs
-            Restart=always
-            RestartSec=10
-            StandardOutput=syslog
-            StandardError=syslog
-            SyslogIdentifier=albers.app
+          [Service]
+          Type=simple
+          ExecStart=/usr/bin/node index.mjs
+          WorkingDirectory=/var/opt/albers/server
+          KillSignal=process
+          User=nodejs
+          Group=nodejs
+          Restart=always
+          RestartSec=10
+          StandardOutput=syslog
+          StandardError=syslog
+          SyslogIdentifier=albers.app
 
-            [Install]
-            WantedBy=multi-user.target" > albers.app.service.tmp
-            scp -i ~/.ssh/id_rsa albers.app.service.tmp ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/tmp/albers.app.service
+          [Install]
+          WantedBy=multi-user.target" > albers.app.service.tmp
+        shell: bash
+
+      - name: Upload albers.app.service.tmp to remote tmp
+        run: scp -i ~/.ssh/id_rsa albers.app.service.tmp ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/tmp/albers.app.service
+        shell: bash
+
+      - name: Check if albers.app.service exists or is different
+        run: |
+          if ! cmp -s albers.app.service.tmp /etc/systemd/system/albers.app.service; then
             ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo mv /tmp/albers.app.service /etc/systemd/system/albers.app.service'
             ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo systemctl daemon-reload'
           fi
