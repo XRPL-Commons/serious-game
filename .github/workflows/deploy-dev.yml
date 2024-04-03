@@ -45,14 +45,21 @@ jobs:
             After=network.target
 
             [Service]
-            ExecStart=/usr/bin/node /var/opt/albers/index.js
-            WorkingDirectory=/var/opt/albers
+            ExecStart=/usr/bin/npm run start
+            WorkingDirectory=/var/opt/albers/server
             User=nodejs
             Group=nodejs
             Restart=always
+            RestartSec=10
+            StandardOutput=syslog
+            StandardError=syslog
+            SyslogIdentifier=albers.app
 
             [Install]
-            WantedBy=multi-user.target" | sudo tee /etc/systemd/system/albers.app.service
+            WantedBy=multi-user.target" > albers.app.service.tmp
+            scp -i ~/.ssh/id_rsa albers.app.service.tmp ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/tmp/albers.app.service
+            ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo mv /tmp/albers.app.service /etc/systemd/system/albers.app.service'
+            ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo systemctl daemon-reload'
           fi
         shell: bash
         
@@ -85,4 +92,14 @@ jobs:
           ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo rm -rf /var/opt/albers_old'
           ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo mv /var/opt/albers /var/opt/albers_old'
           ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo mv /var/opt/albers_new /var/opt/albers'
+        shell: bash
+
+      - name: Install dependencies
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'cd /var/opt/albers && sudo -u nodejs npm install --production'
+        shell: bash
+      
+      - name: Start the application
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo systemctl restart albers.app'
         shell: bash
