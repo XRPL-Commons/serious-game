@@ -37,22 +37,52 @@ jobs:
         run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
         shell: bash
       
+      - name: Check if albers.app.service exists
+        run: |
+          if [ ! -f /etc/systemd/system/albers.app.service ]; then
+            echo "[Unit]
+            Description=Albers Application Service
+            After=network.target
+
+            [Service]
+            ExecStart=/usr/bin/node /var/opt/albers/index.js
+            WorkingDirectory=/var/opt/albers
+            User=nodejs
+            Group=nodejs
+            Restart=always
+
+            [Install]
+            WantedBy=multi-user.target" | sudo tee /etc/systemd/system/albers.app.service
+          fi
+        shell: bash
+        
       - name: Archive .output directory contents
         run: tar -czvf output.tar.gz -C .output .
         shell: bash
-        
-      - name: Remove existing files from target directory
-        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo rm -rf /var/opt/albers/*'
+
+      - name: Create albers_new directory
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo mkdir -p /var/opt/albers_new'
+        shell: bash
+
+      - name: Change ownership and permissions of albers_new directory
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo chown -R nodejs:nodejs /var/opt/albers_new && sudo chmod -R 0775 /var/opt/albers_new'
         shell: bash
 
       - name: Securely copy build directory to remote
-        run: scp -i ~/.ssh/id_rsa output.tar.gz ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/var/opt/albers
+        run: scp -i ~/.ssh/id_rsa output.tar.gz ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/var/opt/albers_new
         shell: bash
 
       - name: Extract build directory on remote
-        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo -u nodejs tar -xzvf /var/opt/albers/output.tar.gz -C /var/opt/albers'
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo -u nodejs tar -xzvf /var/opt/albers_new/output.tar.gz -C /var/opt/albers_new'
         shell: bash
 
       - name: Change ownership of all files to nodejs:nodejs
-        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo chown -R nodejs:nodejs /var/opt/albers'
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo chown -R nodejs:nodejs /var/opt/albers_new'
+        shell: bash
+
+      - name: Switch directories
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo rm -rf /var/opt/albers_old'
+          ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo mv /var/opt/albers /var/opt/albers_old'
+          ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo mv /var/opt/albers_new /var/opt/albers'
         shell: bash
