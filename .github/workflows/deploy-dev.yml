@@ -21,9 +21,6 @@ jobs:
       - name: Remove package.lock
         run: rm package-lock.json
 
-      - name: Remove node modules
-        run: rm -r node_modules
-
       - name: Build Application
         run: npm run build
 
