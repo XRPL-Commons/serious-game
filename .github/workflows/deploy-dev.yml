@@ -50,7 +50,7 @@ jobs:
         shell: bash
 
       - name: Extract build directory on remote
-        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'tar -xzvf /var/opt/albers/output.tar.gz -C /var/opt/albers'
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo -u nodejs tar -xzvf /var/opt/albers/output.tar.gz -C /var/opt/albers'
         shell: bash
 
       - name: Change ownership of all files to nodejs:nodejs
