@@ -38,7 +38,7 @@ const actions = [
     secretRequired: true
   },
   {
-    name: 'createImage',
+    name: 'getAlbersURL',
     path: '/api/art/image/create',
     method: 'POST',
     secretRequired: true

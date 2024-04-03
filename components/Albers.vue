@@ -4,9 +4,12 @@
     <div>
       <ClientOnly>
 
-        <div ref="canvas" class="w-full scale-75 none"></div>
+        <canvas ref="canvas" class="w-full scale-75 hidden"></canvas>
         <template v-if="albersURI">
-          <image :src="albersURI" />
+          <figure class="max-w-lg">
+            <img class="h-auto max-w-full rounded-lg" :src="albersURI" alt="image description">
+            <figcaption class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">{{ xrplAddress }}</figcaption>
+          </figure>
         </template>
       </ClientOnly>
 
@@ -27,6 +30,8 @@ const props = defineProps({
   xrplAddress: String
 })
 
+const emit = defineEmits(['loaded']);
+
 const { xrplAddress } = props
 
 // authentication
@@ -41,22 +46,27 @@ const colors = ref()
 const albersURI = ref(null)
 
 onMounted(() => {
-  myp5 = new p5(sketch({
-    xrplAddress,
-    colorCallback: (sketchColors: any) => {
-      colors.value = sketchColors
-      console.log(sketchColors)
-    }
-  }), canvas.value);
-  console.log(myp5)
-  setTimeout(async () => {
-    let imageData = myp5.canvas.toDataURL(); // Defaults to PNG format
-    console.log(imageData); // This is your Base64 string
-    albersURI.value = await API.getAlbersURL({
+  nextTick(() => {
+    console.log(canvas.value)
+    myp5 = new p5(sketch({
       xrplAddress,
-      imageData
-    })
-  }, 2000)
+      colorCallback: (sketchColors: any) => {
+        colors.value = sketchColors
+        console.log({ sketchColors })
+      }
+    }), canvas.value);
+    console.log(myp5)
+    setTimeout(async () => {
+      let imageData = myp5.canvas.toDataURL(); // Defaults to PNG format
+      const { url } = await API.getAlbersURL({
+        xrplAddress,
+        imageData
+      })
+      albersURI.value = url
+      console.log(url)
+      emit('loaded', url)
+    }, 2000)
+  })
 });
 
 onUnmounted(() => {
@@ -85,7 +95,6 @@ body {
 }
 
 canvas {
-  display: none;
   /* Changes the default display to block, which removes extra space beneath the canvas typical of inline elements */
   max-width: 100%;
   /* Sets the maximum width to 100% of the parent element, preventing the canvas from exceeding the width of the viewport */

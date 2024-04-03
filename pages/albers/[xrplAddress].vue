@@ -1,15 +1,13 @@
 <template>
   <div v-if="!magSecret">This page requires the mag secret.</div>
   <template v-else>
-    <albers :xrpl-address="xrplAddress" />
+    <albers :xrpl-address="xrplAddress" @loaded="onImageLoaded" />
   </template>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from "vue"
 import { useRoute } from 'vue-router'
-import { sketch } from '~/sketches/xalbers'
-import p5 from "p5"
 
 definePageMeta({
   layout: 'fullscreen'
@@ -22,6 +20,9 @@ const xrplAddress = computed(() => params.xrplAddress || 'rHb9CJAWyB4rj91VRWn96D
 const magSecret = ref<string | null>(null)
 magSecret.value = localStorage.getItem('mag_secret')
 
+const onImageLoaded = (v) => {
+  console.log('onImageLoaded', v)
+}
 
 </script>
 <style>
