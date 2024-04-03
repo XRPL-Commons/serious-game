@@ -79,14 +79,15 @@ onMounted(async () => {
     isConnection.value = false;
     await getItem();
   } else {
-    try {
-      const payload = await API.signInXaman({});
-      qrCodeSrc.value = payload.refs.qr_png;
-      modalVisible.value = true;
-      initializeWebSocket(payload.refs.websocket_status);
-    } catch (error) {
-      alert('Error connecting to Xumm: ' + error);
-    }
+    await generateQrCode();
+    // try {
+    //   const payload = await API.signInXaman({});
+    //   qrCodeSrc.value = payload.refs.qr_png;
+    //   modalVisible.value = true;
+    //   initializeWebSocket(payload.refs.websocket_status);
+    // } catch (error) {
+    //   alert('Error connecting to Xumm: ' + error);
+    // }
   }
 });
 
@@ -94,31 +95,48 @@ onUnmounted(() => {
 
 })
 
+async function generateQrCode() {
+  try {
+    const payload = await API.signInXaman({});
+    qrCodeSrc.value = payload.refs.qr_png;
+    modalVisible.value = true;
+    initializeWebSocket(payload.refs.websocket_status);
+  } catch (error) {
+    alert('Error connecting to Xumm: ' + error);
+  }
+}
+
 async function initializeWebSocket(url: string) {
   /* @ts-ignore */
   ws.value = new WebSocket(url);
   /* @ts-ignore */
   ws.value.onmessage = async (message) => {
     let responseObj = JSON.parse(message.data);
-    if (responseObj.signed !== null && responseObj.signed !== undefined) {
-      modalVisible.value = false;
-      isConnected.value = true;
-      isConnection.value = false;
-      const { data } = await useFetch(`/api/payload?uuid=${responseObj.payload_uuidv4}`).json();      
-      localStorage.setItem('xrp_address', data.value.response.account);
-      xrplAddress.value = data.value.response.account;
-      localStorage.setItem('user_token', data.value.application.issued_user_token);
-      userToken.value = data.value.application.issued_user_token;
-      console.log(data.value.payload.tx_type)
-      if (data.value.payload.tx_type == 'SignIn') {
-        await getItem();
-        if (!hasNft.value) {
-          await mintNft();
+    if (responseObj.signed !== null && responseObj.signed !== undefined) {        
+      const { data } = await useFetch(`/api/payload?uuid=${responseObj.payload_uuidv4}`).json();            
+
+      const runtimeConfig = useRuntimeConfig()
+      if (data.value.response.environment_nodetype === runtimeConfig.public.network) {
+        modalVisible.value = false;
+        isConnected.value = true;
+        isConnection.value = false;
+        xrplAddress.value = data.value.response.account;
+        localStorage.setItem('xrp_address', data.value.response.account);        
+        localStorage.setItem('user_token', data.value.application.issued_user_token);
+        userToken.value = data.value.application.issued_user_token;
+        if (data.value.payload.tx_type == 'SignIn') {
+          await getItem();
+          if (!hasNft.value) {
+            await mintNft();
+          }
+        } else if (data.value.payload.tx_type == 'NFTokenAcceptOffer') {
+          await redeemNft();
         }
-      }
-      if (data.value.payload.tx_type == 'NFTokenAcceptOffer') {
-        await redeemNft();
-      }
+      } else {
+        alert('Wrong network used: netwrok should be: ' + runtimeConfig.public.network);
+        await generateQrCode()
+        return;
+      }      
     }
   };
 };
