@@ -3,6 +3,7 @@ import { getWallet } from '@/server/utils'
 import { AddObject, NFT, GetObjects } from '~/server/connectors/mongo';
 
 const createNFT = async (xrplAddress: string) => {
+    console.log(xrplAddress)
 	try {
         // Get NFT object
         const nft = await GetObjects();

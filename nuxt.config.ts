@@ -12,7 +12,8 @@ export default defineNuxtConfig({
     wssExplorer: process.env.WSS_EXPLORER,
     // Keys within public are also exposed client-side
     public: {
-      apiBase: '/api'
+      apiBase: '/api',
+      network: process.env.NETWORK
     }
   },
   ssr: false,

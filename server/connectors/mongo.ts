@@ -28,7 +28,7 @@ export const AddObject = async (nftObject: NFT) => {
   try {
     await client.connect();
     const collection = client.db('albers').collection(collectionName);
-    const result = await collection.insertOne({ nftObject });
+    const result = await collection.insertOne({...nftObject});
     console.log(`New NFT inserted with id: ${result.insertedId}`);
     return result;
   } catch (error) {
@@ -39,7 +39,7 @@ export const AddObject = async (nftObject: NFT) => {
   }
 }
 
-export const UpdateObject = async (nftId: string, nftObject: NFT) => {
+export const UpdateOffer = async (nftId: string, nftObject: NFT) => {
   try {
     await client.connect();
     const collection = client.db('albers').collection('nfts');
@@ -54,6 +54,30 @@ export const UpdateObject = async (nftId: string, nftObject: NFT) => {
     }
 
     console.log(`Successfully updated offerId for nftId: ${nftId}`);
+    return result;
+  } catch (error) {
+    console.error('Error updating offerId for NFT:', error);
+    throw error; // Rethrow or handle as needed
+  } finally {
+    await client.close(); // Consider when to close the connection based on your app's use case
+  }
+}
+
+export const UpdateOwner = async (nftId: string, nftObject: NFT) => {
+  try {
+    await client.connect();
+    const collection = client.db('albers').collection('nfts');
+    const result = await collection.updateOne(
+      { nftId: nftId }, // Filter: Find a document with the matching nftId
+      { $set: { owner: nftObject.owner } } // Update operation: Set the new owner
+    );
+
+    if (result.matchedCount === 0) {
+      console.log(`No document found with nftId: ${nftId}`);
+      return null;
+    }
+
+    console.log(`Successfully updated owner for nftId: ${nftId}`);
     return result;
   } catch (error) {
     console.error('Error updating offerId for NFT:', error);
@@ -86,6 +110,7 @@ export default {
   ObjectId,
   GetCollection,
   AddObject,
-  UpdateObject,
+  UpdateOffer,
+  UpdateOwner,
   GetObjects
 }

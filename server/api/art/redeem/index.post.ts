@@ -1,4 +1,4 @@
-import { UpdateObject, GetObjects } from '~/server/connectors/mongo';
+import { UpdateOwner, GetObjects } from '~/server/connectors/mongo';
 
 const claimNFT = async (xrplAddress: string) => {
 	try {
@@ -14,7 +14,8 @@ const claimNFT = async (xrplAddress: string) => {
             nftObject.owner = xrplAddress;
 
             // Update DB
-            await UpdateObject(nftObject.nftId, nftObject);            
+            await UpdateOwner(nftObject.nftId, nftObject);
+            return '{}'
         } else {
             throw new Error("NFT not found");
         }
