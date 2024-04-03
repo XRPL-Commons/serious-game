@@ -40,6 +40,10 @@ jobs:
       - name: Archive .output directory contents
         run: tar -czvf output.tar.gz -C .output .
         shell: bash
+        
+      - name: Remove existing files from target directory
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'rm -rf /var/opt/albers/*'
+        shell: bash
 
       - name: Securely copy build directory to remote
         run: scp -i ~/.ssh/id_rsa output.tar.gz ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/var/opt/albers
