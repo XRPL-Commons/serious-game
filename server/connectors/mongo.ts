@@ -12,9 +12,11 @@ export const DB = async () => {
 // Define an interface for the NFT data
 export interface NFT {
   xrplAddress: string;
+  owner: string;
   uri: string;
   nftId: string;
-  nftOfferId: string;
+  nftOfferId: string; 
+  mintedAt: string; 
 }
 
 export const GetCollection = async (collectionName: string) => {
@@ -61,11 +63,29 @@ export const UpdateObject = async (nftId: string, nftObject: NFT) => {
   }
 }
 
+export const GetObjects = async (xrplAddress?: string): Promise<Array<NFT>> => {
+  try {
+    await client.connect();
+    const collection = client.db('albers').collection<NFT>('nfts');
+
+    const query = xrplAddress ? { xrplAddress: xrplAddress } : {};
+    const nfts = await collection.find(query).sort({ mintedAt: -1 }).toArray();
+
+    return nfts;
+  } catch (error) {
+    console.error('Failed to fetch NFT objects:', error);
+    throw error;
+  } finally {
+    await client.close();
+  }
+}
+
 export default {
   DB,
   MongoClient,
   ObjectId,
   GetCollection,
   AddObject,
-  UpdateObject
+  UpdateObject,
+  GetObjects
 }

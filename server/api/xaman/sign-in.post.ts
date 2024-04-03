@@ -17,8 +17,8 @@ async function handler() {
                 TransactionType: "SignIn",
               },
             });
-        return payload;
-        
+        console.log(payload)
+        return payload;        
     } catch (error) {
         console.log(error);
         return error

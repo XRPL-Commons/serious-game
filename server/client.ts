@@ -14,17 +14,30 @@ const actions = [
     secretRequired: true
   },
   {
+    name: 'redeemNFT',
+    path: '/api/art/redeem',
+    method: 'POST',
+    secretRequired: true
+  },
+  {
     name: 'listCollection',
     path: '/api/art',
     method: 'GET',
     secretRequired: true
   },
   {
-    name: 'createAlbers',
-    path: '/api/art',
+    name: 'signInXaman',
+    path: '/api/xaman/sign-in',
     method: 'POST',
     secretRequired: true
-  }
+  },
+  {
+    name: 'createImage',
+    path: '/api/art/image/create',
+    method: 'POST',
+    secretRequired: true
+  },
+
 ]
 
 type Headers = {
@@ -45,12 +58,24 @@ actions.forEach(action => {
       }
       headers['x-secret'] = secret
     }
-    const result = await fetch(action.path, {
+
+    let url = action.path;
+    let body = undefined;
+    let queryString = '';
+    if (action.method === 'GET' && props && Object.keys(props).length) {
+      // Ensure values are converted to strings to satisfy encodeURIComponent's expected parameter types
+      queryString = Object.entries(props).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(`${value}`)}`).join('&');
+      url = `${url}?${queryString}`;
+    } else if (action.method !== 'GET') {
+      body = JSON.stringify(props);
+    }
+
+    const result = await fetch(url, {
       method: action.method,
       headers,
-      body: JSON.stringify(props)
-    })
-    return result.json()
+      ...(body ? { body } : {})
+    });
+    return result.json();
   }
 })
 export default api

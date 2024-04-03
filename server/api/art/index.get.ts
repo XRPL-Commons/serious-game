@@ -1,14 +1,12 @@
-import { GetCollection } from '~/server/connectors/mongo'
+import { GetObjects } from '~/server/connectors/mongo'
 
-const listArt = async ({ hallOfFame = true }) => {
+const listArt = async (xrplAddress?: string, hallOfFame = true) => {
   // list existing art
-
-  const Arts = GetCollection("art")
-  console.log('Arts', await Arts.find({}).fetch())
-  return []
+  let arts = await GetObjects(xrplAddress);
+  return arts;  
 }
 
 export default defineEventHandler((event) => {
-  console.log('listArt')
-  return listArt({ hallOfFame: true })
+  const query = getQuery(event)
+  return listArt(query.xrplAddress, true)
 })

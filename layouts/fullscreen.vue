@@ -7,7 +7,6 @@
           <div class="hover:scale-110 p-2 transition-all cursor-pointer flex justify-start items-center flex-auto ">
             <img src="/xrpl.png" class="h-8 opacity-80 hidden dark:block" />
             <img src="/xrplb.png" class="h-8 opacity-80 dark:invisible dark:hidden" />
-            <!-- <div class="ml-2 flex-auto">Ecosystem Map</div> -->
           </div>
         </NuxtLink>
       </div>

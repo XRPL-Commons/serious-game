@@ -1,19 +1,20 @@
 <template>
   <div class="rounded-full bg-transparent p-2 transition-all flex justify-center items-center mt-20">
-    <template v-if="isConnected">
-      <div>
-        <p class="absolute">{{ xrplAddress }}</p>
-        <br />
-        <div ref="canvas" class="w-full h-[800px]"></div>
-      </div>
-      <button v-if="isConnected" @click="claimNft"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Claim my NFT
-      </button>
-      <br />
-      <div v-if="nftBought">
-        Congratulations you now own XRPL Commons magazine winning NFT. You can see it online <a
-          :href="'https://test.bithomp.com/nft/' + nftId" target="_blank">here</a>
+    <template v-if="isConnected">      
+      <div class="nft-item" v-if="hasNft">
+        <div class="nft-button-item">
+          <button v-if="!ownsNft" @click="claimNft"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-4">
+            Claim my NFT Art
+          </button>
+        </div>        
+        <h1>Your XRPL Commons Magazine NFT Art</h1>
+        <br/>
+        <img :src="nftUri" alt="NFT Image" class="nft-image"/>
+        <div class="nft-info">
+          <p class="nft-address">{{ xrplAddress }}</p>
+          <p class="nft-date">Created at</p>
+        </div>
       </div>
     </template>
     <QRCodeModal :visible="modalVisible" :qrCodeSrc="qrCodeSrc" :isConnection="isConnection"
@@ -33,15 +34,15 @@
         <span class="sr-only">Loading...</span>
         <p class="text-lg font-semibold">Please wait for your NFT to be minted on XRPL...</p>
       </div>
-    </div>
+    </div>    
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue"
 import { useFetch } from '@vueuse/core'
-/* @ts-ignore */
 import API from '~/server/client'
+const router = useRouter()
 
 const isConnected = ref(false);
 const isConnection = ref(true);
@@ -52,36 +53,37 @@ const userToken = ref('');
 const xrplAddress = ref('');
 const ws = ref(null);
 const nftBought = ref(false);
-const nftId = ref('');
 
-// authentication
+// Nft related info
+const hasNft = ref(false);
+const ownsNft = ref(false);
+const nftId = ref('');
+const nftUri = ref('');
+const nftDate = ref('')
+
+// Authentication
 const magSecret = ref<string | null>(null)
 magSecret.value = localStorage.getItem('mag_secret')
 
-
-// onMounted(() => {
-//   magSecret.value = localStorage.getItem('mag_secret');
-//   if (magSecret.value) {
-//     myp5 = new p5(sketch, canvas.value);
-//   }
-// });
-
 onMounted(async () => {
+  if (!magSecret) {
+    router.push('/')
+  }
+
   const localUserToken = localStorage.getItem('user_token');
   const localXrpAddress = localStorage.getItem('xrp_address');
   if (localUserToken && localXrpAddress) {
-    isConnected.value = true; // This is causing the canvas to disappear
+    isConnected.value = true;
+    await getItem();
     isConnection.value = false;
     userToken.value = localUserToken;
     xrplAddress.value = localXrpAddress;
   } else {
     try {
-      const { data } = await useFetch('/api/sign-in', {
-        method: 'POST'
-      }).json();
-      qrCodeSrc.value = data.value.refs.qr_png;
+      const payload = await API.signInXaman({});
+      qrCodeSrc.value = payload.refs.qr_png;
       modalVisible.value = true;
-      initializeWebSocket(data.value.refs.websocket_status);
+      initializeWebSocket(payload.refs.websocket_status);
     } catch (error) {
       alert('Error connecting to Xumm: ' + error);
     }
@@ -94,46 +96,106 @@ onUnmounted(() => {
 
 async function initializeWebSocket(url: string) {
   /* @ts-ignore */
-
   ws.value = new WebSocket(url);
   /* @ts-ignore */
   ws.value.onmessage = async (message) => {
     let responseObj = JSON.parse(message.data);
     if (responseObj.signed !== null && responseObj.signed !== undefined) {
-      console.log(responseObj);
       modalVisible.value = false;
       isConnected.value = true;
       isConnection.value = false;
-      const { data } = await useFetch(`/api/payload?uuid=${responseObj.payload_uuidv4}`).json();
+      const { data } = await useFetch(`/api/payload?uuid=${responseObj.payload_uuidv4}`).json();      
       localStorage.setItem('xrp_address', data.value.response.account);
       xrplAddress.value = data.value.response.account;
       localStorage.setItem('user_token', data.value.application.issued_user_token);
       userToken.value = data.value.application.issued_user_token;
-      // if (data.value.payload.tx_type == 'Inscription') {
-      //   setupMp5();
-      // }
+      console.log(data.value.payload.tx_type)
+      if (data.value.payload.tx_type == 'SignIn') {
+        await getItem();
+        if (!hasNft.value) {
+          await mintNft();
+        }
+      }
       if (data.value.payload.tx_type == 'NFTokenAcceptOffer') {
-        nftBought.value = true;
+        ownsNft.value = true;
+        await API.redeemNFT({ xrplAddress: xrplAddress.value })
       }
     }
   };
 };
 
+
+
+
 async function claimNft() {
   try {
-    isMintingNFT.value = true;
-    const { nftId: id, payload } = await API.createNFT({ userToken: userToken.value, xrplAddress: xrplAddress.value, imageData: '' })
-    console.log(id)
-    console.log(payload)
-    isMintingNFT.value = false;
-    nftId.value = id;
+    isMintingNFT.value = true;   
+    const { data: payload, error } = await useFetch(`/api/art/create?xrplAddress`, {
+      method: 'POST',
+      body: JSON.stringify({
+        // Your payload here. If xrplAddress is the only thing you're sending and you're already passing it as a query, this might not be needed.
+        // Example payload, adjust according to your needs:
+        xrplAddress: xrplAddress.value
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    // const { data: payload, error } = await useFetch(`/api/art/create?xrplAddress`, {
+    //         method: 'POST'
+    // }, {
+    //   xrplAddress: xrplAddress.value
+    // });
+    if (error) {
+      
+    }
+    console.log(error)
+    // const { payload } = await API.createNFT({ userToken: userToken.value, xrplAddress: xrplAddress.value })
+    // console.log("Payload:" + payload)
+    isMintingNFT.value = false;    
     qrCodeSrc.value = payload.refs.qr_png;
     modalVisible.value = true;
     initializeWebSocket(payload.refs.websocket_status);
-  } catch (error) {
-    alert("Error getting transaction details: " + error);
+  } catch (e) {
+    console.log("here")
+    console.log(e)
+    alert("Error getting transaction details: " + e);
   }
 };
+
+async function mintNft() {
+  try {
+    isMintingNFT.value = true;
+    await API.createImage({ xrplAddress: xrplAddress.value })
+    const { nftId: id, nftUri: uri, mintedAt } = await API.createNFT({ xrplAddress: xrplAddress.value })
+    hasNft.value = true;
+    nftUri.value = uri;
+    nftId.value = id;
+    nftDate.value = mintedAt
+    isMintingNFT.value = false;
+  } catch (error) {
+    alert("Error minting NFT: " + error);
+  }
+}
+
+async function getItem() {
+  try {
+    const result = await API.listCollection({})
+    if (result && result.length > 0) {
+      hasNft.value = true;
+      nftUri.value = result[0].nftObject.uri;
+      nftId.value = result[0].nftObject.nftId;
+      nftDate.value = result[0].nftObject.mintedAt;      
+      if (result[0].nftObject.owner === result[0].nftObject.xrplAddress) {
+        ownsNft.value = true;
+      }
+    } else {
+      await mintNft();
+    }
+  } catch (error) {
+    alert("Error getting NFT arts: " + error);    
+  }
+}
 </script>
 
 <style scoped>
@@ -155,5 +217,25 @@ async function claimNft() {
 
 .min-h-screen {
   min-height: 100vh;
+}
+
+.nft-image {
+  width: 300px;
+  height: 400px;
+  object-fit: cover;
+}
+
+.nft-info p {
+  text-align: center;
+}
+
+.nft-address, .nft-date {
+  font-style: italic;
+  font-size: 0.75rem;
+  display: block;
+}
+
+.nft-button-item {
+  text-align: center;
 }
 </style>
