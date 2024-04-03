@@ -96,7 +96,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'cd /var/opt/albers && sudo -u nodejs npm install --production'
+          ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'cd /var/opt/albers/server && sudo -u nodejs npm install --production'
         shell: bash
       
       - name: Start the application
