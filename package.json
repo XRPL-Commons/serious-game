@@ -15,9 +15,10 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxtjs/color-mode": "^3.3.2",
-    "@types/p5": "^1.7.6",
     "@types/node": "^20.11.3",
+    "@types/p5": "^1.7.6",
     "nuxt": "^3.10.3",
+    "rollup": "^4.14.0",
     "sass": "^1.66.1"
   },
   "dependencies": {
@@ -25,9 +26,9 @@
     "@nuxt/ui": "^2.14.2",
     "dayjs": "^1.11.10",
     "mongodb": "^5.8.1",
+    "p5": "^1.9.2",
     "sharp": "^0.32.5",
     "xrpl": "^3.0.0",
-    "xumm": "^1.7.7",
-    "p5": "^1.9.2"
+    "xumm": "^1.7.7"
   }
 }
