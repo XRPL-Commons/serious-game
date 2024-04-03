@@ -13,7 +13,7 @@
           <img :src="nft.uri" alt="NFT Image" class="nft-image"/>
           <div class="nft-info">
             <p class="nft-address">{{ nft.xrplAddress }}</p>
-            <p class="nft-date">Created at</p>
+            <p class="nft-date">Created at {{ formatDate(nft.mintedAt) }}</p>
           </div>
         </div>
       </div>
@@ -22,6 +22,7 @@
 </template>
 
 <script setup lang="ts">
+import { formatDate } from '~/utils/dateHelper';
 import { ref, onMounted, onUnmounted } from "vue"
 import API from '~/server/client'
 const router = useRouter()
@@ -36,11 +37,7 @@ interface NftObject {
   nftId: string;
   uri: string;
   xrplAddress: string;
-  // Add other properties as needed
-}
-
-interface Nft {
-  nftObject: NftObject;
+  mintedAt: string
 }
 
 onMounted(async () => {

@@ -13,7 +13,7 @@
         <img :src="nftUri" alt="NFT Image" class="nft-image"/>
         <div class="nft-info">
           <p class="nft-address">{{ xrplAddress }}</p>
-          <p class="nft-date">Created at</p>
+          <p class="nft-date">Created at {{ formatDate(nftDate) }}</p>
         </div>
       </div>
     </template>
@@ -59,7 +59,7 @@ const hasNft = ref(false);
 const ownsNft = ref(false);
 const nftId = ref('');
 const nftUri = ref('');
-const nftDate = ref('')
+const nftDate = ref('');
 
 // Authentication
 const magSecret = ref<string | null>(null)
@@ -171,7 +171,7 @@ async function getItem() {
       hasNft.value = true;
       nftUri.value = result[0].uri;
       nftId.value = result[0].nftId;
-      nftDate.value = result[0].mintedAt;      
+      nftDate.value = result[0].mintedAt;
       if (result[0].owner === result[0].xrplAddress) {
         ownsNft.value = true;
       }
