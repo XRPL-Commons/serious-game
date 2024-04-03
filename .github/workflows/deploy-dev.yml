@@ -42,7 +42,7 @@ jobs:
         shell: bash
         
       - name: Remove existing files from target directory
-        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'rm -rf /var/opt/albers/*'
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo rm -rf /var/opt/albers/*'
         shell: bash
 
       - name: Securely copy build directory to remote
@@ -51,4 +51,8 @@ jobs:
 
       - name: Extract build directory on remote
         run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'tar -xzvf /var/opt/albers/output.tar.gz -C /var/opt/albers'
+        shell: bash
+
+      - name: Change ownership of all files to nodejs:nodejs
+        run: ssh -i ~/.ssh/id_rsa ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }} 'sudo chown -R nodejs:nodejs /var/opt/albers'
         shell: bash
