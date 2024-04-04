@@ -15,22 +15,22 @@ export interface NFT {
   owner: string;
   uri: string;
   nftId: string;
-  nftOfferId: string; 
-  mintedAt: string; 
+  nftOfferId: string;
+  mintedAt: string;
+  network: string;
 }
 
 export const GetCollection = async (collectionName: string) => {
   await client.connect()
-  return client.db('map').collection(collectionName)
+  return client.db('albers').collection(collectionName)
 }
 
 export const AddObject = async (nftObject: NFT) => {
   try {
-    await client.connect();
-    const collection = client.db('albers').collection(collectionName);
-    const result = await collection.insertOne({...nftObject});
-    console.log(`New NFT inserted with id: ${result.insertedId}`);
-    return result;
+    const NFTs = await GetCollection(collectionName)
+    const result = await NFTs.insertOne({ ...nftObject })
+    console.log(`New NFT inserted with id: ${result.insertedId}`)
+    return result
   } catch (error) {
     console.error('Error inserting NFT:', error);
     throw error; // Rethrow or handle as needed

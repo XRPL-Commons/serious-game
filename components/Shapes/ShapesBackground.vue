@@ -1,9 +1,10 @@
 <template>
   <div
     class="blur-3xl -z-10 absolute w-full top-0 right-0 bottom-0 left-0 overflow-hidden grid grid-flow-row-dense grid-cols-3 grid-rows-3">
-    <template v-for="shape in shapes">
-      <div class="inline-block  animatedDiv">
-        <component :is="shape" />
+
+    <template v-for="{ shape, color } in shapesAndColors">
+      <div class="inline-block animatedDiv">
+        <component :is="shape" v-bind="{ fillColor: color }" />
       </div>
       <br />
     </template>
@@ -11,10 +12,32 @@
 </template>
 
 <script setup lang="ts">
-import { ShapesOrange, ShapesYellow, ShapesBlue, ShapesGreen, ShapesPink } from '#components'
+import { ref, inject } from 'vue'
+import { ShapesSquigle, ShapesSwoosh, ShapesStar, ShapesLine, ShapesCircle } from '#components'
 
-/* @ts-ignore */
-const shapes = [ShapesOrange, ShapesYellow, ShapesBlue, ShapesGreen, ShapesPink].map(x => [Math.random(), x]).sort(([a], [b]) => a - b).map(([_, x]) => x)
+const defaultColors = inject('defaultColors')
+const updateColors = inject('updateColors', () => { })
+
+const shuffle = (list) => {
+  return list
+    .map(x => [Math.random(), x])
+    .sort(([a], [b]) => a - b)
+    .map(([_, x]) => x)
+}
+
+// shuffle colors
+const colors = computed(() => shuffle(defaultColors.value))
+
+const shapes = shuffle([ShapesSquigle, ShapesSwoosh, ShapesStar, ShapesLine, ShapesCircle])
+const shapesAndColors = computed(() => shapes.map((shape, i) => ({ shape, color: colors.value[i] })))
+
+// onMounted(() => {
+//   setInterval(() => {
+//     updateColors(shuffle(colors.value))
+//     console.log('updating colors', colors.value)
+//     console.log(shapesAndColors.value)
+//   }, 3000)
+// })
 </script>
 
 <style>
@@ -35,6 +58,6 @@ const shapes = [ShapesOrange, ShapesYellow, ShapesBlue, ShapesGreen, ShapesPink]
 .animatedDiv {
   position: relative;
   /* Needed for centering, adjust as per your layout */
-  animation: growAndMove 200s infinite alternate;
+  animation: growAndMove 150s infinite alternate;
 }
 </style>

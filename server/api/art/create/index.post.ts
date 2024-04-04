@@ -1,50 +1,74 @@
-import { mintNft }  from '@/server/xrpl/wallet'
+import { mintNft } from '~/server/connectors/wallet'
 import { getWallet } from '@/server/utils'
 import { AddObject, NFT, GetObjects } from '~/server/connectors/mongo';
 
-const createNFT = async (xrplAddress: string) => {
-    console.log(xrplAddress)
-	try {
+export const createNFT = async (xrplAddress: string) => {
+    console.log('createNFT', xrplAddress)
+    try {
         // Get NFT object
-        const nft = await GetObjects();
+        const nft = await GetObjects(xrplAddress);
         if (nft && nft.length > 0) {
             throw createError({
                 statusCode: 400,
                 statusMessage: 'This address already contains NFT',
-            })            
+            })
         }
 
-        // Todo: add creation 
-        const uri: string = "https://albers.fra1.digitaloceanspaces.com/alberX-rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh.png";
+        // check if file exists
+        const uri = `https://albers.fra1.cdn.digitaloceanspaces.com/alberx-${xrplAddress}.png`
+
+        try {
+            const check = await fetch(uri, { method: 'HEAD' })
+            console.log(check)
+            if (!check) {
+                throw Error('not found')
+            }
+        } catch (e) {
+            throw createError({
+                statusCode: 500,
+                statusMessage: 'Missing Art file',
+            })
+        }
 
         // Mint new NFT with image
         const { nftId, mintedAt } = await mintNft(uri);
-            
+
         // insert into DB
-        const wallet = getWallet();
+        const wallet = getWallet()
         let nftObject: NFT = {
             xrplAddress: xrplAddress,
             owner: wallet.address,
             uri: uri,
-            nftId: nftId,            
+            nftId: nftId,
             nftOfferId: '',
             mintedAt: mintedAt,
+            network: process.env.NETWORK || ''
         };
-        await AddObject(nftObject);
-         
+        const insert = await AddObject(nftObject)
+
+        console.log({ insert })
+
         return {
             nftId: nftId,
             nftUri: uri,
             mintedAt: mintedAt,
         }
-    } catch (error) {
-        console.log(error);
-        return error
-    }	
+    } catch (error: any) {
+        console.error(error);
+        throw createError({
+            status: 500,
+            statusMessage: error.toString()
+        })
+    }
 }
 
 export default defineEventHandler(async (event) => {
-	const body = await readBody(event)
-	console.log('createNFT')
-	return createNFT(body.xrplAddress)
+    const { xrplAddress } = await readBody(event)
+    if (!xrplAddress) {
+        throw createError({
+            status: 400,
+            statusMessage: 'xrplAddress missing'
+        })
+    }
+    return createNFT(xrplAddress)
 })

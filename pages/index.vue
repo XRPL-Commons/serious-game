@@ -14,8 +14,9 @@
         <br />
         Check back on this page <strong>soon</strong> to earn your
         reward. -->
-        <UInput color="primary" variant="outline" v-model="secret" placeholder="Enter the secret word..." type="text"
-          class="text-center" size="xl" :class="{ 'input-error': isSecretIncorrect }" @keyup.enter="submit" />
+        <UInput color="primary" variant="outline" v-model="secret" placeholder="Enter the mag secret..." type="text"
+          class="text-center bg-gray-500/10" size="xl" :class="{ 'input-error': isSecretIncorrect }"
+          @keyup.enter="submit" :ui="{ placeholder: 'placeholder-gray-600 dark:placeholder-gray-300' }" />
         <br />
         <UButton label="Submit Answer" @click="submit" size="lg" :disabled="checking" />
       </div>
@@ -36,6 +37,10 @@ let timeout: any
 
 const magSecret = ref<string | null>(null)
 magSecret.value = localStorage.getItem('mag_secret')
+
+if (magSecret.value) {
+  router.push('/albers')
+}
 
 definePageMeta({
   layout: 'home'
@@ -72,9 +77,9 @@ const submit = async () => {
 }
 
 onMounted(() => {
-  if (magSecret.value) {
-    router.push('/albers')
-  }
+  // if (magSecret.value) {
+  //   router.push('/albers')
+  // }
 })
 </script>
 

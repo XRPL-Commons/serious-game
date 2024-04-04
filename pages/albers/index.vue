@@ -1,37 +1,38 @@
 <template>
-  <div v-if="!magSecret">This page requires the mag secret.</div>
-  <template v-else>
-    <div>
-      <button @click="$router.push('/albers/mint')"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Claim my NFT Art
-      </button>
-      <br><br>
-      List latest mints
-      <div class="nft-grid">
-        <div v-for="nft in nfts" :key="nft.nftId" class="nft-item">
-          <img :src="nft.uri" alt="NFT Image" class="nft-image"/>
-          <div class="nft-info">
-            <p class="nft-address">{{ nft.xrplAddress }}</p>
-            <p class="nft-date">Created at {{ formatDate(nft.mintedAt) }}</p>
-          </div>
+
+  <div>
+    <div class="m-2">
+      <UButton @click="$router.push('/albers/mint')" color="black" size="xl">
+        Claim your NFT...
+      </UButton>
+    </div>
+    <template v-if="nfts && nfts.length > 0">
+      <div class="">
+        <div v-for="nft in nfts" :key="nft.nftId" class="inline-block m-2">
+          <NuxtLink :to="`/albers/${nft.xrplAddress}`">
+            <img :src="nft.uri" alt="NFT Image" class="nft-image" />
+            <div class="nft-info">
+              <p class="nft-address">{{ nft.xrplAddress }}</p>
+              <p class="nft-date">Created at {{ formatDate(nft.mintedAt) }}</p>
+            </div>
+          </NuxtLink>
         </div>
       </div>
-    </div>
-  </template>
+    </template>
+  </div>
 </template>
 
 <script setup lang="ts">
+/* @ts-ignore */
 import { formatDate } from '~/utils/dateHelper';
 import { ref, onMounted, onUnmounted } from "vue"
+/* @ts-ignore */
 import API from '~/server/client'
-const router = useRouter()
+import { useRouter } from 'vue-router'
+
+const router = useRouter();
 
 const nfts = ref<NftObject[]>([]);
-
-// authentication
-const magSecret = ref<string | null>(null)
-magSecret.value = localStorage.getItem('mag_secret')
 
 interface NftObject {
   nftId: string;
@@ -42,19 +43,13 @@ interface NftObject {
 
 onMounted(async () => {
   try {
-    if (!magSecret) {
-      router.push('/')
-    }
+
     const result = await API.listCollection({})
     nfts.value = result
     console.log(nfts)
   } catch (error) {
     alert("Error getting NFT arts: " + error);
   }
-})
-
-onUnmounted(() => {
-
 })
 </script>
 
@@ -79,10 +74,10 @@ onUnmounted(() => {
   text-align: center;
 }
 
-.nft-address, .nft-date {
+.nft-address,
+.nft-date {
   font-style: italic;
   font-size: 0.75rem;
   display: block;
 }
-
 </style>
