@@ -1,23 +1,16 @@
 import { Xumm } from "xumm";
 import { Wallet, Client } from 'xrpl';
 
-export function getXumm() {
-    const runtimeConfig = useRuntimeConfig()
-    console.log(runtimeConfig)
-    console.log("process env")
-    console.log(process.env.XAMAN_API_KEY);
-    console.log(process.env.XAMAN_SECRET_KEY);
-    
+export function getXumm() {    
     const xumm = new Xumm(
-        runtimeConfig.xamanApiKey,
-        runtimeConfig.xamanSecretKey,
+        process.env.XAMAN_API_KEY || '',
+        process.env.XAMAN_SECRET_KEY || '',
     );
     return xumm;
 }
 
 export function getWallet() {
-    const runtimeConfig = useRuntimeConfig()
-    const wallet = Wallet.fromSeed(runtimeConfig.xrplCommonsSecret);
+    const wallet = Wallet.fromSeed(process.env.XRPL_COMMONS_SECRET || '');
 
     // console.log(`Wallet address: ${wallet.address}`);
     // console.log(`Wallet public key: ${wallet.publicKey}`);
@@ -26,8 +19,7 @@ export function getWallet() {
 }
 
 export async function getExplorerClient() {
-    const runtimeConfig = useRuntimeConfig()
-    const client = new Client(runtimeConfig.wssExplorer);
+    const client = new Client(process.env.WSS_EXPLORER || '');
     await client.connect();
     return client;
 }
