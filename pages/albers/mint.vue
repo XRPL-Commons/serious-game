@@ -41,7 +41,7 @@
             fill="currentFill" />
         </svg>
         <span class="sr-only">Loading...</span>
-        <p class="text-lg font-semibold">One moment while we prepare the transfert...</p>
+        <p class="text-lg font-semibold">One moment while we prepare the transfer...</p>
       </div>
     </div>
   </div>
