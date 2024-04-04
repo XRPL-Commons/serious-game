@@ -20,7 +20,7 @@ export const createNFT = async (xrplAddress: string) => {
         try {
             const check = await fetch(uri, { method: 'HEAD' })
             console.log(check)
-            if (!check) {
+            if (check.status !== 200) {
                 throw Error('not found')
             }
         } catch (e) {
