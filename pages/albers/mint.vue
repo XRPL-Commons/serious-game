@@ -104,7 +104,7 @@ onMounted(async () => {
   }
 })
 
-const onImageLoaded = ({ url }) => {
+const onImageLoaded = ({ url }: any) => {
   console.log({ url })
   localURI.value = url
 }
@@ -120,7 +120,7 @@ async function generateQrCode() {
   }
 }
 
-async function initializeWebSocket(url: string, callback?) {
+async function initializeWebSocket(url: string, callback?: any) {
   /* @ts-ignore */
   ws.value = new WebSocket(url);
   /* @ts-ignore */
