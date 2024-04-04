@@ -1,33 +1,48 @@
 <template>
-    <div v-if="visible" class="modal-overlay">
-        <div class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <span class="close" @click="closeModal">&times;</span>
-                    <h2>Connect to your wallet</h2>
-                </div>
-                <div class="modal-body">
-                    <img :src="qrCodeSrc" alt="QR Code" class="qr-code-img">
-                    <p v-if="isConnection">Open Xaman wallet app and scan this QR code or open the <a :href="mobileUrl" target="_blank" class="link-style">mobile app</a></p>
-                    <p v-if="!isConnection">Open Xaman wallet app and scan this QR code or wait for a notification</p>
-                </div>
-            </div>
-        </div> 
-    </div>        
+  <UModal v-model="isOpen" class="">
+    <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }" class="text-center">
+      <div class="font-title mb-4">Connect to your wallet</div>
+      <div class="flex justify-center">
+        <img :src="qrCodeSrc" alt="QR Code (click to copy)" class="rounded-md" @click="onImageClick()">
+      </div>
+      <div class="font-title mt-4">
+        <p>Scan with Xaman or click the image to copy code manually.</p>
+      </div>
+    </UCard>
+  </UModal>
 </template>
-  
-<script>
-export default {
-props: ['visible', 'qrCodeSrc', 'isConnection', 'mobileUrl'],
-methods: {
-    closeModal() {
-        this.$emit('close');
-    }
+
+<script lang="ts" setup>
+const router = useRouter()
+const props = defineProps(['isOpen', 'qrCodeSrc', 'isConnection', 'mobileUrl', 'uuid'])
+const {
+  isOpen,
+  qrCodeSrc,
+  isConnection,
+  mobileUrl,
+  uuid
+} = toRefs(props)
+
+const closeModal = () => {
+  this.$emit('close');
 }
+const onImageClick = async () => {
+  if (mobileUrl.value) {
+    window.open(mobileUrl.value, '_blank')
+  } else {
+    try {
+      await navigator.clipboard.writeText(value)
+      console.log('Text copied to clipboard')
+      alert("Copied to clipboard. Paste in Xaman to continue.")
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+      // Optionally, fallback to another copy method or show an error message.
+    }
+  }
 }
 </script>
-  
-<style scoped>
+
+<!-- <style scoped>
 .modal-overlay {
   display: flex;
   position: fixed;
@@ -47,7 +62,8 @@ methods: {
   padding: 20px;
   border: 1px solid #888;
   text-align: center;
-  width: 300px; /* Adjust as needed */
+  width: 300px;
+  /* Adjust as needed */
 }
 
 .modal-header {
@@ -80,7 +96,8 @@ methods: {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  width: 80%; /* Adjust as needed */
+  width: 80%;
+  /* Adjust as needed */
   margin-top: 20px;
   margin-bottom: 10px;
 }
@@ -95,7 +112,8 @@ methods: {
   margin-top: 20px;
 }
 
-.modal-body p, .modal-header h2 {
+.modal-body p,
+.modal-header h2 {
   color: black;
 }
 
@@ -104,7 +122,8 @@ methods: {
   color: blue;
   text-decoration: underline;
 }
+
 .link-style:hover {
   color: darkblue;
 }
-</style>
+</style> -->
