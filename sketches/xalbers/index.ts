@@ -2,7 +2,7 @@ export const sketch: any = ({
   xrplAddress = 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
   colorCallback = () => { },
   onLoaded = () => { }
-}: { xrplAddress: string, colorCallback: any }) => (p: any) => {
+}: { xrplAddress: string, colorCallback: any, onLoaded: any }) => (p: any) => {
 
   console.log(xrplAddress, 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh')
   // ============================================ colors
