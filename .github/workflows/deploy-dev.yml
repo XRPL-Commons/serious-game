@@ -28,6 +28,7 @@ jobs:
         run: npm run build
 
       - name: Create env file from secret
+      # echo "${{ secrets.ENV_CONTENT }}" | base64 --decode > .output/server/.env
         run: |
           echo "${{ secrets.ENV_CONTENT }}" > .output/server/.env
         shell: bash
@@ -53,7 +54,6 @@ jobs:
           Type=simple
           ExecStart=/usr/bin/node --env-file=.env index.mjs
           WorkingDirectory=/var/opt/albers/server
-          EnvironmentFile=/var/opt/albers/server/.env
           KillSignal=SIGTERM
           User=nodejs
           Group=nodejs
