@@ -9,11 +9,9 @@
     </div>
     <br />
     <div class="text-center">
-      <div class="w-lg inline-block p-8">
-        <!-- Hey there early bird, you're in the right place !
-        <br />
-        Check back on this page <strong>soon</strong> to earn your
-        reward. -->
+      <!-- <div class="w-lg inline-block p-8"> -->
+      <div class="w-lg inline-block text-lg text-gray-600 dark:text-gray-300">
+        <p class="mb-4 font-title">Enter the secret code to unlock your special reward !</p>
         <UInput color="primary" variant="outline" v-model="secret" placeholder="Enter the mag secret..." type="text"
           class="text-center bg-gray-500/10" size="xl" :class="{ 'input-error': isSecretIncorrect }"
           @keyup.enter="submit" :ui="{ placeholder: 'placeholder-gray-600 dark:placeholder-gray-300' }" />
