@@ -134,11 +134,10 @@ async function initializeWebSocket(url: string, callback?) {
 
     console.log({ data })
 
-    // check network
-    /* @ts-ignore */        
-    if (data.response.environment_nodetype !== process.env.NETWORK) {
+    // check network    
+    if (data.response.environment_nodetype !== "TESTNET") {
       // regen qr code
-      alert('Wrong network used: network should be: ' + process.env.NETWORK);
+      alert('Wrong network used: network should be: ' + "TESTNET");
       await generateQrCode()
       return
     }

@@ -13,7 +13,7 @@ export default defineNuxtConfig({
     // Keys within public are also exposed client-side
     public: {
       apiBase: '/api',
-      network: process.env.NETWORK
+      // network: process.env.NETWORK
     }
   },
   ssr: false,
