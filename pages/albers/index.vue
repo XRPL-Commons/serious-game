@@ -5,7 +5,7 @@
       <div class="ml-2 text-lg font-title text-gray-600 dark:text-gray-300 mb-4">        
         Welcome to the XRPL Commons commmunity quest. Congratulations you made it through !
         <br />
-        If you want to get your own, unique NFT Generic Art please claim it with button below.
+        If you want to get you own, unique, Albers inspired, generative art NFT, you can claim it now.        
       </div>      
       <UButton @click="$router.push('/albers/mint')" color="black" size="xl">
         Claim your NFT...
