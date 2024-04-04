@@ -44,10 +44,11 @@ jobs:
       
       - name: Create albers.app.service.tmp
         run: |
-          echo "[Unit]
+          cat <<EOF > albers.app.service.tmp
+          [Unit]
           Description=Albers Application Service
           After=syslog.target network.target
-
+      
           [Service]
           Type=simple
           ExecStart=/usr/bin/node --env-file=.env index.mjs
@@ -61,10 +62,12 @@ jobs:
           StandardOutput=journal
           StandardError=journal
           SyslogIdentifier=albers.app
-
+      
           [Install]
-          WantedBy=multi-user.target" > albers.app.service.tmp
+          WantedBy=multi-user.target
+          EOF
         shell: bash
+      
 
       - name: Upload albers.app.service.tmp to remote tmp
         run: scp -i ~/.ssh/id_rsa albers.app.service.tmp ${{ secrets.ANSIBLE_SSH_USER_NAME }}@${{ secrets.DEV_TARGET_HOST }}:/tmp/albers.app.service
