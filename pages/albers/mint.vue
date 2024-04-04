@@ -116,7 +116,7 @@ async function initializeWebSocket(url: string) {
       const { data } = await useFetch(`/api/payload?uuid=${responseObj.payload_uuidv4}`).json();            
 
       const runtimeConfig = useRuntimeConfig()
-      if (data.value.response.environment_nodetype === runtimeConfig.public.network) {
+      if (data.value.response.environment_nodetype === process.env.NETWORK) {
         modalVisible.value = false;
         isConnected.value = true;
         isConnection.value = false;
