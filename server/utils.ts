@@ -4,7 +4,10 @@ import { Wallet, Client } from 'xrpl';
 export function getXumm() {
     const runtimeConfig = useRuntimeConfig()
     console.log(runtimeConfig)
-
+    console.log("process env")
+    console.log(process.env.XAMAN_API_KEY);
+    console.log(process.env.XAMAN_SECRET_KEY);
+    
     const xumm = new Xumm(
         runtimeConfig.xamanApiKey,
         runtimeConfig.xamanSecretKey,
