@@ -4,7 +4,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <span class="close" @click="closeModal">&times;</span>
-                    <h2>Scan to connect</h2>
+                    <h2>Connect to your wallet</h2>
                 </div>
                 <div class="modal-body">
                     <img :src="qrCodeSrc" alt="QR Code" class="qr-code-img">

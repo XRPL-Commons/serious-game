@@ -2,13 +2,13 @@
 
   <div>
     <div class="m-2">
-      <div class="ml-2 text-lg font-title text-gray-600 dark:text-gray-300 mb-4">        
-        Welcome to the XRPL Commons commmunity quest. Congratulations you made it through !
+      <div class="ml-2 text-lg font-title text-gray-600 dark:text-gray-300 mb-4">
+        Congratulations, you cracked the code and mastered the XRPL Crossword ! 
         <br />
-        If you want to get you own, unique, Albers inspired, generative art NFT, you can claim it now.        
+        Your reward ? Your own, unique, generative art NFT !
       </div>      
       <UButton @click="$router.push('/albers/mint')" color="black" size="xl">
-        Claim your NFT...
+        Join the List of XRPL Legends, Mint Your Own Reward ! 
       </UButton>      
     </div>
     <template v-if="nfts && nfts.length > 0">

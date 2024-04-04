@@ -10,7 +10,7 @@
               We've prepared this NFT for you, it is ready to be transfered to you.
             </div>
             <UButton @click="claimNft" color="black" size="xl">
-              Initiate Tranfer...
+              Authorize XRPL Commons to mint the NFT for you
             </UButton>
           </template>
           <template v-else>
