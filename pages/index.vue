@@ -53,7 +53,7 @@ const submit = async () => {
   checking.value = true
 
   try {
-    const check = await API.checkSecret({ secret: secret.value })
+    const check = await API.checkSecret({ secret: secret.value.toLowerCase() })
     console.log({ check })
 
     if (check === true) {
