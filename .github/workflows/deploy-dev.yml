@@ -58,8 +58,8 @@ jobs:
           Group=nodejs
           Restart=always
           RestartSec=10
-          StandardOutput=syslog
-          StandardError=syslog
+          StandardOutput=journal
+          StandardError=journal
           SyslogIdentifier=albers.app
 
           [Install]
