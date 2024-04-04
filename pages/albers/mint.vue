@@ -214,7 +214,7 @@ async function redeemNft() {
   }
 }
 
-async function getNFTs({ xrplAddress }) {
+async function getNFTs({ xrplAddress }: any) {
   try {
     const result = await API.getNFTs({ xrplAddress })
     console.log('getNFTs', { result })
