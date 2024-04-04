@@ -26,23 +26,41 @@ const actions = [
     secretRequired: true
   },
   {
+    name: 'getNFTs',
+    path: '/api/art',
+    method: 'GET',
+    secretRequired: true
+  },
+  {
     name: 'listCollection',
     path: '/api/art',
     method: 'GET',
     secretRequired: true
   },
   {
-    name: 'signInXaman',
+    name: 'XamanSignIn',
     path: '/api/xaman/sign-in',
     method: 'POST',
     secretRequired: true
   },
   {
-    name: 'getAlbersURL',
+    name: 'XamanGetPayload',
+    path: '/api/xaman/payload',
+    method: 'GET',
+    secretRequired: true
+  },
+  {
+    name: 'createAlbersURL',
     path: '/api/art/image/create',
     method: 'POST',
     secretRequired: true
   },
+  {
+    name: 'albersURLExists',
+    path: '/api/art/image',
+    method: 'GET',
+    secretRequired: true
+  }
 
 ]
 
@@ -50,7 +68,7 @@ type Headers = {
   [key: string]: string;
 }
 
-const api: any = {}
+const api: { [key: string]: any } = {}
 actions.forEach(action => {
   api[action.name] = async (props: any) => {
     const headers: Headers = {

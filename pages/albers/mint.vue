@@ -1,20 +1,29 @@
 <template>
   <div class="rounded-full bg-transparent p-2 transition-all flex justify-center items-center mt-20">
-    <template v-if="isConnected">      
+    <template v-if="isConnected">
       <div class="nft-item" v-if="hasNft">
-        <div class="nft-button-item">
-          <button v-if="!ownsNft" @click="claimNft"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-4">
-            Claim my NFT Art
-          </button>
-        </div>        
-        <h1>Your XRPL Commons Magazine NFT Art</h1>
-        <br/>
-        <img :src="nftUri" alt="NFT Image" class="nft-image"/>
-        <div class="nft-info">
-          <p class="nft-address">{{ xrplAddress }}</p>
-          <p class="nft-date">Created at {{ formatDate(nftDate) }}</p>
+        <div class="m-2 text-center">
+          <template v-if="!ownsNft">
+            <div class="ml-2 md:text-2xl text-lg font-title text-gray-600 dark:text-gray-300 mb-4">
+              Congratulations!</div>
+            <div class="mb-4">
+              We've prepared this NFT for you, it is ready to be transfered to you.
+            </div>
+            <UButton @click="claimNft" color="black" size="xl">
+              Initiate Tranfer...
+            </UButton>
+          </template>
+          <template v-else>
+            <div class="ml-2 md:text-2xl text-lg font-title text-gray-600 dark:text-gray-300 mb-4">
+              Congratulations!<br />
+              You've
+              completed
+              the quest!</div>
+          </template>
         </div>
+        <template v-if="xrplAddress">
+          <albers :xrplAddress="xrplAddress" @loaded="onImageLoaded" />
+        </template>
       </div>
     </template>
     <QRCodeModal :visible="modalVisible" :qrCodeSrc="qrCodeSrc" :isConnection="isConnection"
@@ -22,7 +31,7 @@
     <div v-if="isMintingNFT"
       class="fixed inset-0 bg-white bg-opacity-50 z-50 flex justify-center items-center backdrop-blur">
       <div role="status" class="text-center">
-        <svg aria-hidden="true" class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+        <svg aria-hidden="true" class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-primary-600"
           viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
@@ -32,17 +41,20 @@
             fill="currentFill" />
         </svg>
         <span class="sr-only">Loading...</span>
-        <p class="text-lg font-semibold">Please wait for your NFT to be minted on XRPL...</p>
+        <p class="text-lg font-semibold">One moment while we prepare the transfert...</p>
       </div>
-    </div>    
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue"
 import { useFetch } from '@vueuse/core'
+//import { useRuntimeConfig } from "nitropack/dist/runtime/config";
+
+/* @ts-ignore */
 import API from '~/server/client'
-const router = useRouter()
+
 
 const isConnected = ref(false);
 const isConnection = ref(true);
@@ -54,6 +66,9 @@ const xrplAddress = ref('');
 const ws = ref(null);
 const nftBought = ref(false);
 
+// local image
+const localURI = ref(null)
+
 // Nft related info
 const hasNft = ref(false);
 const ownsNft = ref(false);
@@ -61,15 +76,8 @@ const nftId = ref('');
 const nftUri = ref('');
 const nftDate = ref('');
 
-// Authentication
-const magSecret = ref<string | null>(null)
-magSecret.value = localStorage.getItem('mag_secret')
 
 onMounted(async () => {
-  if (!magSecret) {
-    router.push('/')
-  }
-
   const localUserToken = localStorage.getItem('user_token');
   const localXrpAddress = localStorage.getItem('xrp_address');
   if (localUserToken && localXrpAddress) {
@@ -77,27 +85,28 @@ onMounted(async () => {
     userToken.value = localUserToken;
     xrplAddress.value = localXrpAddress;
     isConnection.value = false;
-    await getItem();
+    await getNFTs({ xrplAddress: xrplAddress.value })
   } else {
-    await generateQrCode();
-    // try {
-    //   const payload = await API.signInXaman({});
-    //   qrCodeSrc.value = payload.refs.qr_png;
-    //   modalVisible.value = true;
-    //   initializeWebSocket(payload.refs.websocket_status);
-    // } catch (error) {
-    //   alert('Error connecting to Xumm: ' + error);
-    // }
+    // await generateQrCode()
+    const payload = await API.XamanSignIn({})
+    console.log(payload)
+    const { qr_png, websocket_status } = payload.refs
+    qrCodeSrc.value = qr_png
+    modalVisible.value = true
+    await initializeWebSocket(websocket_status, () => {
+      console.log('to do')
+    })
   }
-});
-
-onUnmounted(() => {
-
 })
+
+const onImageLoaded = ({ url }) => {
+  console.log({ url })
+  localURI.value = url
+}
 
 async function generateQrCode() {
   try {
-    const payload = await API.signInXaman({});
+    const payload = await API.XamanSignIn({});
     qrCodeSrc.value = payload.refs.qr_png;
     modalVisible.value = true;
     initializeWebSocket(payload.refs.websocket_status);
@@ -106,50 +115,68 @@ async function generateQrCode() {
   }
 }
 
-async function initializeWebSocket(url: string) {
+async function initializeWebSocket(url: string, callback) {
   /* @ts-ignore */
   ws.value = new WebSocket(url);
   /* @ts-ignore */
   ws.value.onmessage = async (message) => {
-    let responseObj = JSON.parse(message.data);
-    if (responseObj.signed !== null && responseObj.signed !== undefined) {        
-      const { data } = await useFetch(`/api/payload?uuid=${responseObj.payload_uuidv4}`).json();            
+    let responseObj = JSON.parse(message.data)
+    console.log(responseObj)
+    const { signed, payload_uuidv4 } = responseObj
 
-      const runtimeConfig = useRuntimeConfig()
-      if (data.value.response.environment_nodetype === runtimeConfig.public.network) {
-        modalVisible.value = false;
-        isConnected.value = true;
-        isConnection.value = false;
-        xrplAddress.value = data.value.response.account;
-        localStorage.setItem('xrp_address', data.value.response.account);        
-        localStorage.setItem('user_token', data.value.application.issued_user_token);
-        userToken.value = data.value.application.issued_user_token;
-        if (data.value.payload.tx_type == 'SignIn') {
-          await getItem();
-          if (!hasNft.value) {
-            await mintNft();
-          }
-        } else if (data.value.payload.tx_type == 'NFTokenAcceptOffer') {
-          await redeemNft();
-        }
-      } else {
-        alert('Wrong network used: netwrok should be: ' + runtimeConfig.public.network);
-        await generateQrCode()
-        return;
-      }      
+    // only handle signed messages
+    if ((signed !== true) || !payload_uuidv4) {
+      return
     }
-  };
+
+    // get payload from backend
+    const data: any = await API.XamanGetPayload({ uuid: payload_uuidv4 })
+
+    console.log({ data })
+
+    // check network
+    /* @ts-ignore */
+    const runtimeConfig = useRuntimeConfig()
+    if (data.response.environment_nodetype !== runtimeConfig.public.network) {
+      // regen qr code
+      alert('Wrong network used: network should be: ' + runtimeConfig.public.network);
+      await generateQrCode()
+      return
+    }
+
+    // update vue variables
+    modalVisible.value = false;
+    isConnected.value = true;
+    isConnection.value = false;
+    xrplAddress.value = data.response.account;
+
+    // save xrplAddress
+    localStorage.setItem('xrp_address', data.response.account);
+    localStorage.setItem('user_token', data.application.issued_user_token);
+    userToken.value = data.application.issued_user_token
+
+    if (data.payload.tx_type == 'SignIn') {
+      await getNFTs({ xrplAddress: xrplAddress.value });
+      if (!hasNft.value) {
+        await mintNft();
+      }
+    } else if (data.payload.tx_type == 'NFTokenAcceptOffer') {
+      await redeemNft();
+    }
+  }
+
+
 };
 
 async function claimNft() {
   try {
-    isMintingNFT.value = true;  
+    isMintingNFT.value = true;
     const { payload } = await API.claimNFT({ userToken: userToken.value, xrplAddress: xrplAddress.value })
     console.log(payload);
     qrCodeSrc.value = payload.refs.qr_png;
     modalVisible.value = true;
     isMintingNFT.value = false;
-    initializeWebSocket(payload.refs.websocket_status);    
+    initializeWebSocket(payload.refs.websocket_status);
   } catch (error) {
     console.log(error)
     alert("Error claiming NFT");
@@ -159,8 +186,13 @@ async function claimNft() {
 async function mintNft() {
   try {
     isMintingNFT.value = true;
-    await API.createImage({ xrplAddress: xrplAddress.value })
+
     const { nftId: id, nftUri: uri, mintedAt } = await API.createNFT({ xrplAddress: xrplAddress.value })
+    console.log('minted', {
+      id,
+      uri,
+      mintedAt
+    })
     hasNft.value = true;
     nftUri.value = uri;
     nftId.value = id;
@@ -173,7 +205,7 @@ async function mintNft() {
 }
 
 async function redeemNft() {
-  try {    
+  try {
     await API.redeemNFT({ xrplAddress: xrplAddress.value })
     ownsNft.value = true;
   } catch (error) {
@@ -182,9 +214,10 @@ async function redeemNft() {
   }
 }
 
-async function getItem() {
+async function getNFTs({ xrplAddress }) {
   try {
-    const result = await API.listCollection({})
+    const result = await API.getNFTs({ xrplAddress })
+    console.log('getNFTs', { result })
     if (result && result.length > 0) {
       hasNft.value = true;
       nftUri.value = result[0].uri;
@@ -197,7 +230,7 @@ async function getItem() {
       await mintNft();
     }
   } catch (error) {
-    alert("Error getting NFT arts: " + error);    
+    alert("Error getting NFT arts: " + error);
   }
 }
 </script>
@@ -233,7 +266,8 @@ async function getItem() {
   text-align: center;
 }
 
-.nft-address, .nft-date {
+.nft-address,
+.nft-date {
   font-style: italic;
   font-size: 0.75rem;
   display: block;

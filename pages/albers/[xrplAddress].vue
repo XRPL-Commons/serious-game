@@ -9,6 +9,7 @@
 import { ref, computed, onMounted, onUnmounted } from "vue"
 import { useRoute } from 'vue-router'
 
+/* @ts-ignore */
 definePageMeta({
   layout: 'fullscreen'
 })
@@ -26,23 +27,6 @@ const onImageLoaded = (v) => {
 
 </script>
 <style>
-body {
-  margin: 0;
-  /* Removes the default margin */
-  padding: 0;
-  /* Removes the default padding */
-  height: 100vh;
-  /* Sets the height to 100% of the viewport height */
-  overflow: hidden;
-  /* Hides any content that overflows the element's box */
-  display: flex;
-  /* Enables Flexbox layout */
-  justify-content: center;
-  /* Centers content horizontally within the container */
-  align-items: center;
-  /* Centers content vertically within the container */
-}
-
 canvas {
   display: block;
   /* Changes the default display to block, which removes extra space beneath the canvas typical of inline elements */

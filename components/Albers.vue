@@ -19,13 +19,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 import API from '~/server/client'
 import { sketch } from '~/sketches/xalbers'
 import p5 from "p5"
 
-// define xrplAddress 
+const updateColors = inject('updateColors', () => { })
 
+// define xrplAddress 
 const props = defineProps({
   xrplAddress: String
 })
@@ -33,6 +34,7 @@ const props = defineProps({
 const emit = defineEmits(['loaded']);
 
 const { xrplAddress } = props
+console.log('albers component', { xrplAddress })
 
 // authentication
 const magSecret = ref<string | null>(null)
@@ -41,34 +43,48 @@ magSecret.value = localStorage.getItem('mag_secret')
 const canvas = ref(null)
 
 let myp5: any = null
-const colors = ref()
 
 const albersURI = ref(null)
 
 onMounted(() => {
-  nextTick(() => {
-    console.log(canvas.value)
+  nextTick(async () => {
+
     myp5 = new p5(sketch({
       xrplAddress,
       colorCallback: (sketchColors: any) => {
-        colors.value = sketchColors
-        console.log({ sketchColors })
+        updateColors(sketchColors)
+      },
+      onLoaded: ({ imageData }) => {
+        onSketchLoaded({ myp5, imageData })
       }
-    }), canvas.value);
-    console.log(myp5)
-    setTimeout(async () => {
-      let imageData = myp5.canvas.toDataURL(); // Defaults to PNG format
-      const { url } = await API.getAlbersURL({
-        xrplAddress,
-        imageData
-      })
-      albersURI.value = url
-      console.log(url)
-      emit('loaded', url)
-    }, 2000)
-  })
-});
+    }), canvas.value)
 
+    console.log(canvas.value)
+
+  })
+})
+
+const onSketchLoaded = async ({ myp5, imageData }: { myp5: any, imageData: string }) => {
+  // let imageData = myp5.canvas.toDataURL() // Defaults to PNG format
+  console.log({ myp5, imageData })
+  // check if the url exists
+  const imageExists = await API.albersURLExists({ xrplAddress })
+  console.log({ imageExists })
+  if (imageExists === true) {
+    console.log(`Image for ${xrplAddress} existed`)
+    albersURI.value = `https://albers.fra1.cdn.digitaloceanspaces.com/alberx-${xrplAddress}.png`
+    return
+  } else {
+    // if it doesn't then run through the creation flow
+    const { url } = await API.createAlbersURL({
+      xrplAddress,
+      imageData
+    })
+    albersURI.value = url
+    console.log({ url })
+  }
+  emit('loaded', { url })
+}
 onUnmounted(() => {
   if (myp5) {
     myp5.remove()
@@ -77,24 +93,8 @@ onUnmounted(() => {
 
 </script>
 <style>
-body {
-  margin: 0;
-  /* Removes the default margin */
-  padding: 0;
-  /* Removes the default padding */
-  height: 100vh;
-  /* Sets the height to 100% of the viewport height */
-  overflow: hidden;
-  /* Hides any content that overflows the element's box */
-  display: flex;
-  /* Enables Flexbox layout */
-  justify-content: center;
-  /* Centers content horizontally within the container */
-  align-items: center;
-  /* Centers content vertically within the container */
-}
-
 canvas {
+  display: block;
   /* Changes the default display to block, which removes extra space beneath the canvas typical of inline elements */
   max-width: 100%;
   /* Sets the maximum width to 100% of the parent element, preventing the canvas from exceeding the width of the viewport */
