@@ -26,7 +26,7 @@
         </template>
       </div>
     </template>
-    <QRCodeModal :visible="modalVisible" :qrCodeSrc="qrCodeSrc" :isConnection="isConnection"
+    <QRCodeModal :visible="modalVisible" :qrCodeSrc="qrCodeSrc" :isConnection="isConnection" :mobileUrl="mobileUrl"
       @close="modalVisible = false" />
     <div v-if="isMintingNFT"
       class="fixed inset-0 bg-white bg-opacity-50 z-50 flex justify-center items-center backdrop-blur">
@@ -55,11 +55,13 @@ import { useFetch } from '@vueuse/core'
 /* @ts-ignore */
 import API from '~/server/client'
 
+// Xaman app values
+const modalVisible = ref(false);
+const qrCodeSrc = ref('');
+const mobileUrl = ref('');
 
 const isConnected = ref(false);
 const isConnection = ref(true);
-const modalVisible = ref(false);
-const qrCodeSrc = ref('');
 const isMintingNFT = ref(false);
 const userToken = ref('');
 const xrplAddress = ref('');
@@ -90,9 +92,12 @@ onMounted(async () => {
     // await generateQrCode()
     const payload = await API.XamanSignIn({})
     console.log(payload)
+    const { always } = payload.next;
     const { qr_png, websocket_status } = payload.refs
     qrCodeSrc.value = qr_png
     modalVisible.value = true
+    mobileUrl.value = always;
+
     await initializeWebSocket(websocket_status, () => {
       console.log('to do')
     })

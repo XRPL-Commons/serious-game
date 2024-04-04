@@ -8,7 +8,7 @@
                 </div>
                 <div class="modal-body">
                     <img :src="qrCodeSrc" alt="QR Code" class="qr-code-img">
-                    <p v-if="isConnection">Open Xaman wallet app and scan this QR code</p>
+                    <p v-if="isConnection">Open Xaman wallet app and scan this QR code or open the <a :href="mobileUrl" target="_blank" class="link-style">mobile app</a></p>
                     <p v-if="!isConnection">Open Xaman wallet app and scan this QR code or wait for a notification</p>
                 </div>
             </div>
@@ -18,7 +18,7 @@
   
 <script>
 export default {
-props: ['visible', 'qrCodeSrc', 'isConnection'],
+props: ['visible', 'qrCodeSrc', 'isConnection', 'mobileUrl'],
 methods: {
     closeModal() {
         this.$emit('close');
@@ -97,5 +97,14 @@ methods: {
 
 .modal-body p, .modal-header h2 {
   color: black;
+}
+
+.link-style {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+}
+.link-style:hover {
+  color: darkblue;
 }
 </style>
