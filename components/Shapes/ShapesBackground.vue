@@ -1,6 +1,6 @@
 <template>
   <div
-    class="blur-3xl -z-10 absolute w-full top-0 right-0 bottom-0 left-0 overflow-hidden grid grid-flow-row-dense grid-cols-3 grid-rows-3">
+    class="blur-3xl -z-10 fixed w-full top-0 right-0 bottom-0 left-0 overflow-hidden grid grid-flow-row-dense grid-cols-3 grid-rows-3">
 
     <template v-for="{ shape, color } in shapesAndColors">
       <div class="inline-block animatedDiv">

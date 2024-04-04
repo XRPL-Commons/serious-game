@@ -2,28 +2,37 @@
 
   <div>
     <div class="m-2">
-      <div class="ml-2 text-lg font-title text-gray-600 dark:text-gray-300 mb-4">
-        Congratulations, you cracked the code and mastered the XRPL Crossword ! 
+      <div class="ml-2 text-md text-center font-title text-gray-600 dark:text-gray-300 mb-4">
+        Congratulations, you made it through!
+
         <br />
-        Your reward ? Your own, unique, generative art NFT !
-      </div>      
-      <UButton @click="$router.push('/albers/mint')" color="black" size="xl">
-        Join the List of XRPL Legends, Mint Your Own Reward ! 
-      </UButton>      
-    </div>
-    <template v-if="nfts && nfts.length > 0">
-      <div class="">
-        <div v-for="nft in nfts" :key="nft.nftId" class="inline-block m-2">
-          <NuxtLink :to="`/albers/${nft.xrplAddress}`">
-            <img :src="nft.uri" alt="NFT Image" class="nft-image" />
-            <div class="nft-info">
-              <p class="nft-address">{{ nft.xrplAddress }}</p>
-              <p class="nft-date">Created at {{ formatDate(nft.mintedAt) }}</p>
-            </div>
-          </NuxtLink>
-        </div>
+        If you want to get your own unique, Albers-inspired, generative art NFT, you can claim it now.
+
+        <br />
+        <br />
+        <UButton @click="$router.push('/albers/mint')" color="black" size="xl" class="">
+          Claim your NFT
+        </UButton>
+        <br />
+        <br />
+        Join the legends
       </div>
-    </template>
+
+    </div>
+    <div class="text-center">
+      <template v-if="nfts && nfts.length > 0">
+        <div class="inline-block">
+          <div v-for="nft in nfts" :key="nft.nftId" class="inline-block m-2">
+            <NuxtLink :to="`/albers/${nft.xrplAddress}`">
+              <img :src="nft.uri" alt="NFT Image" class="nft-image" />
+              <div class="nft-info">
+                <p class="nft-date">{{ formatDate(nft.mintedAt) }}</p>
+              </div>
+            </NuxtLink>
+          </div>
+        </div>
+      </template>
+    </div>
   </div>
 </template>
 
@@ -34,6 +43,7 @@ import { ref, onMounted, onUnmounted } from "vue"
 /* @ts-ignore */
 import API from '~/server/client'
 import { useRouter } from 'vue-router'
+
 
 const router = useRouter();
 

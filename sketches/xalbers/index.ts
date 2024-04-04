@@ -259,8 +259,8 @@ export const sketch: any = ({
     // p5 initialize
     p.noLoop()
     p.pixelDensity(1)
-    p.colorMode(p.HSB);
-    p.strokeCap(p.ROUND);
+    p.colorMode(p.HSB)
+    p.strokeCap(p.ROUND)
 
     monoChrome = myRandom(0, 1) < 0.95 ? false : true
     camaieux = myRandom(0, 1) < 0.75 ? false : true
@@ -272,6 +272,7 @@ export const sketch: any = ({
     loadPalette()
     colorCallback(colors)
     p.createCanvas(w, h)
+    p.noLoop()
   }
 
   let col: any
@@ -282,8 +283,8 @@ export const sketch: any = ({
     bgColor = bgColors[randz]
     p.background(bgColor)
 
-    let rows = randomInt(2, 8);
-    let cols = randomInt(3, 4);
+    let rows = randomInt(2, 8)
+    let cols = randomInt(3, 4)
     let shapeSize = w / (cols + 1)
 
     if (DEBUG) {

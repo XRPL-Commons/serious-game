@@ -11,12 +11,13 @@
     <div class="text-center">
       <!-- <div class="w-lg inline-block p-8"> -->
       <div class="w-lg inline-block text-lg text-gray-600 dark:text-gray-300">
-        <p class="mb-4 font-title">Enter the secret code to unlock your special reward !</p>
-        <UInput color="primary" variant="outline" v-model="secret" placeholder="Enter the mag secret..." type="text"
-          class="text-center bg-gray-500/10" size="xl" :class="{ 'input-error': isSecretIncorrect }"
-          @keyup.enter="submit" :ui="{ placeholder: 'placeholder-gray-600 dark:placeholder-gray-300' }" />
+        <p class="font-title text-md m-6">Welcome to the XRPL Commons Community Quest.</p>
+        <UInput color="primary" variant="outline" v-model="secret" placeholder="Enter the secret code..." type="text"
+          class="flex justify-center items-center bg-gray-500/10 mx-4 font-title" size="xl"
+          :class="{ 'input-error': isSecretIncorrect }" @keyup.enter="submit"
+          :ui="{ base: 'text-center', placeholder: 'placeholder- gray - 500 dark: placeholder - gray - 400' }" />
         <br />
-        <UButton label="Submit Answer" @click="submit" size="lg" :disabled="checking" />
+        <UButton label="Submit Answer" @click="submit" size="lg" :disabled="checking" class="font-title" />
       </div>
     </div>
   </div>
@@ -52,7 +53,6 @@ const submit = async () => {
 
   try {
     const check = await API.checkSecret({ secret: secret.value.toLowerCase() })
-    console.log({ check })
 
     if (check === true) {
       console.log('success!')
