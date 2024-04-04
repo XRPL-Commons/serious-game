@@ -2,9 +2,14 @@
 
   <div>
     <div class="m-2">
+      <div class="ml-2 text-lg font-title text-gray-600 dark:text-gray-300 mb-4">        
+        Welcome to the XRPL Commons commmunity quest. Congratulations you made it through !
+        <br />
+        If you want to get your own, unique NFT Generic Art please claim it with button below.
+      </div>      
       <UButton @click="$router.push('/albers/mint')" color="black" size="xl">
         Claim your NFT...
-      </UButton>
+      </UButton>      
     </div>
     <template v-if="nfts && nfts.length > 0">
       <div class="">
