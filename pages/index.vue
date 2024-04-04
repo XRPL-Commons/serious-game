@@ -33,6 +33,7 @@ const checking = ref(false)
 const isSecretIncorrect = ref(false)
 let timeout: any
 
+
 const magSecret = ref<string | null>(null)
 magSecret.value = localStorage.getItem('mag_secret')
 
