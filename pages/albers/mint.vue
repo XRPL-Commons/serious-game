@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-full bg-transparent p-2 transition-all flex justify-center items-center mt-20">
+  <div class="rounded-full bg-transparent p-2 transition-all flex justify-center items-center mt-20 flex-col">
     <template v-if="xrplAddress">
       <div class="nft-item" v-if="hasNft">
         <div class="m-2 text-center">
@@ -21,13 +21,11 @@
               the quest!</div>
           </template>
         </div>
-        <template v-if="xrplAddress">
-          <NuxtLink :to="`/albers/${xrplAddress}`">
-            <albers :xrplAddress="xrplAddress" @loaded="onImageLoaded" />
-          </NuxtLink>
-          <div class="text-center font-title text-xl">Rank #123</div>
-        </template>
       </div>
+      <NuxtLink :to="`/albers/${xrplAddress}`">
+        <albers :xrplAddress="xrplAddress" @loaded="onImageLoaded" />
+      </NuxtLink>
+      <div class="text-center font-title text-xl">Rank #123</div>
     </template>
 
     <div v-if="isMintingNFT"

@@ -1,4 +1,5 @@
 import { saveFile } from '~/server/connectors/spaces'
+import { checkImageExists } from '~/server/api/art/image/index.get.ts'
 
 export default defineEventHandler(async (event) => {
 	console.log('image created')
@@ -23,6 +24,9 @@ export default defineEventHandler(async (event) => {
 	const fileContent = Buffer.from(base64Data, 'base64')
 
 	const url = await saveFile({ fileName, fileContent })
+
+	// make sure the file exists
+	console.log(url, await checkImageExists({ xrplAddress }))
 
 	return JSON.stringify({ url })
 })
