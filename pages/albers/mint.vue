@@ -21,8 +21,8 @@
               the quest!<br />
             </div>
             <div class="ml-2 md:text-xl text-lg font-title text-gray-600 dark:text-gray-300 mb-4">
-              Share on X and come see us <br />              
-              at our next <a href="https://www.xrpl-commons.org/training" target="_blank">training</a> to claim a prize  
+              Share on X and come see us <br />
+              at our next <a href="https://www.xrpl-commons.org/training" target="_blank" class="link-style">training</a> to claim a prize  
             </div>          
               <UButton @click="shareOnTwitter" color="blue" class="mb-2">Share on X</UButton>
           </template>
@@ -298,5 +298,14 @@ function shareOnTwitter() {
 
 .nft-button-item {
   text-align: center;
+}
+
+.link-style {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+}
+.link-style:hover {
+  color: darkblue;
 }
 </style>
