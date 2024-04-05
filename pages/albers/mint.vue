@@ -53,12 +53,21 @@
 import { ref, onMounted, onUnmounted } from "vue"
 /* @ts-ignore */
 import { QRCodeModal } from '#components'
+/* @ts-ignore */
+import API from '~/server/client'
+
+// flow:
+// check if wallet connected: xrplAddress?
+// -> connectWallet
+// check if user has an NFT: userNFT.uri?
+// =-> show Albers, wait for onImageLoaded to Mint and then CreateOffer in the background
+// => when available augment view with updated info from the userNFT
+// => display Claim button
+// => ClaimNFT flow
+// display Albers with info from userNFT
 
 /* @ts-ignore */
 const modal = useModal()
-
-/* @ts-ignore */
-import API from '~/server/client'
 
 // Xaman app values
 const modalVisible = ref(false);
@@ -90,13 +99,6 @@ onMounted(async () => {
     await getNFTs({ xrplAddress: xrplAddress.value })
   } else {
     await connectWallet()
-    // const payload = await API.XamanSignIn({})
-    // console.log(payload)
-    // const { always } = payload.next;
-    // const { qr_png, websocket_status } = payload.refs
-    // qrCodeSrc.value = qr_png
-    // modalVisible.value = true
-    // mobileUrl.value = always;
   }
 })
 
@@ -143,9 +145,6 @@ async function connectWallet() {
   }
 }
 
-// <QRCodeModal :visible="modalVisible" :qrCodeSrc="qrCodeSrc" :isConnection="isConnection" :mobileUrl="mobileUrl"
-//       @close="modalVisible = false" />
-
 async function initializeWebSocket({ url, onMessage }: { url: string, onMessage?: any }) {
   /* @ts-ignore */
   ws.value = new WebSocket(url);
@@ -175,29 +174,42 @@ async function initializeWebSocket({ url, onMessage }: { url: string, onMessage?
       return
     }
 
-    // update vue variables
-    // modalVisible.value = false;
-    // isConnected.value = true;
-    // isConnection.value = false;
-
-
-
     await onMessage(data)
-    // if (data.payload.tx_type == 'SignIn') {
-    //   // await getNFTs({ xrplAddress: xrplAddress.value });
-    //   // if (!hasNft.value) {
-    //   //   await mintNft();
-    //   // }
-    // } else if (data.payload.tx_type == 'NFTokenAcceptOffer') {
-    //   await redeemNft();
-    // }
   }
 }
 
-async function claimNft() {
+// todo: refactor to use API.mintNFT instead of createNFT 
+async function mintNft() {
   try {
     isMintingNFT.value = true;
-    const { payload } = await API.claimNFT({ userToken: userToken.value, xrplAddress: xrplAddress.value })
+    const { nftId: id, nftUri: uri, mintedAt } = await API.createNFT({ xrplAddress: xrplAddress.value })
+    console.log('minted', {
+      id,
+      uri,
+      mintedAt
+    })
+    // todo: remove as not needed
+    hasNft.value = true;
+    nftUri.value = uri;
+    nftId.value = id;
+    nftDate.value = mintedAt
+
+  } catch (error) {
+    console.log(error)
+    alert("Error minting NFT");
+  } finally {
+    isMintingNFT.value = false;
+  }
+}
+
+// todo: refactor to use QRModal with modal.open
+async function claimNft() {
+  try {
+    isMintingNFT.value = true
+    const { payload } = await API.claimNFT({
+      userToken: userToken.value,
+      xrplAddress: xrplAddress.value
+    })
     console.log(payload);
     qrCodeSrc.value = payload.refs.qr_png;
     modalVisible.value = true;
@@ -209,30 +221,12 @@ async function claimNft() {
   }
 };
 
-async function mintNft() {
-  try {
-    isMintingNFT.value = true;
 
-    const { nftId: id, nftUri: uri, mintedAt } = await API.createNFT({ xrplAddress: xrplAddress.value })
-    console.log('minted', {
-      id,
-      uri,
-      mintedAt
-    })
-    hasNft.value = true;
-    nftUri.value = uri;
-    nftId.value = id;
-    nftDate.value = mintedAt
-    isMintingNFT.value = false;
-  } catch (error) {
-    console.log(error)
-    alert("Error minting NFT");
-  }
-}
-
+// refactor ownsNFT to be a computable based on userNFT
 async function redeemNft() {
   try {
     await API.redeemNFT({ xrplAddress: xrplAddress.value })
+    // todo: change this to a computed based on 
     ownsNft.value = true;
   } catch (error) {
     console.log(error)
@@ -240,6 +234,11 @@ async function redeemNft() {
   }
 }
 
+// todo: refactor to be functional with no side effects
+// use API.getNFT as a standalone route, keep API.getNFTs for listing
+// on the backend this mints the NFT
+// const userNFT.value = await getNFT({ xrplAddress }) 
+// returns => { uri, nftIf, mintedAt }
 async function getNFTs({ xrplAddress }: any) {
   try {
     const result = await API.getNFTs({ xrplAddress })
