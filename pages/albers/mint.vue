@@ -18,7 +18,13 @@
               Congratulations!<br />
               You've
               completed
-              the quest!</div>
+              the quest!<br />
+            </div>
+            <div class="ml-2 md:text-xl text-lg font-title text-gray-600 dark:text-gray-300 mb-4">
+              Share on X and come see us <br />              
+              at our next <a href="https://www.xrpl-commons.org/training" target="_blank">training</a> to claim a prize  
+            </div>          
+              <UButton @click="shareOnTwitter" color="blue" class="mb-2">Share on X</UButton>
           </template>
         </div>
         <template v-if="xrplAddress">
@@ -237,6 +243,18 @@ async function getNFTs({ xrplAddress }: any) {
   } catch (error) {
     alert("Error getting NFT arts: " + error);
   }
+}
+
+function shareOnTwitter() {
+  const breaks = "%0A";
+  const text1 = encodeURIComponent("I cracked the code in the latest XRPL Community Mag and won a special generative art NFT!");
+  const text2 = encodeURIComponent("Check it out at: https://albers.xrpl.quest");
+  const text3 = encodeURIComponent("Claim yours now: https://xrpl.at/commons-mag-02");
+  
+  const hashtags = "NFT,XRPL";
+  const via = "xrpl_commons";
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${text1}${breaks}${text2}${breaks}${breaks}${text3}${breaks}${breaks}&hashtags=${hashtags}&via=${via}`;
+  window.open(twitterUrl, '_blank');
 }
 </script>
 
