@@ -22,16 +22,18 @@
           <template v-else>
             <div class="ml-2 md:text-2xl text-lg font-title text-gray-600 dark:text-gray-300 mb-4">
               Congratulations!<br />
+
               You've completed the quest!</div>
             <div class="ml-2 md:text-xl text-lg font-title text-gray-600 dark:text-gray-300 mb-4">
               Share on X and come see us <br />
-              at our next <a href="https://www.xrpl-commons.org/training" target="_blank"
-                class="link-style">training</a> to claim a prize
+              at our next <a href="https://www.xrpl-commons.org/training" target="_blank" class="white">training</a> to
+              claim a prize
             </div>
             <ShareOnX />
+
           </template>
         </template>
-        <template v-else>One moment while we prepare your NFT...</template>
+        <template v-else>One moment while we check on your NFT status...</template>
       </div>
 
       <NuxtLink :to="`/albers/${xrplAddress}`">
@@ -279,7 +281,6 @@ async function redeemNft({ xrplAddress }) {
   }
 }
 
-
 </script>
 
 <style scoped>
@@ -322,5 +323,15 @@ async function redeemNft({ xrplAddress }) {
 
 .nft-button-item {
   text-align: center;
+}
+
+.link-style {
+  cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+}
+
+.link-style:hover {
+  color: darkblue;
 }
 </style>

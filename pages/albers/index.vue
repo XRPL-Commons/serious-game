@@ -24,7 +24,7 @@
         <div class="inline-block">
           <div v-for="nft in nfts" :key="nft.nftId" class="inline-block m-2">
             <NuxtLink :to="`/albers/${nft.xrplAddress}`">
-              <img :src="nft.uri" alt="NFT Image" class="nft-image" />
+              <img :src="nft.uri" alt="NFT Image" class="nft-image rounded-lg" />
               <div class="nft-info">
                 <p class="nft-date">{{ formatDate(nft.mintedAt) }}</p>
                 <div class="text-center font-title text-lg" v-if="nft.rank">Rank #{{ nft.rank }}
