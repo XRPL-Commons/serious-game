@@ -24,7 +24,8 @@ export default defineEventHandler(async (event) => {
 	const fileContent = Buffer.from(base64Data, 'base64')
 
 	const mainFile = await sharp(fileContent)
-		.webp({ quality: 80 })
+		.webp({ quality: 90 })
+		.toBuffer()
 
 	const url = await saveFile({
 		fileName: `alberx-${xrplAddress}.webp`,
@@ -38,7 +39,8 @@ export default defineEventHandler(async (event) => {
 			height: 800,
 			fit: 'inside',
 			background: { r: 255, g: 255, b: 255, alpha: 0 }
-		}).toBuffer()
+		})
+		.toBuffer()
 	const thumbnail = await saveFile({
 		fileName: `alberx-${xrplAddress}-thumbnail.webp`,
 		fileContent: thumbnailFile
