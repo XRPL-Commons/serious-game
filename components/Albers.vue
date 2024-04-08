@@ -72,7 +72,7 @@ const onSketchLoaded = async ({ myp5, imageData }: { myp5: any, imageData: strin
   console.log({ imageExists })
   if (imageExists === true) {
     console.log(`Image for ${xrplAddress} existed`)
-    albersURI.value = `https://albers.fra1.cdn.digitaloceanspaces.com/alberx-${xrplAddress}.jpg`
+    albersURI.value = `https://albers.fra1.cdn.digitaloceanspaces.com/alberx-${xrplAddress}.webp`
   } else {
     // if it doesn't then run through the creation flow
     const { url } = await API.createAlbersURL({

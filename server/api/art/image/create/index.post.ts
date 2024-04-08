@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
 	}
 	console.log({ imageData, xrplAddress })
 
-	const fileName = `alberx-${xrplAddress}.jpg`
+	const fileName = `alberx-${xrplAddress}.webp`
 	const base64Data = imageData.replace(/^data:image\/\w+;base64,/, "")
 	const fileContent = Buffer.from(base64Data, 'base64')
 
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
 		background: { r: 255, g: 255, b: 255, alpha: 0 }
 	}).toBuffer()
 	const thumbnail = await saveFile({
-		fileName: `alberx-${xrplAddress}-thumbnail.jpg`,
+		fileName: `alberx-${xrplAddress}-thumbnail.webp`,
 		fileContent: thumbnailFile
 	})
 

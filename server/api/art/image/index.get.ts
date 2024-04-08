@@ -1,7 +1,7 @@
 
 export const checkImageExists = async ({ xrplAddress }: { xrplAddress: string }) => {
-  const uri = `https://albers.fra1.cdn.digitaloceanspaces.com/alberx-${xrplAddress}.jpg`
-  const thumbnail = `https://albers.fra1.cdn.digitaloceanspaces.com/alberx-${xrplAddress}-thumbnail.jpg`
+  const uri = `https://albers.fra1.cdn.digitaloceanspaces.com/alberx-${xrplAddress}.webp`
+  const thumbnail = `https://albers.fra1.cdn.digitaloceanspaces.com/alberx-${xrplAddress}-thumbnail.webp`
 
   const check = await fetch(uri, { method: 'HEAD' })
   if (!check || check.status !== 200) {
