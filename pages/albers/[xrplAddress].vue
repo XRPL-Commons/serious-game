@@ -1,18 +1,26 @@
 <template>
   <div v-if="!magSecret">This page requires the mag secret.</div>
   <template v-else>
-    <albers :xrpl-address="xrplAddress" @loaded="onImageLoaded" />
+    <div class="text-center">
+      <div class="inline-block">
+        <albers :xrpl-address="xrplAddress" @loaded="onImageLoaded" />
+      </div>
+      <div class="text-center font-title text-lg" v-if="nft?.rank">Rank #{{ nft?.rank }}</div>
+    </div>
   </template>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from "vue"
 import { useRoute } from 'vue-router'
+/* @ts-ignore */
+import API from '~/server/client'
 
 /* @ts-ignore */
 definePageMeta({
   layout: 'fullscreen'
 })
+
 
 const { params } = useRoute();
 const xrplAddress = computed(() => params.xrplAddress || 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh')
@@ -21,9 +29,36 @@ const xrplAddress = computed(() => params.xrplAddress || 'rHb9CJAWyB4rj91VRWn96D
 const magSecret = ref<string | null>(null)
 magSecret.value = localStorage.getItem('mag_secret')
 
-const onImageLoaded = (v) => {
-  console.log('onImageLoaded', v)
+const nft: any = ref(null)
+
+onMounted(async () => {
+  const nfts = await API.getNFTs({ xrplAddress: xrplAddress.value })
+  if (nfts && nfts.length > 0) {
+    nft.value = nfts[0]
+  }
+})
+
+const twitterUrl = ref('')
+
+const onImageLoaded = ({ url }) => {
+  console.log('onImageLoaded', url)
+  twitterUrl.value = url
 }
+
+/* @ts-ignore */
+useHead({
+  title: 'Community Mag Quest',
+  meta: [
+    { name: 'description', content: 'A unique Albers inspired generative art NFT based on your xrpl address.' },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:site', content: '@xrpl_commons' },
+    { name: 'twitter:title', content: 'Community Mag Quest' },
+    { name: 'twitter:description', content: 'A unique Albers inspired generative art NFT based on your xrpl address.' },
+    { name: 'twitter:creator', content: '@xrpl_commons' },
+    { name: 'twitter:image', content: `${twitterUrl.value}` },
+    { name: 'twitter:domain', content: 'xrpl-commons.org' }
+  ]
+})
 
 </script>
 <style>

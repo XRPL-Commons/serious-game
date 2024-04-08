@@ -23,6 +23,12 @@
             <div class="ml-2 md:text-2xl text-lg font-title text-gray-600 dark:text-gray-300 mb-4">
               Congratulations!<br />
               You've completed the quest!</div>
+            <div class="ml-2 md:text-xl text-lg font-title text-gray-600 dark:text-gray-300 mb-4">
+              Share on X and come see us <br />
+              at our next <a href="https://www.xrpl-commons.org/training" target="_blank"
+                class="link-style">training</a> to claim a prize
+            </div>
+            <ShareOnX />
           </template>
         </template>
         <template v-else>One moment while we prepare your NFT...</template>
@@ -272,6 +278,8 @@ async function redeemNft({ xrplAddress }) {
     alert("Error redeeming NFT");
   }
 }
+
+
 </script>
 
 <style scoped>

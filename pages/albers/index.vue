@@ -27,6 +27,8 @@
               <img :src="nft.uri" alt="NFT Image" class="nft-image" />
               <div class="nft-info">
                 <p class="nft-date">{{ formatDate(nft.mintedAt) }}</p>
+                <div class="text-center font-title text-lg" v-if="nft.rank">Rank #{{ nft.rank }}
+                </div>
               </div>
             </NuxtLink>
           </div>
@@ -53,15 +55,14 @@ interface NftObject {
   nftId: string;
   uri: string;
   xrplAddress: string;
-  mintedAt: string
+  mintedAt: string;
+  rank: number;
 }
 
 onMounted(async () => {
   try {
-
     const result = await API.listCollection({})
     nfts.value = result
-    console.log(nfts)
   } catch (error) {
     alert("Error getting NFT arts: " + error);
   }
