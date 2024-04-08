@@ -14,14 +14,14 @@ const actions = [
     secretRequired: true
   },
   {
-    name: 'claimNFT',
-    path: '/api/art/claim',
+    name: 'createOffer',
+    path: '/api/art/createOffer',
     method: 'POST',
     secretRequired: true
   },
   {
-    name: 'redeemNFT',
-    path: '/api/art/redeem',
+    name: 'claimNFT',
+    path: '/api/art/claim',
     method: 'POST',
     secretRequired: true
   },
@@ -40,12 +40,18 @@ const actions = [
   {
     name: 'XamanSignIn',
     path: '/api/xaman/sign-in',
-    method: 'POST',
+    method: 'GET',
     secretRequired: true
   },
   {
     name: 'XamanGetPayload',
     path: '/api/xaman/payload',
+    method: 'GET',
+    secretRequired: true
+  },
+  {
+    name: 'XamanGetAcceptNFTOffer',
+    path: '/api/xaman/acceptNFTOffer',
     method: 'GET',
     secretRequired: true
   },

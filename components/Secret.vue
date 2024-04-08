@@ -20,7 +20,7 @@ magSecret.value = localStorage.getItem('mag_secret')
 const removeSecret = () => {
   localStorage.removeItem('mag_secret')
   localStorage.removeItem('user_token')
-  localStorage.removeItem('xrp_address')
+  localStorage.removeItem('xrpl_address')
   router.push('/')
 }
 </script>

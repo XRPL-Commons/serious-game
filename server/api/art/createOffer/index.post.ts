@@ -2,13 +2,13 @@ import { createOffer, mintNft } from '~/server/connectors/wallet'
 import { getXumm } from '@/server/utils'
 import { AddObject, NFT, UpdateOffer, GetObjects } from '~/server/connectors/mongo';
 
-const claimNFT = async (userToken: string, xrplAddress: string) => {
+const createNFTOffer = async ({ xrplAddress }: { xrplAddress: string }) => {
     try {
         let xumm = getXumm();
 
         // Get NFT object
-        const nft = await GetObjects();
-        console.log(nft);
+        const nft = await GetObjects(xrplAddress);
+        console.log(xrplAddress, nft);
         if (nft && nft.length > 0) {
             // Create offer
             let nftObject = nft[0];
@@ -18,17 +18,17 @@ const claimNFT = async (userToken: string, xrplAddress: string) => {
             // Update DB
             await UpdateOffer(nftObject.nftId, nftObject);
 
-            const payload = await xumm.payload?.create({
-                user_token: userToken, // Doc: https://docs.xumm.dev/concepts/payloads-sign-requests/delivery/push
-                txjson: {
-                    TransactionType: "NFTokenAcceptOffer",
-                    NFTokenSellOffer: offerId,
-                },
-            } as any);
-            console.log(payload);
-            return {
-                payload: payload,
-            }
+            // const payload = await xumm.payload?.create({
+            //     user_token: userToken, // Doc: https://docs.xumm.dev/concepts/payloads-sign-requests/delivery/push
+            //     txjson: {
+            //         TransactionType: "NFTokenAcceptOffer",
+            //         NFTokenSellOffer: offerId,
+            //     },
+            // } as any);
+            // console.log(payload);
+            // return {
+            //     payload: payload,
+            // }
         } else {
             throw new Error("NFT not found");
         }
@@ -40,6 +40,6 @@ const claimNFT = async (userToken: string, xrplAddress: string) => {
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event)
-    console.log('claimNFT')
-    return claimNFT(body.userToken, body.xrplAddress)
+    console.log('createNFTOffer')
+    return createNFTOffer({ xrplAddress: body.xrplAddress })
 })

@@ -1,5 +1,6 @@
 import { saveFile } from '~/server/connectors/spaces'
-import { checkImageExists } from '~/server/api/art/image/index.get.ts'
+import { checkImageExists } from '~/server/api/art/image/index.get'
+import sharp from 'sharp'
 
 export default defineEventHandler(async (event) => {
 	console.log('image created')
@@ -19,14 +20,25 @@ export default defineEventHandler(async (event) => {
 	}
 	console.log({ imageData, xrplAddress })
 
-	const fileName = `alberx-${xrplAddress}.png`
+	const fileName = `alberx-${xrplAddress}.webp`
 	const base64Data = imageData.replace(/^data:image\/\w+;base64,/, "")
 	const fileContent = Buffer.from(base64Data, 'base64')
 
 	const url = await saveFile({ fileName, fileContent })
 
+	const thumbnailFile = await sharp(fileContent).resize({
+		width: 600,
+		height: 800,
+		fit: 'inside',
+		background: { r: 255, g: 255, b: 255, alpha: 0 }
+	}).toBuffer()
+	const thumbnail = await saveFile({
+		fileName: `alberx-${xrplAddress}-thumbnail.webp`,
+		fileContent: thumbnailFile
+	})
+
 	// make sure the file exists
-	console.log(url, await checkImageExists({ xrplAddress }))
+	console.log(url, thumbnail, await checkImageExists({ xrplAddress }))
 
 	return JSON.stringify({ url })
 })

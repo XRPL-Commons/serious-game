@@ -322,7 +322,7 @@ export const sketch: any = ({
 
     // should be done only once
     if (callLoaded === false) {
-      onLoaded({ imageData: p.canvas.toDataURL() })
+      onLoaded({ imageData: p.canvas.toDataURL('image/webp', 0.8) })
       callLoaded = true
     }
   }
