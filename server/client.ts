@@ -14,6 +14,12 @@ const actions = [
     secretRequired: true
   },
   {
+    name: 'getNFTs',
+    path: '/api/art',
+    method: 'GET',
+    secretRequired: true
+  },
+  {
     name: 'createOffer',
     path: '/api/art/createOffer',
     method: 'POST',
@@ -26,9 +32,9 @@ const actions = [
     secretRequired: true
   },
   {
-    name: 'getNFTs',
-    path: '/api/art',
-    method: 'GET',
+    name: 'redeemNFT',
+    path: '/api/art/redeem',
+    method: 'POST',
     secretRequired: true
   },
   {

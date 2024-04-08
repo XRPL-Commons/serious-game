@@ -1,6 +1,8 @@
 import { mintNft } from '~/server/connectors/wallet'
 import { getWallet } from '@/server/utils'
-import { AddObject, NFT, GetObjects } from '~/server/connectors/mongo';
+import { AddObject, NFT, GetObjects } from '~/server/connectors/mongo'
+import { checkImageExists } from '~/server/api/art/image/index.get'
+
 
 export const createNFT = async (xrplAddress: string) => {
     console.log('createNFT', xrplAddress)
@@ -15,18 +17,11 @@ export const createNFT = async (xrplAddress: string) => {
         }
 
         // check if file exists
-        const uri = `https://albers.fra1.cdn.digitaloceanspaces.com/alberx-${xrplAddress}.png`
-
-        try {
-            const check = await fetch(uri, { method: 'HEAD' })
-            console.log(check)
-            if (check.status !== 200) {
-                throw Error('not found')
-            }
-        } catch (e) {
+        const uri = await checkImageExists({ xrplAddress })
+        if (uri === false) {
             throw createError({
-                statusCode: 500,
-                statusMessage: 'Missing Art file',
+                status: 500,
+                statusMessage: 'Art file missing'
             })
         }
 
@@ -38,7 +33,7 @@ export const createNFT = async (xrplAddress: string) => {
         let nftObject: NFT = {
             xrplAddress: xrplAddress,
             owner: wallet.address,
-            uri: uri,
+            uri,
             nftId: nftId,
             nftOfferId: '',
             mintedAt: mintedAt,

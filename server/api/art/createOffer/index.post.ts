@@ -1,6 +1,6 @@
 import { createOffer, mintNft } from '~/server/connectors/wallet'
 import { getXumm } from '@/server/utils'
-import { AddObject, NFT, UpdateOffer, GetObjects } from '~/server/connectors/mongo';
+import { NFT, UpdateOffer, GetObjects } from '~/server/connectors/mongo';
 
 const createNFTOffer = async ({ xrplAddress }: { xrplAddress: string }) => {
     try {
@@ -16,19 +16,9 @@ const createNFTOffer = async ({ xrplAddress }: { xrplAddress: string }) => {
             nftObject.nftOfferId = offerId;
 
             // Update DB
-            await UpdateOffer(nftObject.nftId, nftObject);
+            return await UpdateOffer(nftObject.nftId, nftObject);
 
-            // const payload = await xumm.payload?.create({
-            //     user_token: userToken, // Doc: https://docs.xumm.dev/concepts/payloads-sign-requests/delivery/push
-            //     txjson: {
-            //         TransactionType: "NFTokenAcceptOffer",
-            //         NFTokenSellOffer: offerId,
-            //     },
-            // } as any);
-            // console.log(payload);
-            // return {
-            //     payload: payload,
-            // }
+
         } else {
             throw new Error("NFT not found");
         }
@@ -40,6 +30,6 @@ const createNFTOffer = async ({ xrplAddress }: { xrplAddress: string }) => {
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event)
-    console.log('createNFTOffer')
+    console.log('createNFTOffer', body)
     return createNFTOffer({ xrplAddress: body.xrplAddress })
 })

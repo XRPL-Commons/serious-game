@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!magSecret">This page requires the mag secret.</div>
+  <div v-if="!magSecret">This view requires the mag secret.</div>
   <template v-else>
     <div>
       <ClientOnly>
@@ -73,7 +73,6 @@ const onSketchLoaded = async ({ myp5, imageData }: { myp5: any, imageData: strin
   if (imageExists === true) {
     console.log(`Image for ${xrplAddress} existed`)
     albersURI.value = `https://albers.fra1.cdn.digitaloceanspaces.com/alberx-${xrplAddress}.webp`
-    return
   } else {
     // if it doesn't then run through the creation flow
     const { url } = await API.createAlbersURL({
@@ -83,6 +82,7 @@ const onSketchLoaded = async ({ myp5, imageData }: { myp5: any, imageData: strin
     albersURI.value = url
     console.log({ url })
   }
+  console.log('should emit', { url: albersURI.value })
   emit('loaded', { url: albersURI.value })
 }
 onUnmounted(() => {

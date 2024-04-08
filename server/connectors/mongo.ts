@@ -25,10 +25,19 @@ export const GetCollection = async (collectionName: string) => {
   return client.db('albers').collection(collectionName)
 }
 
+const getNextRank = async () => {
+  const NFTs = await GetCollection(collectionName)
+  const highestRank = await NFTs.find({ rank: 1 }).sort({ rank: -1 }).limit(1).toArray();
+  const nextRank = highestRank.length > 0 ? highestRank[0].rank + 1 : 1;
+  return nextRank;
+}
+
 export const AddObject = async (nftObject: NFT) => {
   try {
     const NFTs = await GetCollection(collectionName)
-    const result = await NFTs.insertOne({ ...nftObject })
+    const rank = await getNextRank()
+    console.log({ rank })
+    const result = await NFTs.insertOne({ ...nftObject, rank })
     console.log(`New NFT inserted with id: ${result.insertedId}`)
     return result
   } catch (error) {
