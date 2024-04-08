@@ -62,7 +62,7 @@ export const UpdateOffer = async (nftId: string, nftObject: NFT) => {
       return null;
     }
 
-    console.log(`Successfully updated offerId for nftId: ${nftId}`);
+    console.log(`Successfully updated offerId for nftId: ${nftId} to ${nftObject.nftOfferId}`);
     return result;
   } catch (error) {
     console.error('Error updating offerId for NFT:', error);

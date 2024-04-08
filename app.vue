@@ -8,11 +8,12 @@
 <script setup lang="ts">
 import { ref, provide, readonly } from 'vue'
 
-const network = ref('TESTNET')
+const network = ref(localStorage.getItem('network') || 'TESTNET')
 
 const toggleNetwork = () => {
   console.log('toggling network')
   network.value = network.value === 'TESTNET' ? 'MAINNET' : 'TESTNET'
+  localStorage.setItem('network', network.value)
 }
 
 const shuffle = (list) => {

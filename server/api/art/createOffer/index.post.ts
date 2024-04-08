@@ -16,6 +16,7 @@ const createNFTOffer = async ({ xrplAddress, network }: { xrplAddress: string, n
 
             const offerId = await createOffer({ destination: xrplAddress, network, nftId: nftObject.nftId });
             nftObject.nftOfferId = offerId;
+            console.log('createNFTOffer completed with ', offerId, { xrplAddress, network })
 
             // Update DB
             return await UpdateOffer(nftObject.nftId, nftObject);
