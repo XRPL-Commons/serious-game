@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-full bg-transparent p-2 transition-all flex justify-center items-center mt-20 flex-col">
+  <div class="rounded-full bg-transparent p-2 transition-all flex justify-center items-center lg:mt-10 flex-col">
     <template v-if="xrplAddress">
       <!-- <pre>{{ userNFT }}</pre>
       <pre>{{ ownsNFT }}</pre> -->
