@@ -20,18 +20,25 @@ export default defineEventHandler(async (event) => {
 	}
 	console.log({ imageData, xrplAddress })
 
-	const fileName = `alberx-${xrplAddress}.webp`
 	const base64Data = imageData.replace(/^data:image\/\w+;base64,/, "")
 	const fileContent = Buffer.from(base64Data, 'base64')
 
-	const url = await saveFile({ fileName, fileContent })
+	const mainFile = await sharp(fileContent)
+		.webp({ quality: 80 })
 
-	const thumbnailFile = await sharp(fileContent).resize({
-		width: 600,
-		height: 800,
-		fit: 'inside',
-		background: { r: 255, g: 255, b: 255, alpha: 0 }
-	}).toBuffer()
+	const url = await saveFile({
+		fileName: `alberx-${xrplAddress}.webp`,
+		fileContent: mainFile
+	})
+
+	const thumbnailFile = await sharp(fileContent)
+		.webp({ quality: 80 })
+		.resize({
+			width: 600,
+			height: 800,
+			fit: 'inside',
+			background: { r: 255, g: 255, b: 255, alpha: 0 }
+		}).toBuffer()
 	const thumbnail = await saveFile({
 		fileName: `alberx-${xrplAddress}-thumbnail.webp`,
 		fileContent: thumbnailFile

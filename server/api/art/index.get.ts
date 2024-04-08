@@ -1,6 +1,6 @@
 import { GetObjects } from '~/server/connectors/mongo'
 
-const listArt = async ({ xrplAddress, hallOfFame }: { xrplAddress: string, hallOfFame: boolean }) => {
+const listArt = async ({ xrplAddress }: { xrplAddress: string }) => {
   // list existing art
   let arts = await GetObjects(xrplAddress);
   return arts;
@@ -9,7 +9,7 @@ const listArt = async ({ xrplAddress, hallOfFame }: { xrplAddress: string, hallO
 export default defineEventHandler(async (event) => {
   try {
     const { xrplAddress }: { xrplAddress: any } = getQuery(event)
-    return listArt({ xrplAddress, hallOfFame: true })
+    return listArt({ xrplAddress })
   } catch (e) {
     throw createError({
       status: 500,

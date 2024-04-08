@@ -25,9 +25,9 @@ export const GetCollection = async (collectionName: string) => {
   return client.db('albers').collection(collectionName)
 }
 
-const getNextRank = async () => {
+const getNextRank = async (filter: any) => {
   const NFTs = await GetCollection(collectionName)
-  const highestRank = await NFTs.find({ rank: 1 }).sort({ rank: -1 }).limit(1).toArray();
+  const highestRank = await NFTs.find(filter).sort({ rank: -1 }).limit(1).toArray();
   const nextRank = highestRank.length > 0 ? highestRank[0].rank + 1 : 1;
   return nextRank;
 }
@@ -35,7 +35,7 @@ const getNextRank = async () => {
 export const AddObject = async (nftObject: NFT) => {
   try {
     const NFTs = await GetCollection(collectionName)
-    const rank = await getNextRank()
+    const rank = await getNextRank({ network: nftObject.network }) // count by network
     console.log({ rank })
     const result = await NFTs.insertOne({ ...nftObject, rank })
     console.log(`New NFT inserted with id: ${result.insertedId}`)
@@ -101,7 +101,11 @@ export const GetObjects = async (xrplAddress?: string): Promise<Array<NFT>> => {
     await client.connect();
     const collection = client.db('albers').collection<NFT>('nfts');
 
-    const query = xrplAddress ? { xrplAddress: xrplAddress } : {};
+    const query: any = {}
+    if (xrplAddress) {
+      query.xrplAddress = xrplAddress
+    }
+    query.network = process.env.NETWORK
     const nfts = await collection.find(query).sort({ mintedAt: -1 }).toArray();
 
     return nfts;
