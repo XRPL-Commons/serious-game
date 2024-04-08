@@ -96,7 +96,7 @@ export const UpdateOwner = async (nftId: string, nftObject: NFT) => {
   }
 }
 
-export const GetObjects = async (xrplAddress?: string): Promise<Array<NFT>> => {
+export const GetObjects = async ({ xrplAddress, network }: { xrplAddress?: string, network: string }): Promise<Array<NFT>> => {
   try {
     await client.connect();
     const collection = client.db('albers').collection<NFT>('nfts');
@@ -105,7 +105,7 @@ export const GetObjects = async (xrplAddress?: string): Promise<Array<NFT>> => {
     if (xrplAddress) {
       query.xrplAddress = xrplAddress
     }
-    query.network = process.env.NETWORK
+    query.network = network
     const nfts = await collection.find(query).sort({ mintedAt: -1 }).toArray();
 
     return nfts;

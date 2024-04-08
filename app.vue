@@ -8,6 +8,13 @@
 <script setup lang="ts">
 import { ref, provide, readonly } from 'vue'
 
+const network = ref('TESTNET')
+
+const toggleNetwork = () => {
+  console.log('toggling network')
+  network.value = network.value === 'TESTNET' ? 'MAINNET' : 'TESTNET'
+}
+
 const shuffle = (list) => {
   return list
     .map(x => [Math.random(), x])
@@ -34,6 +41,10 @@ const updateColors = (newColors) => {
     colors.value = filledArray.slice(0, 5);
   }
 }
+
+// think of these as global variables
+provide('network', network)
+provide('toggleNetwork', toggleNetwork)
 
 provide('defaultColors', colors)
 provide('updateColors', updateColors)

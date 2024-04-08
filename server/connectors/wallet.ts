@@ -4,22 +4,22 @@ import { NFTokenCreateOfferMetadata } from 'xrpl/dist/npm/models/transactions/NF
 
 import { getWallet, getExplorerClient } from '../utils';
 
-export async function mintNft(uri: string): Promise<{ nftId: string; mintedAt: string}> {
+export async function mintNft({ uri, network }: { uri: string, network: string }): Promise<{ nftId: string; mintedAt: string }> {
     const wallet = getWallet();
-    const client = await getExplorerClient();    
+    const client = await getExplorerClient(network);
 
     const nftMintTx: NFTokenMint = {
         TransactionType: "NFTokenMint",
         Account: wallet.address,
         URI: convertStringToHex(uri),
-        Flags: NFTokenMintFlags.tfBurnable + NFTokenMintFlags.tfTransferable, // Burnable in case no one is buying it
+        Flags: NFTokenMintFlags.tfTransferable, // you can always burn a token you own
         NFTokenTaxon: 0, // Unique identifier for the NFT type
     };
 
     const prepared = await client.autofill(nftMintTx);
     const signed = wallet.sign(prepared);
     const result = await client.submitAndWait(signed.tx_blob);
-    
+
     // console.log(`NFT Mint transaction result: ${JSON.stringify(result, null, 2)}`);
 
     return {
@@ -28,11 +28,11 @@ export async function mintNft(uri: string): Promise<{ nftId: string; mintedAt: s
     };
 }
 
-export async function createOffer(destination: string, nftId: string): Promise<string> {
+export async function createOffer({ destination, nftId, network }: { destination: string, nftId: string, network: string }): Promise<string> {
     console.log(destination)
     console.log(nftId)
-    const wallet = getWallet();    
-    const client = await getExplorerClient();
+    const wallet = getWallet();
+    const client = await getExplorerClient(network);
 
     const nftCreateOfferTx: NFTokenCreateOffer = {
         TransactionType: "NFTokenCreateOffer",
@@ -46,7 +46,7 @@ export async function createOffer(destination: string, nftId: string): Promise<s
     const prepared = await client.autofill(nftCreateOfferTx);
     const signed = wallet.sign(prepared);
     const result = await client.submitAndWait(signed.tx_blob);
-    
+
     // console.log(`NFT Create transaction result: ${JSON.stringify(result, null, 2)}`);
     const offerId = (result.result.meta as NFTokenCreateOfferMetadata)?.offer_id as string;
     return offerId;

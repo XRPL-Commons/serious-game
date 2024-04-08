@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue"
+import { ref, computed, onMounted, inject } from "vue"
 import { useRoute } from 'vue-router'
 /* @ts-ignore */
 import API from '~/server/client'
@@ -22,8 +22,9 @@ definePageMeta({
 })
 
 
-const { params } = useRoute();
+const { params } = useRoute()
 const xrplAddress = computed(() => params.xrplAddress || 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh')
+const network: any = inject('network')
 
 // authentication
 const magSecret = ref<string | null>(null)
@@ -32,7 +33,7 @@ magSecret.value = localStorage.getItem('mag_secret')
 const nft: any = ref(null)
 
 onMounted(async () => {
-  const nfts = await API.getNFTs({ xrplAddress: xrplAddress.value })
+  const nfts = await API.getNFTs({ xrplAddress: xrplAddress.value, network: network.value })
   if (nfts && nfts.length > 0) {
     nft.value = nfts[0]
   }

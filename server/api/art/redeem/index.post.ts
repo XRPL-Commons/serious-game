@@ -1,10 +1,11 @@
 import { UpdateOwner, GetObjects } from '~/server/connectors/mongo';
 
-const claimNFT = async (xrplAddress: string) => {
+const redeemNFT = async ({ xrplAddress, network }: { xrplAddress: string, network: string }) => {
     try {
 
         // Get NFT object
-        const nft = await GetObjects();
+        console.log({ xrplAddress, network })
+        const nft = await GetObjects({ xrplAddress, network });
 
         if (nft && nft.length > 0) {
             // Create offer
@@ -26,7 +27,7 @@ const claimNFT = async (xrplAddress: string) => {
 }
 
 export default defineEventHandler(async (event) => {
-    const body = await readBody(event)
+    const { xrplAddress, network } = await readBody(event)
     console.log('redeemingNFT')
-    return claimNFT(body.xrplAddress)
+    return redeemNFT({ xrplAddress, network })
 })

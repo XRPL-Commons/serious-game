@@ -33,7 +33,7 @@
 
           </template>
         </template>
-        <template v-else>One moment while we check on your NFT status...</template>
+        <template v-else>One moment while we check on the status of your NFT...</template>
       </div>
 
       <NuxtLink :to="`/albers/${xrplAddress}`">
@@ -44,13 +44,16 @@
     <template v-else>
       <div class="ml-2 md:text-2xl text-lg font-title text-gray-600 dark:text-gray-300 mb-4">Connect your wallet to
         continue...</div>
+      <UButton @click="connectWallet" color="black" size="xl">
+        Connect Wallet
+      </UButton>
     </template>
 
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from "vue"
+import { ref, computed, watch, onMounted, inject } from "vue"
 /* @ts-ignore */
 import { QRCodeModal } from '#components'
 /* @ts-ignore */
@@ -66,6 +69,7 @@ import API from '~/server/client'
 // => ClaimNFT flow
 // display Albers with info from userNFT
 
+const network: any = inject('network')
 /* @ts-ignore */
 const modal = useModal()
 
@@ -120,12 +124,12 @@ watch(() => localURI.value && userNFT.value, async (newValue: any, oldValue) => 
     if (!newValue) {
       // need to mint
       console.log('should mint...', { xrplAddress: xrplAddress.value })
-      const mintResult = await API.createNFT({ xrplAddress: xrplAddress.value })
+      const mintResult = await API.createNFT({ xrplAddress: xrplAddress.value, network: network.value })
       console.log({ mintResult })
       userNFT.value = await getNftInfo({ xrplAddress: xrplAddress.value })
     } else if (!newValue.nftOfferId) {
       // need to create offer
-      const createOfferResult = await API.createOffer({ xrplAddress: xrplAddress.value })
+      const createOfferResult = await API.createOffer({ xrplAddress: xrplAddress.value, network: network.value })
       console.log({ createOfferResult })
       userNFT.value = await getNftInfo({ xrplAddress: xrplAddress.value })
     }
@@ -160,10 +164,9 @@ async function initializeWebSocket({ url, onMessage }: { url: string, onMessage?
 
     // check network
     /* @ts-ignore */
-    const runtimeConfig = useRuntimeConfig()
-    if (data.response.environment_nodetype !== runtimeConfig.public.network) {
+    if (data.response.environment_nodetype !== network.value) {
       // regen qr code
-      alert('Wrong network used: network should be: ' + runtimeConfig.public.network);
+      alert('Wrong network used: network should be: ' + network.value + ' was ' + data.response.environment_nodetype);
       await connectWallet()
       return
     }
@@ -222,7 +225,7 @@ function connectWallet() {
 }
 
 const getNftInfo = async ({ xrplAddress }) => {
-  const result = await API.getNFTs({ xrplAddress })
+  const result = await API.getNFTs({ xrplAddress, network: network.value })
   const nftInfo = result?.[0]
   return nftInfo
 }
@@ -273,7 +276,7 @@ async function claimNft() {
 
 async function redeemNft({ xrplAddress }) {
   try {
-    await API.redeemNFT({ xrplAddress })
+    await API.redeemNFT({ xrplAddress, network: network.value })
     userNFT.value = await getNftInfo({ xrplAddress })
   } catch (error) {
     console.log(error)

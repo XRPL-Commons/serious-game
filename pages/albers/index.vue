@@ -41,13 +41,14 @@
 <script setup lang="ts">
 /* @ts-ignore */
 import { formatDate } from '~/utils/dateHelper';
-import { ref, onMounted, onUnmounted } from "vue"
+import { ref, onMounted, inject, watch } from "vue"
 /* @ts-ignore */
 import API from '~/server/client'
 import { useRouter } from 'vue-router'
 
 
-const router = useRouter();
+const router = useRouter()
+const network: any = inject('network')
 
 const nfts = ref<NftObject[]>([]);
 
@@ -61,7 +62,16 @@ interface NftObject {
 
 onMounted(async () => {
   try {
-    const result = await API.listCollection({})
+    const result = await API.listCollection({ network: network.value })
+    nfts.value = result
+  } catch (error) {
+    alert("Error getting NFT arts: " + error);
+  }
+})
+
+watch(network, async () => {
+  try {
+    const result = await API.listCollection({ network: network.value })
     nfts.value = result
   } catch (error) {
     alert("Error getting NFT arts: " + error);

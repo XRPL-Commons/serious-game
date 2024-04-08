@@ -1,7 +1,8 @@
 import { Xumm } from "xumm";
 import { Wallet, Client } from 'xrpl';
 
-export function getXumm() {    
+
+export function getXumm() {
     const xumm = new Xumm(
         process.env.XAMAN_API_KEY || '',
         process.env.XAMAN_SECRET_KEY || '',
@@ -18,8 +19,9 @@ export function getWallet() {
     return wallet
 }
 
-export async function getExplorerClient() {
-    const client = new Client(process.env.WSS_EXPLORER || '');
+export async function getExplorerClient(network: string) {
+    /* @ts-ignore */
+    const client = new Client(process.env[`${network}_WSS_EXPLORER`]);
     await client.connect();
     return client;
 }

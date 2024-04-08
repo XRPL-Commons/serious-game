@@ -1,6 +1,6 @@
 <template>
   <div
-    class="text-xl px-4 py-1  w-full fixed top-0 left-0 z-20 border-transparent lg:block backdrop-blur-md bg-transparent dark:bg-transparent  text-gray-900 m-0 block">
+    class="text-xl px-2 lg:px-4 py-1 w-full fixed top-0 left-0 z-20 border-transparent lg:block backdrop-blur-md bg-transparent dark:bg-transparent  text-gray-900 m-0 block">
     <div class="flex justify-between items-center content-center">
       <div class="flex justify-start items-center">
         <NuxtLink to="/"
@@ -10,12 +10,13 @@
             <img src="/xrplb.png" class="h-8 opacity-80 dark:invisible dark:hidden" />
 
           </div>
-          <div class="ml-2 md:text-4xl text-xl font-title text-black dark:text-white">Community Quest</div>
+          <div class="ml-2 md:text-4xl text-lg font-title text-black dark:text-white">Community Quest</div>
         </NuxtLink>
       </div>
 
       <div class="pl-1 flex">
         <ColorMode />
+        <Network />
         <Secret />
       </div>
     </div>

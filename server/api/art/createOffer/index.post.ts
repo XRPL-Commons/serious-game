@@ -1,18 +1,20 @@
 import { createOffer, mintNft } from '~/server/connectors/wallet'
 import { getXumm } from '@/server/utils'
-import { NFT, UpdateOffer, GetObjects } from '~/server/connectors/mongo';
+import { NFT, UpdateOffer, GetObjects } from '~/server/connectors/mongo'
+import { getExplorerClient } from '~/server/utils.js'
 
-const createNFTOffer = async ({ xrplAddress }: { xrplAddress: string }) => {
+const createNFTOffer = async ({ xrplAddress, network }: { xrplAddress: string, network: string }) => {
     try {
         let xumm = getXumm();
 
         // Get NFT object
-        const nft = await GetObjects(xrplAddress);
+        const nft = await GetObjects({ xrplAddress, network });
         console.log(xrplAddress, nft);
         if (nft && nft.length > 0) {
             // Create offer
-            let nftObject = nft[0];
-            const offerId = await createOffer(xrplAddress, nftObject.nftId);
+            let nftObject = nft[0]
+
+            const offerId = await createOffer({ destination: xrplAddress, network, nftId: nftObject.nftId });
             nftObject.nftOfferId = offerId;
 
             // Update DB
@@ -31,5 +33,8 @@ const createNFTOffer = async ({ xrplAddress }: { xrplAddress: string }) => {
 export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     console.log('createNFTOffer', body)
-    return createNFTOffer({ xrplAddress: body.xrplAddress })
+    return createNFTOffer({
+        xrplAddress: body.xrplAddress,
+        network: body.network
+    })
 })

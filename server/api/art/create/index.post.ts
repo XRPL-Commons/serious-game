@@ -4,11 +4,11 @@ import { AddObject, NFT, GetObjects } from '~/server/connectors/mongo'
 import { checkImageExists } from '~/server/api/art/image/index.get'
 
 
-export const createNFT = async (xrplAddress: string) => {
+export const createNFT = async ({ xrplAddress, network }: { xrplAddress: string, network: string }) => {
     console.log('createNFT', xrplAddress)
     try {
         // Get NFT object
-        const nft = await GetObjects(xrplAddress);
+        const nft = await GetObjects({ xrplAddress, network });
         if (nft && nft.length > 0) {
             throw createError({
                 statusCode: 400,
@@ -26,7 +26,8 @@ export const createNFT = async (xrplAddress: string) => {
         }
 
         // Mint new NFT with image
-        const { nftId, mintedAt } = await mintNft(uri);
+        console.log('about to mint', { uri, network })
+        const { nftId, mintedAt } = await mintNft({ uri, network });
 
         // insert into DB
         const wallet = getWallet()
@@ -37,7 +38,7 @@ export const createNFT = async (xrplAddress: string) => {
             nftId: nftId,
             nftOfferId: '',
             mintedAt: mintedAt,
-            network: process.env.NETWORK || ''
+            network
         };
         const insert = await AddObject(nftObject)
 
@@ -58,12 +59,12 @@ export const createNFT = async (xrplAddress: string) => {
 }
 
 export default defineEventHandler(async (event) => {
-    const { xrplAddress } = await readBody(event)
+    const { xrplAddress, network } = await readBody(event)
     if (!xrplAddress) {
         throw createError({
             status: 400,
             statusMessage: 'xrplAddress missing'
         })
     }
-    return createNFT(xrplAddress)
+    return createNFT({ xrplAddress, network })
 })
