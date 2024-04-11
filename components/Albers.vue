@@ -23,6 +23,7 @@ import { computed, inject } from 'vue'
 import API from '~/server/client'
 import { sketch } from '~/sketches/xalbers'
 import p5 from "p5"
+import { useRoute } from 'vue-router'
 
 const updateColors = inject('updateColors', () => { })
 
@@ -30,6 +31,9 @@ const updateColors = inject('updateColors', () => { })
 const props = defineProps({
   xrplAddress: String
 })
+
+const { query } = useRoute()
+const forceSave = query?.force === 'save'
 
 const emit = defineEmits(['loaded']);
 
@@ -70,7 +74,7 @@ const onSketchLoaded = async ({ myp5, imageData }: { myp5: any, imageData: strin
   // check if the url exists
   const imageExists = await API.albersURLExists({ xrplAddress })
   console.log({ imageExists })
-  if (imageExists === true) {
+  if ((imageExists === true) && !forceSave) {
     console.log(`Image for ${xrplAddress} existed`)
     albersURI.value = `https://albers.fra1.cdn.digitaloceanspaces.com/alberx-${xrplAddress}.webp`
   } else {

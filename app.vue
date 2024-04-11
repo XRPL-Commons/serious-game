@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import { ref, provide, readonly } from 'vue'
 
-const network = ref(localStorage.getItem('network') || 'TESTNET')
+const network = ref(localStorage.getItem('network') || 'MAINNET')
 
 const toggleNetwork = () => {
   console.log('toggling network')

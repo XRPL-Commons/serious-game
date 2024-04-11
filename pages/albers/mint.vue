@@ -166,7 +166,7 @@ async function initializeWebSocket({ url, onMessage }: { url: string, onMessage?
     /* @ts-ignore */
     if (data.response.environment_nodetype !== network.value) {
       // regen qr code
-      alert('Wrong network used: network should be: ' + network.value + ' was ' + data.response.environment_nodetype);
+      alert(`Wrong network used: network should be: ${network.value} was ${data.response.environment_nodetype}. Use the lock icon to toggle networks.`);
       await connectWallet()
       return
     }
