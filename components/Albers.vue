@@ -43,7 +43,7 @@ const { xrplAddress } = props
 console.log('albers component', { xrplAddress })
 
 // authentication
-const magSecret = inject('secret')
+const magSecret = inject('magSecret')
 
 const canvas = ref(null)
 
