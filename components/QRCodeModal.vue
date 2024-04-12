@@ -1,5 +1,5 @@
 <template>
-  <UModal v-model="isOpen" class="">
+  <UModal class="">
     <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }" class="text-center">
       <div class="font-title mb-4">Connect to your wallet</div>
       <div class="flex justify-center">
@@ -14,9 +14,8 @@
 
 <script lang="ts" setup>
 const router = useRouter()
-const props = defineProps(['isOpen', 'qrCodeSrc', 'isConnection', 'mobileUrl', 'uuid'])
+const props = defineProps(['isOpen', 'qrCodeSrc', 'mobileUrl', 'uuid'])
 const {
-  isOpen,
   qrCodeSrc,
   isConnection,
   mobileUrl,

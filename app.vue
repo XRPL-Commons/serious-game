@@ -8,6 +8,8 @@
 <script setup lang="ts">
 import { ref, provide, readonly } from 'vue'
 
+const magSecret = useCookie('secret')
+
 const network = ref(localStorage.getItem('network') || 'MAINNET')
 
 const toggleNetwork = () => {
@@ -44,6 +46,8 @@ const updateColors = (newColors) => {
 }
 
 // think of these as global variables
+provide('magSecret', magSecret)
+
 provide('network', network)
 provide('toggleNetwork', toggleNetwork)
 

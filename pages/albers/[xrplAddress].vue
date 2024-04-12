@@ -2,10 +2,11 @@
   <div v-if="!magSecret">This page requires the mag secret.</div>
   <template v-else>
     <div class="text-center">
+      <div class="text-center font-title text-lg" v-if="nft?.rank">Rank #{{ nft?.rank }}</div>
       <div class="inline-block">
         <albers :xrpl-address="xrplAddress" @loaded="onImageLoaded" />
       </div>
-      <div class="text-center font-title text-lg" v-if="nft?.rank">Rank #{{ nft?.rank }}</div>
+
     </div>
   </template>
 </template>
@@ -27,8 +28,7 @@ const xrplAddress = computed(() => params.xrplAddress || 'rHb9CJAWyB4rj91VRWn96D
 const network: any = inject('network')
 
 // authentication
-const magSecret = ref<string | null>(null)
-magSecret.value = localStorage.getItem('mag_secret')
+const magSecret = inject('magSecret')
 
 const nft: any = ref(null)
 

@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, provide, readonly } from 'vue'
+import { ref, provide, readonly, inject } from 'vue'
 import API from '~/server/client'
 
 const router = useRouter()
@@ -35,8 +35,9 @@ const isSecretIncorrect = ref(false)
 let timeout: any
 
 
-const magSecret = ref<string | null>(null)
-magSecret.value = localStorage.getItem('mag_secret')
+const magSecret = inject('magSecret')
+// ref<string | null>(null)
+// magSecret.value = localStorage.getItem('mag_secret')
 
 if (magSecret.value) {
   router.push('/albers')
@@ -57,7 +58,7 @@ const submit = async () => {
 
     if (check === true) {
       console.log('success!')
-      localStorage.setItem('mag_secret', secret.value)
+      magSecret.value = secret.value
       router.push('/albers')
     } else {
       console.error(`Wrong secret! Try again.`)

@@ -14,8 +14,7 @@ export default defineEventHandler(async (event) => {
             },
             options: {
                 return_url: {
-                    "app": "https://mag.xrpl.quest/albers/mint?env=app",
-                    "web": "https://mag.xrpl.quest/albers/mint?env=web"
+                    "app": "https://mag.xrpl.quest/albers/mint?uuid={id}"
                 }
             }
         });

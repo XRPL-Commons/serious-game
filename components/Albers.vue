@@ -8,8 +8,10 @@
         <template v-if="albersURI">
           <figure class="max-w-lg">
             <img class="h-auto max-w-full rounded-lg" :src="albersURI" alt="image description">
-            <figcaption class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">{{ xrplAddress }}</figcaption>
           </figure>
+        </template>
+        <template v-else>
+          <USkeleton class="h-full w-full" :ui="{ rounded: 'rounded-lg' }" />
         </template>
       </ClientOnly>
 
@@ -41,8 +43,7 @@ const { xrplAddress } = props
 console.log('albers component', { xrplAddress })
 
 // authentication
-const magSecret = ref<string | null>(null)
-magSecret.value = localStorage.getItem('mag_secret')
+const magSecret = inject('secret')
 
 const canvas = ref(null)
 
