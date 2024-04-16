@@ -1,6 +1,6 @@
 import { mintNft } from '~/server/connectors/wallet'
 import { getWallet } from '@/server/utils'
-import { AddObject, NFT, GetObjects } from '~/server/connectors/mongo'
+import { AddObject, UpdateNFTId, NFT, GetObjects } from '~/server/connectors/mongo'
 import { checkImageExists } from '~/server/api/art/image/index.get'
 
 
@@ -12,7 +12,7 @@ export const createNFT = async ({ xrplAddress, network }: { xrplAddress: string,
         if (nft && nft.length > 0) {
             throw createError({
                 statusCode: 400,
-                statusMessage: 'This address already contains NFT',
+                statusMessage: 'This address already has an NFT',
             })
         }
 
@@ -25,24 +25,25 @@ export const createNFT = async ({ xrplAddress, network }: { xrplAddress: string,
             })
         }
 
-        // Mint new NFT with image
-        console.log('about to mint', { uri, network })
-        const { nftId, mintedAt } = await mintNft({ uri, network });
-
         // insert into DB
         const wallet = getWallet()
         let nftObject: NFT = {
             xrplAddress: xrplAddress,
             owner: wallet.address,
             uri,
-            nftId: nftId,
+            nftId: '',
             nftOfferId: '',
-            mintedAt: mintedAt,
+            mintedAt: '',
             network
         };
         const insert = await AddObject(nftObject)
 
-        console.log({ insert })
+
+        // Mint new NFT with image
+        console.log('about to mint', { uri, network })
+        const { nftId, mintedAt } = await mintNft({ uri, network })
+
+        await UpdateNFTId({ nftId, mintedAt, xrplAddress, network })
 
         return {
             nftId: nftId,
