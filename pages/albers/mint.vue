@@ -58,6 +58,7 @@ import { ref, computed, watch, onMounted, inject } from "vue"
 import { QRCodeModal } from '#components'
 /* @ts-ignore */
 import API from '~/server/client'
+import { useRoute } from 'vue-router'
 
 // flow:
 // check if wallet connected: xrplAddress?
@@ -68,6 +69,8 @@ import API from '~/server/client'
 // => display Claim button
 // => ClaimNFT flow
 // display Albers with info from userNFT
+
+const { query } = useRoute()
 
 const network: any = inject('network')
 /* @ts-ignore */
@@ -90,6 +93,10 @@ onMounted(async () => {
   userToken.value = localStorage.getItem('user_token') || ''
   xrplAddress.value = localStorage.getItem('xrpl_address') || ''
 
+  if (query.id) {
+    const data: any = await API.XamanGetPayload({ uuid: query.uuid })
+    console.log(data)
+  }
   if (!userToken.value || !xrplAddress.value) {
     await connectWallet()
   }
@@ -159,14 +166,13 @@ async function initializeWebSocket({ url, onMessage }: { url: string, onMessage?
 
     // get payload from backend
     const data: any = await API.XamanGetPayload({ uuid: payload_uuidv4 })
-
     console.log({ data })
 
     // check network
     /* @ts-ignore */
     if (data.response.environment_nodetype !== network.value) {
       // regen qr code
-      alert('Wrong network used: network should be: ' + network.value + ' was ' + data.response.environment_nodetype);
+      alert(`Wrong network used: network should be: ${network.value} was ${data.response.environment_nodetype}. Use the lock icon to toggle networks.`);
       await connectWallet()
       return
     }

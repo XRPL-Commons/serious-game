@@ -44,7 +44,31 @@ export const AddObject = async (nftObject: NFT) => {
     console.error('Error inserting NFT:', error);
     throw error; // Rethrow or handle as needed
   } finally {
-    await client.close(); // Consider when to close the connection based on your app's use case
+    // await client.close(); // Consider when to close the connection based on your app's use case
+  }
+}
+
+export const UpdateNFTId = async ({ nftId, mintedAt, xrplAddress, network }: { nftId: string, mintedAt: string, xrplAddress: string, network: string }) => {
+  try {
+    await client.connect();
+    const collection = client.db('albers').collection('nfts');
+    const result = await collection.updateOne(
+      { xrplAddress, network }, // Filter: Find a document with the matching nxrplAddress and networkftId
+      { $set: { nftId, mintedAt } } // Update operation: Set the new nftId, mintedAt
+    );
+
+    if (result.matchedCount === 0) {
+      console.log(`No document found with xrplAddress on ${network}: ${xrplAddress}`);
+      return null;
+    }
+
+    console.log(`Successfully updated nftId: ${nftId}`);
+    return result;
+  } catch (error) {
+    console.error('Error updating nftId for NFT:', error);
+    throw error; // Rethrow or handle as needed
+  } finally {
+    // await client.close(); // Consider when to close the connection based on your app's use case
   }
 }
 
@@ -62,13 +86,13 @@ export const UpdateOffer = async (nftId: string, nftObject: NFT) => {
       return null;
     }
 
-    console.log(`Successfully updated offerId for nftId: ${nftId}`);
+    console.log(`Successfully updated offerId for nftId: ${nftId} to ${nftObject.nftOfferId}`);
     return result;
   } catch (error) {
     console.error('Error updating offerId for NFT:', error);
     throw error; // Rethrow or handle as needed
   } finally {
-    await client.close(); // Consider when to close the connection based on your app's use case
+    // await client.close(); // Consider when to close the connection based on your app's use case
   }
 }
 
@@ -92,7 +116,7 @@ export const UpdateOwner = async (nftId: string, nftObject: NFT) => {
     console.error('Error updating offerId for NFT:', error);
     throw error; // Rethrow or handle as needed
   } finally {
-    await client.close(); // Consider when to close the connection based on your app's use case
+    // await client.close(); // Consider when to close the connection based on your app's use case
   }
 }
 
@@ -113,7 +137,7 @@ export const GetObjects = async ({ xrplAddress, network }: { xrplAddress?: strin
     console.error('Failed to fetch NFT objects:', error);
     throw error;
   } finally {
-    await client.close();
+    // await client.close();
   }
 }
 
@@ -123,6 +147,7 @@ export default {
   ObjectId,
   GetCollection,
   AddObject,
+  UpdateNFTId,
   UpdateOffer,
   UpdateOwner,
   GetObjects

@@ -58,9 +58,10 @@ export default defineEventHandler(async (event) => {
         TransactionType: "NFTokenAcceptOffer",
         NFTokenSellOffer: offerId,
       },
-      return_url: {
-        "app": "https://mag.xrpl.quest/albers/mint",
-        "web": "https://mag.xrpl.quest/albers/mint"
+      options: {
+        return_url: {
+          "app": "https://mag.xrpl.quest/albers/mint?uuid={id}"
+        }
       }
     } as any);
     console.log(payload);

@@ -80,13 +80,25 @@ type Headers = {
   [key: string]: string;
 }
 
+/* @ts-ignore */
+const getCookies = () => decodeURIComponent(document.cookie)
+  .split(';').reduce((cookies: any, cookie: any) => {
+    const [name, value] = cookie.split('=').map(c => c.trim());
+    cookies[name] = decodeURIComponent(value);
+    return cookies;
+  }, {})
+
+
+
 const api: { [key: string]: any } = {}
 actions.forEach(action => {
   api[action.name] = async (props: any) => {
     const headers: Headers = {
       'content-type': 'application/json'
     }
-    const secret = localStorage.getItem('mag_secret')
+    const cookies = getCookies()
+    const secret = cookies['secret']
+    console.log('cookie', document.cookie, cookies, secret)
 
     if (action.secretRequired) {
       if (!secret) {

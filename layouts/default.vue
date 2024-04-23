@@ -5,11 +5,14 @@
       <div class="flex justify-start items-center">
         <NuxtLink to="/"
           class=" text-stratos-950 text-xl sm:text-3xl rounded-full px-0 py-1 font-title inline-flex items-center">
-          <div class="hover:scale-110 p-2 transition-all cursor-pointer flex justify-start items-center flex-auto ">
-            <img src="/xrpl.png" class="h-8 opacity-80 hidden dark:block" />
-            <img src="/xrplb.png" class="h-8 opacity-80 dark:invisible dark:hidden" />
+          <UTooltip text="Home">
+            <div class="hover:scale-110 p-2 transition-all cursor-pointer flex justify-start items-center flex-auto ">
+              <img src="/xrpl.png" class="h-8 opacity-80 hidden dark:block" />
+              <img src="/xrplb.png" class="h-8 opacity-80 dark:invisible dark:hidden" />
 
-          </div>
+            </div>
+          </UTooltip>
+
           <div class="ml-2 md:text-4xl text-lg font-title text-black dark:text-white">Community Quest</div>
         </NuxtLink>
       </div>
@@ -32,12 +35,18 @@
 </template>
 
 <script lang="ts" setup>
+import { inject } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
 // authentication
-const magSecret = ref<string | null>(null)
-magSecret.value = localStorage.getItem('mag_secret')
+const magSecret = inject('magSecret')
+//ref<string | null>(null)
+//magSecret.value = localStorage.getItem('mag_secret')
 
 onMounted(() => {
-  if (!magSecret) {
+  if (!magSecret.value) {
     router.push('/')
   }
 })

@@ -8,8 +8,10 @@
         <template v-if="albersURI">
           <figure class="max-w-lg">
             <img class="h-auto max-w-full rounded-lg" :src="albersURI" alt="image description">
-            <figcaption class="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">{{ xrplAddress }}</figcaption>
           </figure>
+        </template>
+        <template v-else>
+          <USkeleton class="h-full w-full" :ui="{ rounded: 'rounded-lg' }" />
         </template>
       </ClientOnly>
 
@@ -23,6 +25,7 @@ import { computed, inject } from 'vue'
 import API from '~/server/client'
 import { sketch } from '~/sketches/xalbers'
 import p5 from "p5"
+import { useRoute } from 'vue-router'
 
 const updateColors = inject('updateColors', () => { })
 
@@ -31,14 +34,16 @@ const props = defineProps({
   xrplAddress: String
 })
 
+const { query } = useRoute()
+const forceSave = query?.force === 'save'
+
 const emit = defineEmits(['loaded']);
 
 const { xrplAddress } = props
 console.log('albers component', { xrplAddress })
 
 // authentication
-const magSecret = ref<string | null>(null)
-magSecret.value = localStorage.getItem('mag_secret')
+const magSecret = inject('magSecret')
 
 const canvas = ref(null)
 
@@ -70,7 +75,7 @@ const onSketchLoaded = async ({ myp5, imageData }: { myp5: any, imageData: strin
   // check if the url exists
   const imageExists = await API.albersURLExists({ xrplAddress })
   console.log({ imageExists })
-  if (imageExists === true) {
+  if ((imageExists === true) && !forceSave) {
     console.log(`Image for ${xrplAddress} existed`)
     albersURI.value = `https://albers.fra1.cdn.digitaloceanspaces.com/alberx-${xrplAddress}.webp`
   } else {

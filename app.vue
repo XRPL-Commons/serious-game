@@ -8,11 +8,14 @@
 <script setup lang="ts">
 import { ref, provide, readonly } from 'vue'
 
-const network = ref('TESTNET')
+const magSecret = useCookie('secret')
+
+const network = ref(localStorage.getItem('network') || 'MAINNET')
 
 const toggleNetwork = () => {
   console.log('toggling network')
   network.value = network.value === 'TESTNET' ? 'MAINNET' : 'TESTNET'
+  localStorage.setItem('network', network.value)
 }
 
 const shuffle = (list) => {
@@ -43,6 +46,8 @@ const updateColors = (newColors) => {
 }
 
 // think of these as global variables
+provide('magSecret', magSecret)
+
 provide('network', network)
 provide('toggleNetwork', toggleNetwork)
 

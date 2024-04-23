@@ -29,8 +29,7 @@ export async function mintNft({ uri, network }: { uri: string, network: string }
 }
 
 export async function createOffer({ destination, nftId, network }: { destination: string, nftId: string, network: string }): Promise<string> {
-    console.log(destination)
-    console.log(nftId)
+    console.log({ destination, nftId, network })
     const wallet = getWallet();
     const client = await getExplorerClient(network);
 

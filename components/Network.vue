@@ -1,7 +1,9 @@
 <template>
   <ClientOnly>
-    <UButton :icon="isMainnet ? 'i-heroicons-lock-closed-20-solid' : 'i-heroicons-lock-open-20-solid'" color="gray"
-      variant="ghost" aria-label="Theme" @click="onClickNetwork" class="rounded-full" />
+    <UTooltip text="Network settings">
+      <UButton :icon="isMainnet ? 'i-heroicons-lock-closed-20-solid' : 'i-heroicons-lock-open-20-solid'" color="gray"
+        variant="ghost" aria-label="Theme" @click="onClickNetwork" class="rounded-full" />
+    </UTooltip>
     <template #fallback>
       <div class="w-8 h-8" />
     </template>

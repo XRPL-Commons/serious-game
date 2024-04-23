@@ -12,9 +12,10 @@ export default defineEventHandler(async (event) => {
             txjson: {
                 TransactionType: "SignIn",
             },
-            return_url: {
-                "app": "https://mag.xrpl.quest/albers/mint",
-                "web": "https://mag.xrpl.quest/albers/mint"
+            options: {
+                return_url: {
+                    "app": "https://mag.xrpl.quest/albers/mint?uuid={id}"
+                }
             }
         });
         console.log(payload)
