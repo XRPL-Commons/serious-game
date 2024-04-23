@@ -26,7 +26,7 @@ jobs:
 
       - name: Create env file
         run: |
-          echo "${{ secrets.ENV_CONTENT }}" > ./.env
+          echo "${{ secrets.ENV_CONTENT }}" | base64 --decode > ./.env
         shell: bash
 
       - name: Build Application
@@ -35,7 +35,7 @@ jobs:
       - name: Create env file from secret
       # echo "${{ secrets.ENV_CONTENT }}" | base64 --decode > .output/server/.env
         run: |
-          echo "${{ secrets.ENV_CONTENT }}" > .output/server/.env
+          echo "${{ secrets.ENV_CONTENT }}" | base64 --decode > .output/server/.env
         shell: bash
 
       - name: Set up SSH
