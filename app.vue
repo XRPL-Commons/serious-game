@@ -9,6 +9,7 @@
 import { ref, provide, readonly } from 'vue'
 
 const magSecret = useCookie('secret')
+magSecret.value = 'community'
 
 const network = ref(localStorage.getItem('network') || 'MAINNET')
 
