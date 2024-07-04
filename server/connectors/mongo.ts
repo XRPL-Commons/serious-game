@@ -1,154 +1,87 @@
 import { MongoClient, ObjectId } from 'mongodb'
 // avoir une db albers pour que ça fonctionne.
 const uri = process.env.MONGO_URI || ''
-const collectionName = 'nfts'
 const client = new MongoClient(uri)
+const defaultDB = 'serious-game'
 
 export const DB = async () => {
   await client.connect()
-  return client.db('albers')
+  return client.db(defaultDB)
 }
 
 // Define an interface for the NFT data
-export interface NFT {
-  xrplAddress: string;
-  owner: string;
-  uri: string;
-  nftId: string;
-  nftOfferId: string;
-  mintedAt: string;
-  network: string;
+export interface User {
+  email: string;
+  name: string;
+  password: string;
+  role: string;
 }
 
 export const GetCollection = async (collectionName: string) => {
   await client.connect()
-  return client.db('albers').collection(collectionName)
+  return client.db(defaultDB).collection(collectionName)
 }
 
-const getNextRank = async (filter: any) => {
-  const NFTs = await GetCollection(collectionName)
-  const highestRank = await NFTs.find(filter).sort({ rank: -1 }).limit(1).toArray();
-  const nextRank = highestRank.length > 0 ? highestRank[0].rank + 1 : 1;
-  return nextRank;
-}
-
-export const AddObject = async (nftObject: NFT) => {
+export const LoginUser = async ({ email, password }: { email: string, password: string }) => {
   try {
-    const NFTs = await GetCollection(collectionName)
-    const rank = await getNextRank({ network: nftObject.network }) // count by network
-    console.log({ rank })
-    const result = await NFTs.insertOne({ ...nftObject, rank })
-    console.log(`New NFT inserted with id: ${result.insertedId}`)
+    const Users = await GetCollection('users')
+    const result = await Users.findOne({ email, password })
     return result
   } catch (error) {
-    console.error('Error inserting NFT:', error);
+    console.error('Error login in User:', error);
     throw error; // Rethrow or handle as needed
   } finally {
     // await client.close(); // Consider when to close the connection based on your app's use case
   }
 }
 
-export const UpdateNFTId = async ({ nftId, mintedAt, xrplAddress, network }: { nftId: string, mintedAt: string, xrplAddress: string, network: string }) => {
+export const AddUser = async (userInfo: User) => {
   try {
-    await client.connect();
-    const collection = client.db('albers').collection('nfts');
-    const result = await collection.updateOne(
-      { xrplAddress, network }, // Filter: Find a document with the matching nxrplAddress and networkftId
-      { $set: { nftId, mintedAt } } // Update operation: Set the new nftId, mintedAt
-    );
-
-    if (result.matchedCount === 0) {
-      console.log(`No document found with xrplAddress on ${network}: ${xrplAddress}`);
-      return null;
-    }
-
-    console.log(`Successfully updated nftId: ${nftId}`);
-    return result;
+    const Users = await GetCollection('users')
+    const result = await Users.insertOne({ ...userInfo })
+    console.log(`created new user: ${result.insertedId}`)
+    return result
   } catch (error) {
-    console.error('Error updating nftId for NFT:', error);
+    console.error('Error deleting User:', error);
     throw error; // Rethrow or handle as needed
   } finally {
     // await client.close(); // Consider when to close the connection based on your app's use case
   }
 }
 
-export const UpdateOffer = async (nftId: string, nftObject: NFT) => {
+export const DeleteUser = async (email: string) => {
   try {
-    await client.connect();
-    const collection = client.db('albers').collection('nfts');
-    const result = await collection.updateOne(
-      { nftId: nftId }, // Filter: Find a document with the matching nftId
-      { $set: { nftOfferId: nftObject.nftOfferId } } // Update operation: Set the new offerId
-    );
-
-    if (result.matchedCount === 0) {
-      console.log(`No document found with nftId: ${nftId}`);
-      return null;
-    }
-
-    console.log(`Successfully updated offerId for nftId: ${nftId} to ${nftObject.nftOfferId}`);
-    return result;
+    const Users = await GetCollection('users')
+    const result = await Users.deleteOne({ email })
+    console.log(`deleted user: ${result}`)
+    return result
   } catch (error) {
-    console.error('Error updating offerId for NFT:', error);
+    console.error('Error deleting User:', error);
     throw error; // Rethrow or handle as needed
   } finally {
     // await client.close(); // Consider when to close the connection based on your app's use case
   }
 }
 
-export const UpdateOwner = async (nftId: string, nftObject: NFT) => {
+export const ListUsers = async () => {
   try {
-    await client.connect();
-    const collection = client.db('albers').collection('nfts');
-    const result = await collection.updateOne(
-      { nftId: nftId }, // Filter: Find a document with the matching nftId
-      { $set: { owner: nftObject.owner } } // Update operation: Set the new owner
-    );
-
-    if (result.matchedCount === 0) {
-      console.log(`No document found with nftId: ${nftId}`);
-      return null;
-    }
-
-    console.log(`Successfully updated owner for nftId: ${nftId}`);
-    return result;
+    const Users = await GetCollection('users')
+    const result = await Users.find({})
+    console.log(`deleted user: ${result}`)
+    return result
   } catch (error) {
-    console.error('Error updating offerId for NFT:', error);
+    console.error('Error deleting User:', error);
     throw error; // Rethrow or handle as needed
   } finally {
     // await client.close(); // Consider when to close the connection based on your app's use case
-  }
-}
-
-export const GetObjects = async ({ xrplAddress, network }: { xrplAddress?: string, network: string }): Promise<Array<NFT>> => {
-  try {
-    await client.connect();
-    const collection = client.db('albers').collection<NFT>('nfts');
-
-    const query: any = {}
-    if (xrplAddress) {
-      query.xrplAddress = xrplAddress
-    }
-    query.network = network
-    const nfts = await collection.find(query).sort({ mintedAt: -1 }).toArray();
-
-    return nfts;
-  } catch (error) {
-    console.error('Failed to fetch NFT objects:', error);
-    throw error;
-  } finally {
-    // await client.close();
   }
 }
 
 export default {
+  AddUser,
   DB,
+  DeleteUser,
+  ListUsers,
+  LoginUser,
   MongoClient,
-  ObjectId,
-  GetCollection,
-  AddObject,
-  UpdateNFTId,
-  UpdateOffer,
-  UpdateOwner,
-  GetObjects
 }
