@@ -1,5 +1,5 @@
 import { MongoClient, ObjectId } from 'mongodb'
-
+// avoir une db albers pour que ça fonctionne.
 const uri = process.env.MONGO_URI || ''
 const collectionName = 'nfts'
 const client = new MongoClient(uri)
