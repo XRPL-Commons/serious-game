@@ -50,7 +50,8 @@ const DoLogin = async () => {
     if (resultJSON) {
       /* @ts-ignore */
       token.value = password.value
-      router.push('/')
+      const userRole = resultJSON.role;
+      router.push(`/${userRole}`);
       return
     }
     alert('Wrong username or password')

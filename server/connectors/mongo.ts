@@ -24,7 +24,7 @@ export const GetCollection = async (collectionName: string) => {
 
 export const LoginUser = async ({ email, password }: { email: string, password: string }) => {
   try {
-    const Users = await GetCollection('users')
+    const Users = await GetCollection('users') //est-ce que l'user existe
     const result = await Users.findOne({ email, password })
     return result
   } catch (error) {
@@ -66,11 +66,11 @@ export const DeleteUser = async (email: string) => {
 export const ListUsers = async () => {
   try {
     const Users = await GetCollection('users')
-    const result = await Users.find({})
-    console.log(`deleted user: ${result}`)
+    const result = await Users.find({}).project({ name:1, email: 1, role: 1 }).toArray()
+    console.log(`listed users: ${result}`)
     return result
   } catch (error) {
-    console.error('Error deleting User:', error);
+    console.error('Error listing User:', error);
     throw error; // Rethrow or handle as needed
   } finally {
     // await client.close(); // Consider when to close the connection based on your app's use case

@@ -104,9 +104,10 @@ actions.forEach(action => {
       if (!secret) {
         throw new Error('secret is required')
       }
-      headers['x-secret'] = secret
+      headers['x-secret'] = secret //avant d'avoir les cookies, on injecte ici password et username
+      
     }
-
+//dans une route /admin/users à bloquer
     let url = action.path;
     let body = undefined;
     let queryString = '';

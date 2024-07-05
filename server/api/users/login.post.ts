@@ -5,10 +5,17 @@ export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event)
   console.log({ email, password })
   const result = await LoginUser({ email, password })
+
   if (result) {
-    return true
+    return {
+      success: true,
+      role: result.role,
+    };
   } else {
-    return false
+    return {
+      success: false,
+      message: 'Wrong username or password'
+    };
   }
   //return AddUser(userInfo)
 })

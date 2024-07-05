@@ -1,3 +1,6 @@
+
+
+
 <template>
   <div>
     <div>'{{ token }}'</div>
@@ -12,6 +15,7 @@
 </template>
 
 <script setup lang="ts">
+
 import { inject } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -27,6 +31,9 @@ onMounted(() => {
     router.push('/login')
   }
 })
+
+
 </script>
+
 
 <style></style>
