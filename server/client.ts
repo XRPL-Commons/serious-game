@@ -83,10 +83,12 @@ type Headers = {
 /* @ts-ignore */
 const getCookies = () => decodeURIComponent(document.cookie)
   .split(';').reduce((cookies: any, cookie: any) => {
+    /* @ts-ignore */
     const [name, value] = cookie.split('=').map(c => c.trim());
     cookies[name] = decodeURIComponent(value);
     return cookies;
   }, {})
+
 
 
 

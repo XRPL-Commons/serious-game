@@ -47,7 +47,7 @@ const DoLogin = async () => {
     })
     const resultJSON = await result.json()
     console.log({ resultJSON })
-    if (resultJSON) {
+    if (resultJSON.success) {
       /* @ts-ignore */
       token.value = password.value
       const userRole = resultJSON.role;

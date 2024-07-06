@@ -8,13 +8,29 @@ export const DB = async () => {
   await client.connect()
   return client.db(defaultDB)
 }
+export async function getSecretKeyForUser(email: string): Promise<string | null> {
+  await client.connect()
+  const Users = await GetCollection('users')
+  const userSecret = await Users.findOne({ email });
+  return userSecret ? userSecret.secretKey : null;
+}
 
-// Define an interface for the NFT data
+export async function setSecretKeyForUser(email: string, secretKey: string) {
+  await client.connect() // En partant du principe que l'adresse mail est unique
+  const Users = await GetCollection('users')
+  await Users.updateOne(
+    { email },
+    { $set: { secretKey } },
+    { upsert: true }
+  );
+}
+
 export interface User {
   email: string;
   name: string;
   password: string;
   role: string;
+  secretKey: string | null;
 }
 
 export const GetCollection = async (collectionName: string) => {
@@ -84,4 +100,6 @@ export default {
   ListUsers,
   LoginUser,
   MongoClient,
+  setSecretKeyForUser,
+  getSecretKeyForUser
 }
