@@ -9,7 +9,6 @@ In the root of your project, create a file named .env. This file will contain th
 Add environment variables:
 
 In the .env file, add the following lines, replacing <your_mongo_uri> and <your_secret_key_base> with your respective values:
-Make sure to install the dependencies:
 
 MONGO_URI=<your_mongo_uri>
 SECRET_KEY_BASE=<your_secret_key_base>
@@ -18,10 +17,14 @@ SECRET_KEY_BASE=<your_secret_key_base>
 
 SECRET_KEY_BASE: A base secret key used for generating and verifying JWT tokens. This key should be a complex and secure string to ensure the security of your tokens. You can generate a secure key using the following Python command:
 
-````python
+```python
+
+# Generating a secret key
 import os
 print(os.urandom(64).hex())
 
+
+# Now make sure to install the dependencies:
 
 ```bash
 # npm
