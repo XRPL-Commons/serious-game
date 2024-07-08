@@ -2,7 +2,7 @@
 // le middleware tourne à chaque requete au back
 
 import jwt from 'jsonwebtoken';
-import { getSecretKeyForUser } from '~/server/connectors/mongo.ts';
+import { getSecretKeyForUser } from '~/server/connectors/mongo';
 import { getCookie  } from 'h3';
 
   // const secret = event.headers.get('x-secret') //si pas token alors envoyer header de JSONcontent x-email et x-password pour prouver qu'on est admin

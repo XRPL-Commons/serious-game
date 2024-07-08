@@ -1,14 +1,12 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router';
 
 const links = [{
   label: 'Home',
-  to: '/admin'
+  to: '/student'
 }, {
   label: 'Dashboard',
-  to: `/admin/dashboard`
-}, {
-  label: 'List of Users',
-  to: '/admin/users'
+  to: `/student/dashboard`
 }, {
   label: 'Log out',
   to: '/login',
