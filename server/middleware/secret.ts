@@ -1,70 +1,63 @@
-// makes sure the secret is set when a route needs it
-// le middleware tourne à chaque requete au back
+// Middleware that runs on every request to the backend
 
 import jwt from 'jsonwebtoken';
 import { getSecretKeyForUser } from '~/server/connectors/mongo';
-import { getCookie  } from 'h3';
+import { getCookie } from 'h3';
 
-  // const secret = event.headers.get('x-secret') //si pas token alors envoyer header de JSONcontent x-email et x-password pour prouver qu'on est admin
-  // if (secret === 'community') {
-  //   event.context.secretIsKnown = true
-    //event.context.role= 'teacher'
+const SECRET_KEY_BASE = process.env.SECRET_KEY_BASE;
 
-        //event.context.password= 'GetCollection(password) ??
-      
-
-  const SECRET_KEY_BASE = process.env.SECRET_KEY_BASE
-
-  export default defineEventHandler(async (event)  => {
-    try {
-    // Vérifiez si l'objet ctx ou event contient les informations de route attendues
+export default defineEventHandler(async (event) => {
+  try {
     const currentRoute = event.node.req.url;
     if (!currentRoute) {
       throw new Error('Route path is undefined');
     }
 
-    // Vérifie si la route actuelle est une route protégée
     const protectedRoutes = [
-      /^\/admin\/.*$/,   // Correspond à toutes les routes sous /admin/
-      /^\/teacher\/.*$/  // Correspond à toutes les routes sous /teacher/
+      /^\/admin\/.*$/,   // Matches all routes under /admin/
+      /^\/teacher\/.*$/  // Matches all routes under /teacher/
     ];
     const isProtectedRoute = protectedRoutes.some(routeRegex => routeRegex.test(currentRoute));
 
-    // Si la route n'est pas protégée, sortez de la fonction sans vérifier le token
-    if (!isProtectedRoute) {
-      return;
-    }
-    if (currentRoute === '/login') {
-      return;
+    if (!isProtectedRoute || currentRoute === '/login') {
+      return; // No need to check token for unprotected routes or login route
     }
 
     const token = getCookie(event, 'auth_token');
-    if (!token) {
-      event.res.statusCode = 401;
+    if (token === undefined) {
+      event.node.res.statusCode = 401;
+      event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/`);
       return { message: 'Unauthorized' };
     }
 
     const decodedToken = jwt.decode(token) as { email: string; role: string };
-    const uniqueSecretKey = await getSecretKeyForUser(decodedToken.email);
-
-    if (!uniqueSecretKey) {
-      event.res.statusCode = 401;
-      return { message: 'Unauthorized' };
+    if (!decodedToken) {
+      throw new Error('Invalid token');
     }
 
-    // Vérifiez le token avec la clé secrète combinée
-    jwt.verify(token, `${SECRET_KEY_BASE}${uniqueSecretKey}`);
+    const uniqueSecretKey = await getSecretKeyForUser(decodedToken.email);
+    if (!uniqueSecretKey) {
+      throw new Error('Unauthorized');
+    }
 
-    // Attachez les informations de l'utilisateur au contexte
+    jwt.verify(token as string, `${SECRET_KEY_BASE}${uniqueSecretKey}`);
+
+    if (currentRoute.startsWith('/admin') && decodedToken.role !== 'admin') {
+      event.node.res.statusCode = 403;
+      event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/`);
+      return { message: 'Forbidden' };
+    }
+
     event.context.user = { email: decodedToken.email, role: decodedToken.role };
-    return { message : 'Success' };
+
   } catch (error) {
-    console.error('Error verifying token:', error);   
-    // Remove the auth_token cookie on unauthorized access
-    event.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/`);    
+    console.error('Error verifying token:', error);
+    event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/`);
     return { message: 'Unauthorized' };
-    
   }
 });
 
-// à utiliser afin de vérifier si l'user peut accéder à l'url /teacher/classroom
+
+
+// Use to verify if the user can access the /teacher/classroom URL
+

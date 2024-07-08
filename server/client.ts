@@ -1,10 +1,14 @@
 // this is meant to be imported on the client to interact with the server api
 // all client side functions will be defined here
-
+ 
 const actions = [
-  {
+  { 
     name: 'checkSecret',
     path: '/api/secret',
+    method: 'POST'
+  }, {
+    name: 'login',
+    path: '/api/users/login',
     method: 'POST'
   },
   {

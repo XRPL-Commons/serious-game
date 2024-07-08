@@ -2,14 +2,19 @@
   <div>
     <UContainer class="max:w-sm space-y-4">
       <p class="font-title">Login</p>
+      <UForm :schema="schema" :state="state" class="space-y-4" @submit="DoLogin">
+    <UFormGroup label="Email" name="email">
+      <UInput v-model="state.email" />
+    </UFormGroup>
 
-      <UFormGroup label="Email">
-        <UInput placeholder="you@example.com" icon="i-heroicons-envelope" v-model="email" />
-      </UFormGroup>
-      <UFormGroup label="Password">
-        <UInput icon="i-heroicons-lock-closed" type="password" v-model="password" />
-      </UFormGroup>
-      <UButton color="black" variant="solid" @click="DoLogin" :loading="working">Login</UButton>
+    <UFormGroup label="Password" name="password">
+      <UInput v-model="state.password" type="password" />
+    </UFormGroup>
+
+    <UButton type="submit">
+      Submit
+    </UButton>
+  </UForm>
     </UContainer>
 
     <pre>{{ email }} {{ password }}</pre>
@@ -17,36 +22,50 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, inject } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, inject, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { object, string, type InferType } from 'yup'
+import type { FormSubmitEvent } from '#ui/types'
+import alex_first_api from '~/server/client'
+
+
+
+const schema = object({
+  email: string().email('Invalid email').required('Required'),
+  password: string()
+    .required('Required')
+})
+
+type Schema = InferType<typeof schema>
+
+const state = reactive({
+  email: undefined,
+  password: undefined
+})
+
+async function onSubmit (event: FormSubmitEvent<Schema>) {
+  // Do something with event.data
+  console.log(event.data)
+}
 
 const router = useRouter()
 
 const email = ref('')
 const password = ref('')
 const working = ref(false)
+const isLoggedIn = ref(false);
+const loggedInUser = ref({ email: '', role: '' });
 
 const token = inject('token')
 
 const DoLogin = async () => {
   working.value = true
 
-  try {
-    const headers = {
-      'content-type': 'application/json'
-    }
-    const body = {
-      email: email.value,
-      password: password.value
-    }
-    console.log({ body })
-    const result = await fetch('/api/users/login', {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body)
-    })
-    const resultJSON = await result.json()
-    console.log({ resultJSON })
+  //Let's factorize the code above thanks to /secret/api/plugins/clients.ts
+  const resultJSON = await alex_first_api.login({email: state.email,
+      password: state.password})
+
+    console.log({ resultJSON})
     if (resultJSON.success) {
       /* @ts-ignore */
       token.value = password.value
@@ -55,11 +74,50 @@ const DoLogin = async () => {
       return
     }
     alert('Wrong username or password')
-  } catch (e) {
-    // afficher une erreur
-    console.error(e)
-  } finally {
+
     working.value = false
   }
+
+
+
+const checkLoggedInStatus = async () => {
+  const authToken = getCookie('auth_token');
+  if (authToken) {
+    try {
+      const response = await fetch('/api/verify-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+      
+      const result = await response.json();
+      if (result.success) {
+        isLoggedIn.value = true;
+        loggedInUser.value.email = result.email;
+        loggedInUser.value.role = result.role; // If needed
+      }
+    } catch (error) {
+      console.error('Error checking login status:', error);
+    }
+  }
+};
+
+onMounted(async () => {
+  await checkLoggedInStatus();
+});
+
+
+function getCookie(name :string) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    const cookieValue = parts.pop();
+    if (cookieValue) {
+      return cookieValue.split(';').shift();
+    }
+  }
+  return undefined;
 }
 </script>

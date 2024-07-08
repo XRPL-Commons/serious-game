@@ -1,8 +1,10 @@
 import { ListUsers, User } from '~/server/connectors/mongo'
 
 export default defineEventHandler(async (event) => {
-    //event.context.role === 'admin'? console.log('admin tout va bien') : console.log('not admin !!!)
-    event.context.user.role === 'admin'? console.log('admin tout va bien') : console.log('not admin !!!)')
-
+  // if (event?.context?.user?.role !== 'admin') {
+  //   // If the user is not an admin, return an unauthorized response
+  //   event.node.res.statusCode = 403; // Forbidden
+  //   return { message: 'Forbidden' };
+  // }
   return ListUsers()
 })

@@ -91,21 +91,23 @@ const fetchUsers = async () => {
       headers,
     })
 
-    const userList: User[] = [];
-    const cursor = await result.json();
-    console.log({ cursor })
+    // const userList: User[] = [];
+    // const cursor = await result.json();
+    // console.log({ cursor })
 
-    await cursor.forEach((doc: User) => {
-      const user: User = {
-        email: doc.email,
-        name: doc.name,
-        password: doc.password,
-        role: doc.role
-      };
-      userList.push(user);
-    });
+    // await cursor.forEach((doc: User) => {
+    //   const user: User = {
+    //     email: doc.email,
+    //     name: doc.name,
+    //     password: doc.password,
+    //     role: doc.role,
+    //     secretKey : null
+    //   };
+    //   userList.push(user);
+    // });
 
-    users.value = userList;
+    // users.value = userList;
+    users.value = await result.json();
   } catch (error) {
     console.error('Error fetching users:', error);
   } finally {
