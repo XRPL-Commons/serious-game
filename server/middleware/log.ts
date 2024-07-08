@@ -1,3 +1,4 @@
+//ce qui a dans middleware run à chaque appel au backend (NUXT) on pourrait y afficher le token à chaque fois
 export default defineEventHandler(async (event) => {
   console.log(`> new request ${event.method}: ${getRequestURL(event)}`)
   const params = getRouterParams(event)

@@ -5,6 +5,10 @@ import { getSecretKeyForUser } from '~/server/connectors/mongo';
 import { getCookie } from 'h3';
 
 const SECRET_KEY_BASE = process.env.SECRET_KEY_BASE;
+const authorized_routes = [
+  '/api/users/login',
+  '/login',
+]
 
 export default defineEventHandler(async (event) => {
   try {
@@ -13,17 +17,22 @@ export default defineEventHandler(async (event) => {
       throw new Error('Route path is undefined');
     }
 
-    const protectedRoutes = [
-      /^\/admin\/.*$/,   // Matches all routes under /admin/
-      /^\/teacher\/.*$/  // Matches all routes under /teacher/
-    ];
-    const isProtectedRoute = protectedRoutes.some(routeRegex => routeRegex.test(currentRoute));
+    // const protectedRoutes = [
+    //   /^\/admin\/.*$/,   // Matches all routes under /admin/
+    //   /^\/teacher\/.*$/  // Matches all routes under /teacher/
+    // ];
+    // const isProtectedRoute = protectedRoutes.some(routeRegex => routeRegex.test(currentRoute));
 
-    if (!isProtectedRoute || currentRoute === '/login') {
-      return; // No need to check token for unprotected routes or login route
+    // if (!isProtectedRoute || currentRoute === '/login') {
+    //   return; // No need to check token for unprotected routes or login route
+    // }
+
+    if (authorized_routes.includes(currentRoute)) {
+      return;
     }
 
     const token = getCookie(event, 'auth_token');
+    console.log("Mon token est :", { token });
     if (token === undefined) {
       event.node.res.statusCode = 401;
       event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/`);
