@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { getSecretKeyForUser } from '~/server/connectors/mongo';
 import { getCookie } from 'h3';
 
+
 const SECRET_KEY_BASE = process.env.SECRET_KEY_BASE;
 const authorized_routes = [
   '/api/users/login',
@@ -17,13 +18,8 @@ export default defineEventHandler(async (event) => {
     console.log('current route', { currentRoute })
     if (!currentRoute) {
       throw new Error('Route path is undefined');
-    }
 
-    // const protectedRoutes = [
-    //   /^\/admin\/.*$/,   // Matches all routes under /admin/
-    //   /^\/teacher\/.*$/  // Matches all routes under /teacher/
-    // ];
-    // const isProtectedRoute = protectedRoutes.some(routeRegex => routeRegex.test(currentRoute));
+    }
 
     if (currentRoute === '/login' || currentRoute === '/') {
       
@@ -35,11 +31,10 @@ export default defineEventHandler(async (event) => {
     }
 
     const token = getCookie(event, 'auth_token');
-    console.log("Mon token est :", { token });
     if (token === undefined )  {
       event.node.res.statusCode = 401;
-      event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/`);
-      return { message: 'Unauthorized' };
+      event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/; SameSite=None; Secure`);
+      return { message: 'Unauthorized because token is now undefined' };
     }
 
       console.log('Mon token est ce qui suit :', { token })
@@ -49,7 +44,7 @@ export default defineEventHandler(async (event) => {
     if (!decodedToken) {
       throw new Error('Invalid token');
     }
-    console.log('Mon token décodé est ce qui suit :', { decodedToken })
+    console.log('Mon token decodé est ce qui suit :', { decodedToken })
 
     const uniqueSecretKey = await getSecretKeyForUser(decodedToken.email);
     if (!uniqueSecretKey) {
@@ -58,17 +53,20 @@ export default defineEventHandler(async (event) => {
 
     jwt.verify(token as string, `${SECRET_KEY_BASE}${uniqueSecretKey}`);
 
-    if (currentRoute.startsWith('/admin') && decodedToken.role !== 'admin') {
+    event.context.user = { email: decodedToken.email, role: decodedToken.role };
+
+
+    if (!currentRoute.startsWith('/${decodedToken.role}') ) {
       event.node.res.statusCode = 403;
-      event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/`);
-      return { message: 'Forbidden' };
+      event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/; SameSite=None; Secure`);
+      return { message: 'Forbidden because you have the wrong role hehe ' };
     }
 
-    event.context.user = { email: decodedToken.email, role: decodedToken.role };
+
 
   } catch (error) {
     console.error('Error verifying token:', error);
-    event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/`);
+    event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/; SameSite=None; Secure`);
     return { message: 'Unauthorized' };
   }
 });

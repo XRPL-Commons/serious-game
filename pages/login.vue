@@ -30,6 +30,7 @@ import alex_first_api from '~/server/client'
 
 
 
+
 const schema = object({
   email: string().email('Invalid email').required('Required'),
   password: string()
@@ -80,44 +81,33 @@ const DoLogin = async () => {
 
 
 
-const checkLoggedInStatus = async () => {
-  const authToken = getCookie('auth_token');
-  if (authToken) {
-    try {
-      const response = await fetch('/api/verify-token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
-        }
-      });
+// const checkLoggedInStatus = async () => {
+//   if (authToken) {
+//     try {
+//       const response = await fetch('/api/verify-token', {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'Authorization': `Bearer ${authToken}`
+//         }
+//       });
       
-      const result = await response.json();
-      if (result.success) {
-        isLoggedIn.value = true;
-        loggedInUser.value.email = result.email;
-        loggedInUser.value.role = result.role; // If needed
-      }
-    } catch (error) {
-      console.error('Error checking login status:', error);
-    }
-  }
-};
+//       const result = await response.json();
+//       if (result.success) {
+//         isLoggedIn.value = true;
+//         loggedInUser.value.email = result.email;
+//         loggedInUser.value.role = result.role; // If needed
+//       }
+//     } catch (error) {
+//       console.error('Error checking login status:', error);
+//     }
+//   }
+// };
 
-onMounted(async () => {
-  await checkLoggedInStatus();
-});
+// onMounted(async () => {
+//   await checkLoggedInStatus();
+// });
 
 
-function getCookie(name :string) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) {
-    const cookieValue = parts.pop();
-    if (cookieValue) {
-      return cookieValue.split(';').shift();
-    }
-  }
-  return undefined;
-}
+
 </script>
