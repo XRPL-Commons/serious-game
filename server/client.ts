@@ -4,7 +4,7 @@
 const actions = [
   { 
     name: 'checkSecret',
-    path: '/api/secret',
+    path: '/middleware/secret',
     method: 'POST'
   }, {
     name: 'login',
@@ -12,6 +12,21 @@ const actions = [
     method: 'POST'
   },
   {
+    name: 'ListUsers',
+    path: '/api/users/',
+    method: 'GET'
+  },
+  {
+    name: 'AddUser',
+    path: '/api/users',
+    method: 'POST'
+  },
+  {
+    name: 'DeleteUser',
+    path: '/api/users',
+    method: 'DELETE'
+  },
+ {
     name: 'createNFT',
     path: '/api/art/create',
     method: 'POST',
