@@ -54,8 +54,6 @@ const router = useRouter()
 const email = ref('')
 const password = ref('')
 const working = ref(false)
-const isLoggedIn = ref(false);
-const loggedInUser = ref({ email: '', role: '' });
 
 const token = inject('token')
 
@@ -79,34 +77,44 @@ const DoLogin = async () => {
     working.value = false
   }
 
+const loading = ref(true);
+    // J'ai pas réussi à faire marcher la fonction CheckLogin
 
 
-// const checkLoggedInStatus = async () => {
-//   if (authToken) {
-//     try {
-//       const response = await fetch('/api/verify-token', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//           'Authorization': `Bearer ${authToken}`
+// const CheckLogin = async () => {
+//   try{
+//   if (!(token?.valueOf())) {  // If no token, redirect to login
+//           router.push('/login');
 //         }
-//       });
-      
-//       const result = await response.json();
-//       if (result.success) {
-//         isLoggedIn.value = true;
-//         loggedInUser.value.email = result.email;
-//         loggedInUser.value.role = result.role; // If needed
-//       }
-//     } catch (error) {
-//       console.error('Error checking login status:', error);
-//     }
+// else  {
+//   loading.value = true;
+//   const verifyResponse = await fetch('/api/users/verify', {
+//           method: 'GET',
+//           headers: {
+//             'Authorization': `Bearer ${token.valueOf()}`,
+//             'Content-Type': 'application/json'
+//           }
+//         });
+// console.log('verifyResponse est ce qui suit ', { verifyResponse } );
+// const decodedToken = await verifyResponse.json();
+//         console.log({ decodedToken });
+// router.push(`/${decodedToken.role}`);
+// }
+//   } catch (err) {
+//         console.error('Error during token verification:', err);
+//         alert('Please log in');
+//         router.push('/login');
+//       } finally {
+//         loading.value = false;
 //   }
-// };
 
-// onMounted(async () => {
-//   await checkLoggedInStatus();
-// });
+
+// }
+onMounted(() => {
+  // CheckLogin();
+
+});
+
 
 
 

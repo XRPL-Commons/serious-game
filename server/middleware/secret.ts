@@ -20,6 +20,7 @@ export default defineEventHandler(async (event) => {
       throw new Error('Route path is undefined');
 
     }
+    
 
     if (currentRoute === '/login' || currentRoute === '/') {
       
@@ -46,9 +47,12 @@ export default defineEventHandler(async (event) => {
     }
     console.log('Mon token decodé est ce qui suit :', { decodedToken })
 
-    const uniqueSecretKey = await getSecretKeyForUser(decodedToken.email);
+    const uniqueSecretKey = await getSecretKeyForUser(decodedToken.email); // dans mongo.ts
     if (!uniqueSecretKey) {
       throw new Error('Unauthorized');
+    }
+    if (decodedToken.role === 'admin') {
+      return;
     }
 
     jwt.verify(token as string, `${SECRET_KEY_BASE}${uniqueSecretKey}`);
@@ -56,11 +60,12 @@ export default defineEventHandler(async (event) => {
     event.context.user = { email: decodedToken.email, role: decodedToken.role };
 
 
-    if (!currentRoute.startsWith('/${decodedToken.role}') ) {
-      event.node.res.statusCode = 403;
-      event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/; SameSite=None; Secure`);
-      return { message: 'Forbidden because you have the wrong role hehe ' };
-    }
+    // if (!currentRoute.startsWith('/${decodedToken.role}') ) {                 Doesn't work need to be fixed
+    //   event.node.res.statusCode = 403;
+    //   event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/; SameSite=None; Secure`);
+    //   return { message: 'Forbidden because you have the wrong role hehe ' };
+    // }
+    
 
 
 

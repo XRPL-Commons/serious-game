@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
+import { setCookie } from 'h3'
 
+const router = useRouter();
 const links = [{
   label: 'Home',
   to: '/admin'
@@ -13,9 +16,16 @@ const links = [{
   label: 'Log out',
   to: '/login',
   click : async () => {
+    logout()
     alert('You have been logged out');
   }
 }];
+const logout = async () => {
+  //setCookie(event, 'token', '', { maxAge: 0, path: '/', sameSite: 'None', secure: true });('token', '');
+  alert('You have been logged out');
+  router.push('/login');
+};
+
 </script>
 
 <template>

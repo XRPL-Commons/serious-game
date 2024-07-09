@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   // Check si la personne a le role admin 
   if (!event.context.user || event.context.user.role !== 'admin') {
     event.node.res.statusCode = 401;
-    event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/`);
+    event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/; SameSite=None; Secure`);
     // redirect to login and return forbidden
     
     return { message: 'Forbidden' };

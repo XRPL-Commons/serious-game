@@ -22,7 +22,13 @@ export default defineEventHandler(async (event) => {
       );
 
       // Set the cookie with proper attributes
-      setCookie(event, 'auth_token', token, { maxAge: 3600, httpOnly: true, path: '/' });
+      setCookie(event, 'auth_token', token, { 
+        maxAge: 3600, //1h cookie 
+        httpOnly: true, 
+        path: '/', 
+        sameSite: 'none', 
+        secure: true 
+      });
 
       return {
         success: true,

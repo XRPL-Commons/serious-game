@@ -138,9 +138,6 @@ const deleteUser = async (email: string) => {
   }
 };
 
-// const navigateToAddUser = () => {
-//   router.push('/add-user'); 
-// };
 definePageMeta({
   layout: 'admin',
 })
