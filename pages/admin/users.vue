@@ -135,6 +135,8 @@ const deleteUser = async (email: string) => {
     } catch (error) {
       console.error('Error deleting user:', error);
     }
+
+    fetchUsers();
   }
 };
 
