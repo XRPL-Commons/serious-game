@@ -3,7 +3,7 @@ import { GetCollection, AddUser } from "../connectors/mongo"
 const defaultAdmin = {
   name: 'Luc Bocahut',
   email: 'luc@xrpl-commons.org',
-  password: 'SeriousGameAdmin'
+  password: 'SeriousGameAdmin',
 }
 
 // @ts-ignore
@@ -14,13 +14,12 @@ export default defineNitroPlugin(async (nitroApp) => {
   const Users = await GetCollection('users')
   console.log(Users)
   const adminInfo = await Users.findOne({ email: defaultAdmin.email })
-  console.log({ adminInfo })
   if (!adminInfo) {
     // create admin user
     const result = await AddUser({
       ...defaultAdmin,
-      role: 'admin'
-    })
+      role: 'admin',
+      secretKey: null})
   }
 
 })
