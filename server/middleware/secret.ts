@@ -59,12 +59,16 @@ export default defineEventHandler(async (event) => {
 
     event.context.user = { email: decodedToken.email, role: decodedToken.role };
 
+    console.log( 'Decoded token role is ' + `/${decodedToken.role}` )
+    console.log( 'currentRoute is ' + currentRoute )
 
-    // if (!currentRoute.startsWith('/${decodedToken.role}') ) {                 Doesn't work need to be fixed
-    //   event.node.res.statusCode = 403;
-    //   event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/; SameSite=None; Secure`);
-    //   return { message: 'Forbidden because you have the wrong role hehe ' };
-    // }
+
+    // Blocking access to pages that require a higher role than the user's role and also blocks access to Api different from the login one 
+    if (!currentRoute.startsWith(`/${decodedToken.role}`) && currentRoute !== '/api/users/login')  {                 
+      event.node.res.statusCode = 403;
+      //event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/; SameSite=None; Secure`); //Maybe too much 
+      return { message: 'Forbidden because you have the wrong role hehe ' };
+    }
     
 
 
