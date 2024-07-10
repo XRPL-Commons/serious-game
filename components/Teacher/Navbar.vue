@@ -5,13 +5,13 @@ const router = useRouter();
 
 const links = [{
   label: 'Home',
-  to: '/admin'
+  to: '/teacher'
 }, {
   label: 'Dashboard',
-  to: `/admin/dashboard`
+  to: `/teacher/dashboard`
 }, {
-  label: 'List of Users',
-  to: '/admin/users'
+  label: 'Start a Serious Game',
+  to: '/teacher/game'
 }, {
   label: 'Log out',
   to: '/login',

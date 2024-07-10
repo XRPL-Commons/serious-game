@@ -24,39 +24,43 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const loading = ref(true);
 const token = inject<string>('token')
-const CheckLogin = async () => {
-  try{
-  if (token?.valueOf()) {  // If no token, redirect to login
-          router.push('/login');
-        }
-else  {
-  router.push('/login');
-  loading.value = true;
-  const verifyResponse = await fetch('/api/users/verify', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-console.log('verifyResponse est ce qui suit ', { verifyResponse } );
-const decodedToken = await verifyResponse.json();
-        console.log({ decodedToken });
-router.push(`/${decodedToken.role}`);
-}
-  } catch (err) {
-        console.error('Error during token verification:', err);
-        alert('Please log in');
-        router.push('/login');
-      } finally {
-        loading.value = false;
-  }
 
+// const CheckLogin = async () => {
+//   try{
+//   console.log('token est ', token);
+//   /*ts ignore */
+//   if (!token.value) {  // If no token, redirect to login
+//           router.push('/login');
+//         }
+// else  {
+//   loading.value = true;
+//   const verifyResponse = await fetch('/api/users/verify', {
+//           method: 'GET',
+//           headers: {
+//             'Authorization': `Bearer ${token}`,
+//             'Content-Type': 'application/json'
+//           }
+//         });
+// console.log('verifyResponse est ce qui suit ', { verifyResponse } );
+// const decodedToken = await verifyResponse.json();
+//         console.log({ decodedToken });
+// router.push(`/${decodedToken.role}`);
+// }
+//   } catch (err) {
+//         console.error('Error during token verification:', err);
+//         alert('Please log in');
+//         router.push('/login');
+//       } finally {
+//         loading.value = false;
+//   }
+// }
 
-}
 onMounted(() => {
-  CheckLogin();
+  // CheckLogin();
+  router.push('/login');
+
 });
+
 
 
 </script>

@@ -55,7 +55,6 @@ export const AddUser = async (userInfo: User) => {
   try {
     const Users = await GetCollection('users')
     const result = await Users.insertOne({ ...userInfo })
-    console.log(`created new user: ${result.insertedId}`)
     return result
   } catch (error) {
     console.error('Error deleting User:', error);
@@ -69,7 +68,6 @@ export const DeleteUser = async (email: string) => {
   try {
     const Users = await GetCollection('users')
     const result = await Users.deleteOne({ email })
-    console.log(`deleted user: ${result}`)
     return result
   } catch (error) {
     console.error('Error deleting User:', error);
@@ -83,7 +81,7 @@ export const ListUsers = async () => {
   try {
     const Users = await GetCollection('users')
     const result = await Users.find({}).project({ name:1, email: 1, role: 1 }).toArray()
-    console.log(`listed users: ${result}`)
+    console.log('listed users:'+  result)
     return result
   } catch (error) {
     console.error('Error listing User:', error);
@@ -93,6 +91,47 @@ export const ListUsers = async () => {
   }
 }
 
+export interface Classroom {
+  id: string;
+  name: string;
+  teacherId: string;
+  studentIds: string[];
+  createdAt: Date;
+}
+
+export const ListClassrooms = async () => {
+  try {
+    const Classrooms = await GetCollection('classrooms'); // Obtient la collection 'classrooms'
+    const result = await Classrooms.find({}).project({ name: 1, teacherId: 1, studentIds: 1, createdAt: 1 }).toArray(); // Récupère toutes les classrooms avec certains champs projetés
+    return result;
+  } catch (error) {
+    console.error('Error listing Classrooms:', error);
+    throw error; // Rethrow ou handle as needed
+  } finally {
+    // await client.close(); // Considère quand fermer la connexion selon le cas d'utilisation de votre application
+  }
+};
+
+
+export const AddClassroom = async (classroomInfo: Omit<Classroom, 'id' | 'createdAt'>) => {
+  try {
+    const Classrooms = await GetCollection('classrooms'); // Obtient la collection 'classrooms'
+    const result = await Classrooms.insertOne({ 
+      ...classroomInfo, 
+      createdAt: new Date() // Ajoute la date de création actuelle
+    });
+    return result;
+  } catch (error) {
+    console.error('Error adding Classroom:', error);
+    throw error; // Rethrow ou handle as needed
+  } finally {
+    // await client.close(); // Consider when to close the connection based on your app's use case
+  }
+};
+
+
+
+
 export default {
   AddUser,
   DB,
@@ -101,5 +140,6 @@ export default {
   LoginUser,
   MongoClient,
   setSecretKeyForUser,
-  getSecretKeyForUser
+  ListClassrooms,
+  AddClassroom
 }

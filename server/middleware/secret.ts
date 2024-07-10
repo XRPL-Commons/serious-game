@@ -3,11 +3,14 @@
 import jwt from 'jsonwebtoken';
 import { getSecretKeyForUser } from '~/server/connectors/mongo';
 import { getCookie } from 'h3';
+import { provide, ref } from 'vue'
+
 
 
 const SECRET_KEY_BASE = process.env.SECRET_KEY_BASE;
 const authorized_routes = [
   '/api/users/login',
+  '/api/classrooms/',
   '/login',
 ]
 
@@ -57,6 +60,7 @@ export default defineEventHandler(async (event) => {
 
     jwt.verify(token as string, `${SECRET_KEY_BASE}${uniqueSecretKey}`);
 
+    // Set the user object in the event context
     event.context.user = { email: decodedToken.email, role: decodedToken.role };
 
     console.log( 'Decoded token role is ' + `/${decodedToken.role}` )
@@ -69,7 +73,7 @@ export default defineEventHandler(async (event) => {
       //event.node.res.setHeader('Set-Cookie', `auth_token=; Max-Age=0; Path=/; SameSite=None; Secure`); //Maybe too much 
       return { message: 'Forbidden because you have the wrong role hehe ' };
     }
-    
+    // provide('token', token)
 
 
 
