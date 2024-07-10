@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { setCookie } from 'h3'
+
 
 const router = useRouter();
 const links = [{
@@ -17,13 +17,29 @@ const links = [{
   to: '/login',
   click : async () => {
     logout()
-    alert('You have been logged out');
   }
 }];
 const logout = async () => {
-  //setCookie(event, 'token', '', { maxAge: 0, path: '/', sameSite: 'None', secure: true });('token', '');
-  alert('You have been logged out');
-  router.push('/login');
+  try {
+    const response = await fetch('/api/users/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const result = await response.json();
+    console.log( 'result success est ' ,result.success);
+    if (result.success) {
+      alert('You have been logged out');
+      router.push('/login');
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (error) {
+    console.error('Error during logout:', error);
+    alert('Error during logout');
+  }
 };
 
 </script>

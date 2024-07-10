@@ -1,22 +1,46 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const links = [{
   label: 'Home',
-  to: '/teacher'
+  to: '/admin'
 }, {
   label: 'Dashboard',
-  to: `/teacher/dashboard`
+  to: `/admin/dashboard`
 }, {
-  label: 'Start a Serious Game ',
-  to: '/teacher/game'
+  label: 'List of Users',
+  to: '/admin/users'
 }, {
   label: 'Log out',
   to: '/login',
   click : async () => {
-    alert('You have been logged out');
+    logout()
   }
 }];
+const logout = async () => {
+  try {
+    const response = await fetch('/api/users/logout', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const result = await response.json();
+    console.log( 'result success est ' ,result.success);
+    if (result.success) {
+      alert('You have been logged out');
+      router.push('/login');
+    } else {
+      throw new Error(result.message);
+    }
+  } catch (error) {
+    console.error('Error during logout:', error);
+    alert('Error during logout');
+  }
+};
 </script>
 
 <template>
