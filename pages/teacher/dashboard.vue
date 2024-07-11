@@ -26,6 +26,7 @@
         <div class="flex-none">
           <h2 class="text-lg font-bold mb-2">Students</h2>
         </div>
+        
         <div class="flex-none transform translate-y-[-1rem]">
           <UButton class="mt-4" color="blue" label="Add a Student to the Classroom" @click="addNewStudent" />
         </div>
@@ -40,8 +41,6 @@
     </div>
 
   </div>
-
-  <!-- <UTable :rows="classrooms"> </UTable> -->
   </template>
 
 
@@ -64,6 +63,20 @@ import type { Classroom } from '~/server/connectors/mongo'; // Importation du ty
 const classrooms = ref<Classroom[]>([]); // Création d'une référence réactive pour stocker les classrooms
 const loading = ref<boolean>(true); // Création d'une référence réactive pour l'état de chargement
 const router = useRouter(); // Utilisation de useRouter pour la navigation
+const classroomColumns = [ {
+  key: 'name',
+  label: 'Class Name'
+}, {
+  key: 'teacherName',
+  label: 'Teacher Name'
+}, {
+  key: 'studentNames',
+  label: 'Students'
+}, 
+ {
+  key: 'actions',
+  label: 'Actions'
+}];
 
 const fetchClassrooms = async () => {
   try {
@@ -78,6 +91,7 @@ const fetchClassrooms = async () => {
     })
   
   classrooms.value = await result.json();
+  console.log( classrooms.value );
   } catch (error) {
     console.error('Error fetching classrooms:', error);
   } finally {

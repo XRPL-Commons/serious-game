@@ -4,6 +4,9 @@ const uri = process.env.MONGO_URI || ''
 const client = new MongoClient(uri)
 const defaultDB = 'serious-game'
 
+
+
+
 export const DB = async () => {
   await client.connect()
   return client.db(defaultDB)
@@ -98,11 +101,35 @@ export interface Classroom {
   studentIds: string[];
   createdAt: Date;
 }
+const fetchToken = async () => {
+  const response = await fetch('/api/users/verify', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to verify token');
+  }
+
+  return await response.json();
+};
+
+const decodedToken = await fetchToken();
 
 export const ListClassrooms = async () => {
   try {
     const Classrooms = await GetCollection('classrooms'); // Obtient la collection 'classrooms'
-    const result = await Classrooms.find({}).project({ name: 1, teacherId: 1, studentIds: 1, createdAt: 1 }).toArray(); // Récupère toutes les classrooms avec certains champs projetés
+    const result = await Classrooms.find({}).toArray(); // Récupère toutes les classrooms avec certains champs projetés
+
+    // if (decodedToken.role === 'admin') {
+    //   const result = await Classrooms.find({}).toArray(); // Récupère toutes les classrooms avec certains champs projetés
+    // }
+    // else (decodedToken.role === 'teacher') {
+    //   const result = await Classrooms.find({ teachermail: decodedToken.email}).toArray(); // Récupère toutes les classrooms avec certains champs projetés
+
+    // }
     return result;
   } catch (error) {
     console.error('Error listing Classrooms:', error);
