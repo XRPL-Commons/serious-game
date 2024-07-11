@@ -2,6 +2,9 @@
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+const userInfo = inject('userInfo') as any;
+const userName = userInfo.value?.name;
+console.log('userName est ', userName);
 
 const links = [{
   label: 'Home',
@@ -9,6 +12,8 @@ const links = [{
 }, {
   label: 'Dashboard',
   to: `/Student/dashboard`
+},{
+  label: `Logged in as : ${userName}`,
 }, {
   label: 'Log out',
   to: '/login',

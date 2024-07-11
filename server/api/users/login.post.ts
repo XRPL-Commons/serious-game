@@ -33,6 +33,8 @@ export default defineEventHandler(async (event) => {
       return {
         success: true,
         role: result.role,
+        email: result.email,
+        name: result.name,
       };
     } else {
       return {

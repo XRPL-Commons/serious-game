@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 
-
 const router = useRouter();
+const userInfo = inject('userInfo') as any;
+const userName = userInfo.value?.name;
+console.log('userName est ', userName);
+
 const links = [{
   label: 'Home',
   to: '/admin'
@@ -12,6 +15,8 @@ const links = [{
 }, {
   label: 'List of Users',
   to: '/admin/users'
+}, {
+  label: `Logged in as : ${userName}`,
 }, {
   label: 'Log out',
   to: '/login',

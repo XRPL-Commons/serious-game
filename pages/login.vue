@@ -55,6 +55,7 @@ const email = ref('')
 const password = ref('')
 const working = ref(false)
 const token = ref<string | null>(null);
+const setUserInfo = inject('setUserInfo') as any
 
 
 // const token = inject('token')
@@ -70,6 +71,7 @@ const DoLogin = async () => {
     console.log({ resultJSON})
     if (resultJSON.success) {
       const userRole = resultJSON.role;
+      setUserInfo(resultJSON)
       router.push(`/${userRole}`);
       return
     }
