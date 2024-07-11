@@ -11,6 +11,8 @@ const SECRET_KEY_BASE = process.env.SECRET_KEY_BASE;
 const authorized_routes = [
   '/api/users/login',
   '/api/classrooms/',
+  '/api/users/verify',
+  '/api/users/logout',
   '/login',
 ]
 

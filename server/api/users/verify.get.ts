@@ -33,7 +33,8 @@ export default defineEventHandler(async (event) => {
     return {
       success: true,
       email: decodedToken.email,
-      role: decodedToken.role
+      role: decodedToken.role ,
+      token : decodedToken
     };
   } catch (error) {
     console.error('Token verification error:', error);
@@ -42,4 +43,6 @@ export default defineEventHandler(async (event) => {
       message: 'Unauthorized'
     };
   }
+
+  
 });

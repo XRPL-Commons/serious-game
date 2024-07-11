@@ -54,9 +54,11 @@ const router = useRouter()
 const email = ref('')
 const password = ref('')
 const working = ref(false)
+const token = ref<string | null>(null);
 
-const token = inject('token')
-console.log( "mon token de inject est ce qui suit ", {token} );
+
+// const token = inject('token')
+// console.log( "mon token de inject est ce qui suit ", {token} );
 
 const DoLogin = async () => {
   working.value = true
@@ -67,8 +69,6 @@ const DoLogin = async () => {
 
     console.log({ resultJSON})
     if (resultJSON.success) {
-      /* @ts-ignore */
-      token.value = password.value
       const userRole = resultJSON.role;
       router.push(`/${userRole}`);
       return
@@ -78,46 +78,46 @@ const DoLogin = async () => {
     working.value = false
   }
 
-const loading = ref(true);
+  const loading = ref(true);
 
+const fetchToken = async () => {
+  const response = await fetch('/api/users/verify', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to verify token');
+  }
+
+  return await response.json();
+};
 
 const CheckLogin = async () => {
-  try{
-  console.log('token est ', token.value);
-  /* @ts-ignore */
-  if (!token.value) {  // If no token, redirect to login
-          router.push('/login');
-        }
+  try {
+    console.log('Checking token...');
 
-else  {
-  loading.value = true;
-  const verifyResponse = await fetch('/api/users/verify', {
-          method: 'GET',
-          headers: {
-            /* @ts-ignore */
-            'Authorization': `Bearer ${token.value}`,
-            'Content-Type': 'application/json'
-          }
-        });
-console.log('verifyResponse est ce qui suit ', { verifyResponse } );
-const decodedToken = await verifyResponse.json();
-        console.log({ decodedToken });
-router.push(`/${decodedToken.role}`);
-}
+    const decodedToken = await fetchToken();
+    console.log({ decodedToken });
+
+    if (decodedToken.role) {
+      router.push(`/${decodedToken.role}`);
+    }
   } catch (err) {
-        console.error('Error during token verification:', err);
-        alert('Please log in');
-        router.push('/login');
-      } finally {
-        loading.value = false;
+    console.error('Error during token verification:', err);
+    alert('Please log in');
+    router.push('/login');
+  } finally {
+    loading.value = false;
   }
-}
-
+};
 
 onMounted(() => {
   CheckLogin();
-
 });
+
 
 
 
