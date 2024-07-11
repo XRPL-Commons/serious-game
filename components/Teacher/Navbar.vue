@@ -25,6 +25,9 @@ const links = [{
   }
 }];
 const logout = async () => {
+  if (confirm('Are you sure you want to log out ?'))
+  {
+    
   try {
     const response = await fetch('/api/users/logout', {
       method: 'POST',
@@ -45,6 +48,9 @@ const logout = async () => {
     console.error('Error during logout:', error);
     alert('Error during logout');
   }
+
+  }
+  else return;
 };
 </script>
 
