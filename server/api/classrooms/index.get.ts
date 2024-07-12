@@ -6,5 +6,11 @@ export default defineEventHandler(async (event) => {
   //   event.node.res.statusCode = 403; // Forbidden
   //   return { message: 'Forbidden' };
   // }
+
+
+// ICI VERIF POUR AFFICHER UNIQUELMENT MES CLASSROOMS OU TOUTES LES CLASSROOMS SI JE SUIS ADMIN
+
+
+  console.log("Je suis dans /api/classrooms/index.get.ts", event.context)
   return ListClassrooms()
 })

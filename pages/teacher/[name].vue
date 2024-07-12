@@ -14,6 +14,6 @@ const goToDashboard = () => {
 
 <template>
   <nav>
-    <UButton color="blue" @click="goToDashboard">Go To Teacher's Dashboard</UButton>
+    <UButton color="blue" @click="goToDashboard">Go To Teacher's Dashboard from here</UButton>
   </nav>
 </template>

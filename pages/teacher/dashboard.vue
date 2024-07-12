@@ -11,15 +11,17 @@
     </div>
   </div>
       <UContainer>
-        <UTable :rows="classrooms" :columns="classroomColumns">
+        <pre>{{ classrooms }}</pre>
+
+        <UTable :rows="classrooms" :columns="classroomColumns" @select="selectClassroom">
           <template #actions-data="{ row }">
-            <UButton color="gray" variant="ghost" label="Delete" @click="deleteClassroom(row.id)" />
+            <UButton color="gray" variant="ghost" label="Delete" @click="deleteClassroom(row.name)" />
           </template>
         </UTable>
       </UContainer>
     </div>
 
-    <div class="w-40"></div> 
+    <!-- <div class="w-40"></div> 
     
     <div class="flex-none">
       <div class="flex justify-center space-x-4">
@@ -38,7 +40,7 @@
           </template>
         </UTable>
       </UContainer>
-    </div>
+    </div> -->
 
   </div>
   </template>
@@ -67,11 +69,11 @@ const classroomColumns = [ {
   key: 'name',
   label: 'Class Name'
 }, {
-  key: 'teacherName',
-  label: 'Teacher Name'
+  key: 'teacherMail',
+  label: 'Teacher\'s Mail'
 }, {
-  key: 'studentNames',
-  label: 'Students'
+  key: 'studentMails',
+  label: 'Students\' Mails'
 }, 
  {
   key: 'actions',
@@ -91,7 +93,7 @@ const fetchClassrooms = async () => {
     })
   
   classrooms.value = await result.json();
-  console.log( classrooms.value );
+  //console.log( classrooms.value );
   } catch (error) {
     console.error('Error fetching classrooms:', error);
   } finally {
@@ -148,6 +150,37 @@ function onAddClassroom() {
   });
 }
 
+
+
+const deleteClassroom = async (name: string) => {
+  if (confirm('Are you sure you want to delete this classroom ?')) {
+    try {
+      const headers = {
+      'content-type': 'application/json'
+    }
+    const body = {
+      name,
+    }
+    console.log({ body })
+    const result = await fetch('/api/classrooms', {
+      method: 'DELETE',
+      headers,
+      body: JSON.stringify(body)
+    })
+
+      
+    } catch (error) {
+      console.error('Error deleting classroom:', error);
+    }
+
+    fetchClassrooms();
+  }
+};
+
+const selectClassroom = async (row: any) => {
+  console.log(row);
+  router.push(`/teacher/${row.name}`);
+}
 
 onMounted(() => {
   fetchClassrooms();

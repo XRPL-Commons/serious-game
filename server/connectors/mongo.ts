@@ -116,12 +116,13 @@ const fetchToken = async () => {
   return await response.json();
 };
 
-const decodedToken = await fetchToken();
+//const decodedToken = await fetchToken();
 
 export const ListClassrooms = async () => {
   try {
     const Classrooms = await GetCollection('classrooms'); // Obtient la collection 'classrooms'
     const result = await Classrooms.find({}).toArray(); // Récupère toutes les classrooms avec certains champs projetés
+    //const result = await Classrooms.find({}).project({ name: 1, teacherEmail: 1, studentEmails: 1 }).toArray();
 
     // if (decodedToken.role === 'admin') {
     //   const result = await Classrooms.find({}).toArray(); // Récupère toutes les classrooms avec certains champs projetés
@@ -156,6 +157,18 @@ export const AddClassroom = async (classroomInfo: Omit<Classroom, 'id' | 'create
   }
 };
 
+export const DeleteClassroom = async (name: string) => {
+  try {
+    const Classrooms = await GetCollection('classrooms')
+    const result = await Classrooms.deleteOne({ name })
+    return result
+  } catch (error) {
+    console.error('Error deleting Classroom:', error);
+    throw error; // Rethrow or handle as needed
+  } finally {
+    // await client.close(); // Consider when to close the connection based on your app's use case
+  }
+}
 
 
 
@@ -168,5 +181,6 @@ export default {
   MongoClient,
   setSecretKeyForUser,
   ListClassrooms,
-  AddClassroom
+  AddClassroom,
+  DeleteClassroom
 }

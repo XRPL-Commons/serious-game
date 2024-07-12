@@ -10,7 +10,7 @@ import { provide, ref } from 'vue'
 const SECRET_KEY_BASE = process.env.SECRET_KEY_BASE;
 const authorized_routes = [
   '/api/users/login',
-  '/api/classrooms/',
+  '/api/classrooms',
   '/api/users/verify',
   '/api/users/logout',
   '/login',
@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
       return { message: 'Unauthorized because token is now undefined' };
     }
 
-      console.log('Mon token est ce qui suit :', { token })
+      console.log('46XXXXX Mon token est ce qui suit :', { token })
       
 
     const decodedToken = jwt.decode(token) as { email: string; role: string };
@@ -51,21 +51,24 @@ export default defineEventHandler(async (event) => {
       throw new Error('Invalid token');
     }
     console.log('Mon token decodé est ce qui suit :', { decodedToken })
+    
 
     const uniqueSecretKey = await getSecretKeyForUser(decodedToken.email); // dans mongo.ts
     if (!uniqueSecretKey) {
       throw new Error('Unauthorized');
     }
-    if (decodedToken.role === 'admin') {
-      return;
-    }
-
-    jwt.verify(token as string, `${SECRET_KEY_BASE}${uniqueSecretKey}`);
-
-    // Set the user object in the event context
     event.context.user = { email: decodedToken.email, role: decodedToken.role };
 
-    console.log( 'Decoded token role is ' + `/${decodedToken.role}` )
+// TO DOOOO VERIF TOKEN DANS TOUT  CAS
+    jwt.verify(token as string, `${SECRET_KEY_BASE}${uniqueSecretKey}`);
+
+    if (decodedToken.role === 'admin') {
+      return; // No need to check token for admin 
+    } 
+
+    // Set the user object in the event context
+
+    console.log( 'JE SUIS DANS SECRET;TS Decoded token role is ' + `/${decodedToken.role}` )
     console.log( 'currentRoute is ' + currentRoute )
 
 
@@ -86,7 +89,7 @@ export default defineEventHandler(async (event) => {
   }
 });
 
-
+// A NETTOYYER
 
 // Use to verify if the user can access the /teacher/classroom URL
 

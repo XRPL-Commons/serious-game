@@ -30,12 +30,14 @@ export default defineEventHandler(async (event) => {
         secure: true 
       });
 
-      return {
+      const report = {
         success: true,
         role: result.role,
         email: result.email,
         name: result.name,
       };
+      console.log(report)
+      return report;
     } else {
       return {
         success: false,
