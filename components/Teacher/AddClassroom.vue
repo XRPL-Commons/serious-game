@@ -32,9 +32,22 @@ const state = reactive({
   teacherMail: decodedToken.email,
   students: [],
 })
+// export const generateSlug = (projectName: String) => {
+//   if (!projectName){
+//     return ''
+//   } 
+//   return projectName
+//     .toLowerCase()
+//     .replace(/\s+/g, '-')
+//     .replace(/[^\w-]+/g, '')
+//     .replace(/--+/g, '-')
+//     .replace(/^-+|-+$/g, '');
+// }
+// const newclassroomName = generateSlug(state.classroomName)
 
 async function onSubmit (event: FormSubmitEvent<Schema>) {
   console.log(state, 'Adding classroom')
+    // state.classroomName = newclassroomName
   emit('success', state)
 }
 </script>

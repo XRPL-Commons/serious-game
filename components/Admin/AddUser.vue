@@ -26,10 +26,24 @@ const state = reactive({
 })
 const roles = ['student', 'admin', 'teacher']
 
+// export const generateSlug = (projectName: String) => {
+//   if (!projectName){
+//     return ''
+//   } 
+//   return projectName
+//     .toLowerCase()
+//     .replace(/\s+/g, '-')
+//     .replace(/[^\w-]+/g, '')
+//     .replace(/--+/g, '-')
+//     .replace(/^-+|-+$/g, '');
+// }
+// const newName = generateSlug(state.name)
+
 async function onSubmit (event: FormSubmitEvent<Schema>) {
-  console.log(state, ' coucou')
+    // state.name = newName
   emit('success', state)
 }
+
 </script>
 
 <template>
