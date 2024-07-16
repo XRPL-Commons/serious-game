@@ -7,6 +7,9 @@ import { ref } from 'vue';
 import type { User } from '~/server/connectors/mongo'; 
 import { TeacherAddStudent } from '#components';
 
+const toast = useToast()
+const modal = useModal()
+
 const students = ref<User[]>([]);
 const loading = ref<boolean>(true);
 const router = useRouter();
@@ -81,6 +84,7 @@ const columns = [{
 
 const addStudent = async (userData: User) => {
   try {
+    userData.role = 'student';
     const headers = {
       'Content-Type': 'application/json',
     };
@@ -102,6 +106,23 @@ const addStudent = async (userData: User) => {
     console.error('Error adding student:', error);
   }
 };
+function onAddStudent () {
+  toast.add({
+        title: 'TEST !',
+        id: 'modal-success'
+      })
+  modal.open(TeacherAddStudent, {
+    async onSuccess (state : any) {
+      console.log(state,'celui de [name].vue')
+      await addStudent(state)
+      toast.add({
+        title: 'Success !',
+        id: 'modal-success'
+      })
+      modal.close()
+    }
+  })
+}
 
 const addToClassroom = async (classroomName: string, userData: User) => {
   try {
@@ -141,7 +162,7 @@ definePageMeta({
         </div>
     <div class="flex-row transform translate-y-1">
       <h2 class="text-lg font-bold mb-2">Students</h2>
-        <UButton color="primary" variant="solid" @click="addStudent">Add Student</UButton>
+        <UButton color="primary" variant="solid" @click="onAddStudent">Add Student</UButton>
       </div>
       <div class="flex justify-center space-x-4 mb-4">
         
