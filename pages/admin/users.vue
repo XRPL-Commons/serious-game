@@ -1,20 +1,28 @@
 <template>
-    <div>
-      <div class="mb-4">
-        <UButton color="primary" variant="solid" @click="onAddUser">Add User</UButton>
+  <div class="flex justify-center">
+    <div class="flex-none mr-4">
+      <div class="flex justify-center space-x-4">
+        <div class="flex-none">
+          <h2 class="text-lg font-bold mb-2">Users</h2>
+        </div>
+        <div class="flex-none transform translate-y-[-1rem]">
+          <UButton class="mt-4" color="primary" variant="solid" label="Add User" @click="onAddUser" />
+        </div>
       </div>
-  
-      <div v-if="loading">Loading...</div>
-      <div v-else>
-        <UTable :rows="users" :columns="columns">
-
-    <template #actions-data="{ row }">
-        <UButton color="gray" variant="ghost" label="Delete" @click="deleteUser(row.email)" />
-    </template>
-  </UTable>
+      
+      <div class="max-h-[calc(70vh-9rem)] overflow-y-auto mt-4">
+        <div v-if="loading" class="mt-4">Loading...</div>
+        <div v-else>
+          <UTable :rows="users" :columns="columns">
+            <template #actions-data="{ row }">
+              <UButton color="gray" variant="ghost" label="Delete" @click="deleteUser(row.email)" />
+            </template>
+          </UTable>
+        </div>
       </div>
     </div>
-  </template>
+  </div>
+</template>
   
   <script setup lang="ts">
   import { AdminAddUser } from '#components'  
@@ -59,7 +67,8 @@ const insertUser = async (user: any) => {
 }
 const columns = [{
   key: 'name',
-  label: 'Name'
+  label: 'Name',
+  sortable: true
 }, {
   key: 'email',
   label: 'Email'
@@ -67,7 +76,8 @@ const columns = [{
   key: 'role',
   label: 'Role'
 }, {
-  key: 'actions'
+  key: 'actions',
+  label : 'Actions'
 }]
 
 
@@ -90,7 +100,6 @@ const fetchUsers = async () => {
       method: 'GET',
       headers,
     })
-    
     users.value = await result.json();
   } catch (error) {
     console.error('Error fetching users:', error);

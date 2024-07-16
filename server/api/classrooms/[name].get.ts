@@ -2,7 +2,6 @@ import { GetClassroomStudents} from '~/server/connectors/mongo'
 
 export default defineEventHandler(async (event) => {
     const { name } = getRouterParams(event)
-    console.log("mon name est", name, "fin du name")
 
     const userInfo = event.context.user;
   

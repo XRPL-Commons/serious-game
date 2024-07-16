@@ -4,15 +4,33 @@ const emit = defineEmits(['success'])
 import { object, string, type InferType } from 'yup'
 import type { FormSubmitEvent } from '#ui/types'
 
+
 const schema = object({
-  name: string().required('Required'),
-  teacherId: string().required('Required'),
+  classroomName: string().required('Required'),
 })
 
 type Schema = InferType<typeof schema>
+  const fetchToken = async () => {
+  const response = await fetch('/api/users/verify', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to verify token');
+  }
+
+  return await response.json();
+};
+
+const decodedToken = await fetchToken();
 
 const state = reactive({
-  name: undefined,
+  classroomName: undefined,
+  teacherMail: decodedToken.email,
+  students: [],
 })
 
 async function onSubmit (event: FormSubmitEvent<Schema>) {
@@ -30,7 +48,7 @@ async function onSubmit (event: FormSubmitEvent<Schema>) {
         </template>
         
         <UFormGroup label="Name" name="name">
-          <UInput v-model="state.name" />
+          <UInput v-model="state.classroomName" />
         </UFormGroup>
         <template #footer>
           <UButton type="submit" @click="onSubmit">

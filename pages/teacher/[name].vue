@@ -13,6 +13,8 @@ const modal = useModal()
 const students = ref<User[]>([]);
 const loading = ref<boolean>(true);
 const router = useRouter();
+const classroomName = router.currentRoute.value.params.name;
+
 
 const fetchStudents = async () => {
   try {
@@ -49,18 +51,26 @@ const deleteStudent = async (email: string) => {
       email,
     }
     console.log({ body })
-    const result = await fetch('/api/users', {
+    // Supprimer de DB user
+    await fetch('/api/users', {
       method: 'DELETE',
       headers,
       body: JSON.stringify(body)
     })
+    // Supprimer de DB classroom
+    await fetch(`/api/classrooms/${classroomName}`, {
+        method: 'DELETE',
+        headers,
+        body: JSON.stringify(body)
+      });
 
       
     } catch (error) {
       console.error('Error deleting user:', error);
     }
 
-    fetchStudents  }
+    fetchStudents();
+    }
 };
 
 onMounted(() => {
@@ -71,16 +81,26 @@ const goToDashboard = () => {
   router.push('/teacher');
 };
 
+const sort = ref({
+  column: 'rank',
+  direction: 'asc'
+})
+
 const columns = [{
   key: 'name',
-  label: 'Name'
+  label: 'Name',
+  sortable: true
 }, {
   key: 'email',
-  label: 'Email'
+  label: 'Email',
 }, {
+  key: 'rank',
+  label: 'Rank',
+  sortable: true
+},{
   key: 'actions',
   label: 'Actions'
-}];
+} ];
 
 const addStudent = async (userData: User) => {
   try {
@@ -97,7 +117,6 @@ const addStudent = async (userData: User) => {
     if (!result.ok) {
       throw new Error('Failed to add student');
     }
-    const classroomName = router.currentRoute.value.params.name;
     await addToClassroom(classroomName as string, userData);
 
     // Refresh student list after addition
@@ -108,12 +127,11 @@ const addStudent = async (userData: User) => {
 };
 function onAddStudent () {
   toast.add({
-        title: 'TEST !',
+        title: 'Adding Student',
         id: 'modal-success'
       })
   modal.open(TeacherAddStudent, {
     async onSuccess (state : any) {
-      console.log(state,'celui de [name].vue')
       await addStudent(state)
       toast.add({
         title: 'Success !',
@@ -129,15 +147,13 @@ const addToClassroom = async (classroomName: string, userData: User) => {
     const headers = {
       'Content-Type': 'application/json',
     };
-    const result = await fetch(`/api/classrooms/${classroomName}/addStudent`, {
+    const result = await fetch(`/api/classrooms/${classroomName}`, {
       method: 'POST',
       headers,
       body: JSON.stringify(userData),
     });
-
-    if (!result.ok) {
-      throw new Error('Failed to add student to classroom');
-    }
+    
+    fetchStudents();
   } catch (error) {
     console.error('Error adding student to classroom:', error);
   }
@@ -157,7 +173,7 @@ definePageMeta({
   <div class="w-full text-center">
     <div class="flex-none">
           <nav class="mb-4">
-        <UButton color="blue" @click="goToDashboard">Go To Teacher's Dashboard from here</UButton>
+        <UButton color="blue" @click="goToDashboard">Go back to Dashboard</UButton>
       </nav>
         </div>
     <div class="flex-row transform translate-y-1">
@@ -170,7 +186,7 @@ definePageMeta({
         Loading...
       </div>
       <div v-else>
-        <UTable :rows="students" :columns="columns" class="w-full" >
+        <UTable :sort="sort" :rows="students" :columns="columns" class="w-full" >
           <template #actions-data="{ row }">
             <UButton color="gray" variant="ghost" label="Delete" @click="deleteStudent(row.email)" />
           </template>

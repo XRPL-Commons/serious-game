@@ -4,9 +4,6 @@ const uri = process.env.MONGO_URI || ''
 const client = new MongoClient(uri)
 const defaultDB = 'serious-game'
 
-
-
-
 export const DB = async () => {
   await client.connect()
   return client.db(defaultDB)
@@ -151,7 +148,39 @@ export const GetClassroomStudents = async (Name: string) => {
   }
 };
 
+export async function AddStudentToClassroom(classroomName: string, student: any) {
+  const classrooms = await GetCollection('classrooms');
 
+  try {
+    const result = await classrooms.updateOne(
+      { classroomName },
+      { $push: { students: student } }
+    );
+
+    if (result.modifiedCount !== 1) {
+      throw new Error('Failed to add student to classroom');
+    }
+
+    console.log(`Added student to classroom ${classroomName}`);
+  } catch (error) {
+    console.error('Error adding student to classroom:', error);
+    throw error;
+  }
+}
+
+export async function DeleteUserFromClassroom(email: string) {
+  const classrooms = await GetCollection('classrooms');
+
+  try {
+    const result = await classrooms.updateOne(
+      { 'students.email': email },
+      { $pull: { students: { email } } }
+    );
+    console.log(`Deleted user ${email} from classroom`);
+  } catch (error) {
+    console.error('Error deleting user from classroom:', error);
+  }
+}
 
 
 export const AddClassroom = async (classroomInfo: Omit<Classroom, 'id' | 'createdAt'>) => {
@@ -173,7 +202,7 @@ export const AddClassroom = async (classroomInfo: Omit<Classroom, 'id' | 'create
 export const DeleteClassroom = async (name: string) => {
   try {
     const Classrooms = await GetCollection('classrooms')
-    const result = await Classrooms.deleteOne({ name })
+    const result = await Classrooms.deleteOne({ classroomName: name }) 
     return result
   } catch (error) {
     console.error('Error deleting Classroom:', error);
@@ -183,8 +212,6 @@ export const DeleteClassroom = async (name: string) => {
   }
 }
 
-
-
 export default {
   AddUser,
   DB,
@@ -193,6 +220,9 @@ export default {
   LoginUser,
   MongoClient,
   setSecretKeyForUser,
+  GetClassroomStudents,
+  AddStudentToClassroom,
+  ListUsersTeacher,
   ListClassrooms,
   AddClassroom,
   DeleteClassroom

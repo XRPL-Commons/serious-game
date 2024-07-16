@@ -8,7 +8,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const goToDashboard = () => {
-  router.push('/teacher/dashboard');
+  router.push('/teacher');
 };
 </script>
 

@@ -13,7 +13,7 @@
       <UContainer>
         <UTable :rows="classrooms" :columns="classroomColumns" @select="selectClassroom">
           <template #actions-data="{ row }">
-            <UButton color="gray" variant="ghost" label="Delete" @click="deleteClassroom(row.name)" />
+            <UButton color="gray" variant="ghost" label="Delete" @click="deleteClassroom(row.classroomName)" />
           </template>
         </UTable>
       </UContainer>
@@ -73,8 +73,7 @@ const fetchClassrooms = async () => {
   }
 };
 
-fetchClassrooms(); // Appel de la fonction pour récupérer les classrooms
-
+fetchClassrooms(); 
 
 const insertClassroom = async (classroom: any) => {
   try {
@@ -126,6 +125,7 @@ function onAddClassroom() {
 
 const deleteClassroom = async (name: string) => {
   if (confirm('Are you sure you want to delete this classroom ?')) {
+    console.log('Deleting classroom:', name);
     try {
       const headers = {
       'content-type': 'application/json'
@@ -133,8 +133,7 @@ const deleteClassroom = async (name: string) => {
     const body = {
       name,
     }
-    console.log({ body })
-    const result = await fetch('/api/classrooms', {
+    await fetch('/api/classrooms', {
       method: 'DELETE',
       headers,
       body: JSON.stringify(body)
@@ -150,15 +149,13 @@ const deleteClassroom = async (name: string) => {
 };
 
 const selectClassroom = async (row: any) => {
-  console.log("row est",row);
   router.push(`/teacher/${row.classroomName}`);
 }
 
 onMounted(() => {
   fetchClassrooms();
 });
-// To do Quand on clique sur une classroom à droite dans le tableau student on voit tous les student de la class
-   // Rajouter teacher name a
+
   </script>
 
     

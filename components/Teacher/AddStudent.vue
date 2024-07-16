@@ -5,7 +5,6 @@ const emit = defineEmits(['success'])
 
 import { object, string, type InferType } from 'yup'
 import type { FormSubmitEvent } from '#ui/types'
-import Student from '~/layouts/student.vue';
 
 
 const schema = object({
@@ -21,7 +20,7 @@ const state = reactive({
   email: undefined,
   password: undefined,
   name: undefined,
-  role: Student,
+  role: 'student',
 })
 
 async function onSubmit (event: FormSubmitEvent<Schema>) {
