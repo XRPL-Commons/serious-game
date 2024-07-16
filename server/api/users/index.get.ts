@@ -10,10 +10,7 @@ export default defineEventHandler(async (event) => {
       statusCode: 401,
       statusMessage: 'Unauthorized',
     })
-  }
-
-  const { name } = event.params;
-  
+  }  
   if (userInfo.role === 'admin') {
     return ListUsers()
   } else if (userInfo.role === 'teacher') {
