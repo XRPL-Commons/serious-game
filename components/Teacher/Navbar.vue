@@ -7,14 +7,8 @@ const userName = userInfo.value?.name;
 console.log('userName est ', userName);
 
 const links = [{
-  label: 'Home',
-  to: '/teacher'
-}, {
   label: 'Dashboard',
-  to: `/teacher/dashboard`
-}, {
-  label: 'Start a Serious Game',
-  to: '/teacher/game'
+  to: `/teacher`
 }, {
   label: `Logged in as : ${userName}`,
 },{

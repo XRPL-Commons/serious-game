@@ -1,16 +1,21 @@
 import { ListClassrooms, Classroom } from '~/server/connectors/mongo'
 
 export default defineEventHandler(async (event) => {
-  // if (event?.context?.user?.role !== 'admin') {
-  //   // If the user is not an admin, return an unauthorized response
-  //   event.node.res.statusCode = 403; // Forbidden
-  //   return { message: 'Forbidden' };
-  // }
+  console.log("mon event est", event, "fin du event")
 
+  const userInfo = event.context.user
 
+  if (!userInfo || !['admin', 'teacher'].includes(userInfo.role)) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized',
+    })
+  }
 // ICI VERIF POUR AFFICHER UNIQUELMENT MES CLASSROOMS OU TOUTES LES CLASSROOMS SI JE SUIS ADMIN
 
-
-  console.log("Je suis dans /api/classrooms/index.get.ts", event.context)
-  return ListClassrooms()
+  if (userInfo.role === 'admin') {
+    return ListClassrooms()
+  } else if (userInfo.role === 'teacher') {
+    return ListClassrooms(userInfo.email as string)
+  }
 })

@@ -13,7 +13,6 @@ type Schema = InferType<typeof schema>
 
 const state = reactive({
   name: undefined,
-  teacherId: undefined,
 })
 
 async function onSubmit (event: FormSubmitEvent<Schema>) {
@@ -33,11 +32,6 @@ async function onSubmit (event: FormSubmitEvent<Schema>) {
         <UFormGroup label="Name" name="name">
           <UInput v-model="state.name" />
         </UFormGroup>
-        
-        <UFormGroup label="Teacher ID" name="teacherId">
-          <UInput v-model="state.teacherId" />
-        </UFormGroup>
-  
         <template #footer>
           <UButton type="submit" @click="onSubmit">
             Submit

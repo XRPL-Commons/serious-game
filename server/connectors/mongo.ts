@@ -94,6 +94,21 @@ export const ListUsers = async () => {
   }
 }
 
+export const ListUsersTeacher = async (TeacherEmail: string) => { // a définir la logique 
+  try {
+    const Users = await GetCollection('users')
+    const result = await Users.find({}).project({ name:1, email: 1, role: 1 }).toArray()
+    console.log('listed users:'+  result)
+    return result
+  } catch (error) {
+    console.error('Error listing User:', error);
+    throw error; // Rethrow or handle as needed
+  } finally {
+    // await client.close(); // Consider when to close the connection based on your app's use case
+  }
+}
+
+
 export interface Classroom {
   id: string;
   name: string;
@@ -101,37 +116,22 @@ export interface Classroom {
   studentIds: string[];
   createdAt: Date;
 }
-const fetchToken = async () => {
-  const response = await fetch('/api/users/verify', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
 
-  if (!response.ok) {
-    throw new Error('Failed to verify token');
-  }
-
-  return await response.json();
-};
-
-//const decodedToken = await fetchToken();
-
-export const ListClassrooms = async () => {
+export const ListClassrooms = async (Mail?: string) => {
   try {
     const Classrooms = await GetCollection('classrooms'); // Obtient la collection 'classrooms'
-    const result = await Classrooms.find({}).toArray(); // Récupère toutes les classrooms avec certains champs projetés
-    //const result = await Classrooms.find({}).project({ name: 1, teacherEmail: 1, studentEmails: 1 }).toArray();
-
-    // if (decodedToken.role === 'admin') {
-    //   const result = await Classrooms.find({}).toArray(); // Récupère toutes les classrooms avec certains champs projetés
-    // }
-    // else (decodedToken.role === 'teacher') {
-    //   const result = await Classrooms.find({ teachermail: decodedToken.email}).toArray(); // Récupère toutes les classrooms avec certains champs projetés
-
-    // }
+    if (Mail) {
+      console.log("mail dans list classrooms", Mail)
+      const result = await Classrooms.find({ teacherMail: Mail }).toArray(); // Récupère toutes les classrooms avec certains champs projetés
+      console.log('listed classrooms:'+  result)
+      return result;
+    }
+    else {
+    const result = await Classrooms.find().toArray(); // Récupère toutes les classrooms avec certains champs projetés
+    console.log('listed classrooms de admin:'+  result)
     return result;
+    }
+
   } catch (error) {
     console.error('Error listing Classrooms:', error);
     throw error; // Rethrow ou handle as needed
@@ -139,6 +139,19 @@ export const ListClassrooms = async () => {
     // await client.close(); // Considère quand fermer la connexion selon le cas d'utilisation de votre application
   }
 };
+
+export const GetClassroomStudents = async (Name: string) => {
+  try {
+    const Classrooms = await GetCollection('classrooms');
+    const classroom = await Classrooms.findOne({ classroomName : Name });
+    return classroom ? classroom.students : null;
+  } catch (error) {
+    console.error('Error fetching classroom students:', error);
+    throw error;
+  }
+};
+
+
 
 
 export const AddClassroom = async (classroomInfo: Omit<Classroom, 'id' | 'createdAt'>) => {

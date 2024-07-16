@@ -1,10 +1,24 @@
-import { ListUsers, User } from '~/server/connectors/mongo'
+import { ListUsers, User , ListUsersTeacher} from '~/server/connectors/mongo'
 
 export default defineEventHandler(async (event) => {
-  // if (event?.context?.user?.role !== 'admin') {
-  //   // If the user is not an admin, return an unauthorized response
-  //   event.node.res.statusCode = 403; // Forbidden
-  //   return { message: 'Forbidden' };
-  // }
+  console.log(event.context.user)
+
+  const userInfo = event.context.user
+
+  if (!userInfo || !['admin', 'teacher'].includes(userInfo.role)) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized',
+    })
+  }
+
+  const { name } = event.params;
+  
+  if (userInfo.role === 'admin') {
+    return ListUsers()
+  } else if (userInfo.role === 'teacher') {
+    return ListUsersTeacher(userInfo.email as string)
+  }
+
   return ListUsers()
 })
