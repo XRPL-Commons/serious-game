@@ -222,6 +222,31 @@ export const DeleteClassroom = async (name: string) => {
   }
 }
 
+export const UpdateStudentAccounts = async (email: string, account: any, solution_account: any) => {
+  const Classrooms = await GetCollection('classrooms');
+
+  try {
+    const result = await Classrooms.updateOne(
+      { 'students.email': email },
+      {
+        $set: {
+          'students.$.account': account,
+          'students.$.solution_account': solution_account
+        }
+      }
+    );
+
+    if (result.modifiedCount !== 1) {
+      throw new Error('Failed to update student accounts');
+    }
+
+    console.log(`Updated accounts for student ${email}`);
+  } catch (error) {
+    console.error('Error updating student accounts:', error);
+    throw error;
+  }
+};
+
 export default {
   AddUser,
   DB,
@@ -235,5 +260,6 @@ export default {
   ListUsersTeacher,
   ListClassrooms,
   AddClassroom,
-  DeleteClassroom
+  DeleteClassroom,
+  UpdateStudentAccounts
 }

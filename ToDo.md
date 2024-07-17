@@ -1,3 +1,7 @@
+ACCESS DATABASE AVEC 0.0.0.0 ???
+
+mettre a jour xrp.vue avec fonction de luc tout en ayany au prealable fait un post avec les adresse créés sur la meme page pour faire une tx. ENsuite on verra pour les rank avec les dates et un modal joli
+
 matérialiser les groupes d'élèves dans une collection
 
 MONGOajouter/supprimer une classroom si on est teacher dans mongo.ts

@@ -43,10 +43,12 @@ const loading = ref<boolean>(true); // Création d'une référence réactive pou
 const router = useRouter(); // Utilisation de useRouter pour la navigation
 const classroomColumns = [ {
   key: 'classroomName',
-  label: 'Class Name'
+  label: 'Class Name',
+  sortable: true
 }, {
   key: 'teacherMail',
-  label: 'Teacher\'s Mail'
+  label: 'Teacher\'s Mail',
+  sortable : true
 }, {
   key: 'actions',
   label: 'Actions'
