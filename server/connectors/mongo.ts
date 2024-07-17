@@ -53,6 +53,7 @@ export const LoginUser = async ({ email, password }: { email: string, password: 
 
 export const AddUser = async (userInfo: User) => {
   try {
+    userInfo.name = generateSlug(userInfo.name)
     const Users = await GetCollection('users')
     const result = await Users.insertOne({ ...userInfo })
     return result
@@ -152,14 +153,11 @@ export async function AddStudentToClassroom(classroomName: string, student: any)
   const classrooms = await GetCollection('classrooms');
 
   try {
+    student.name = generateSlug(student.name)
     const result = await classrooms.updateOne(
       { classroomName },
       { $push: { students: student } }
     );
-
-    if (result.modifiedCount !== 1) {
-      throw new Error('Failed to add student to classroom');
-    }
 
     console.log(`Added student to classroom ${classroomName}`);
   } catch (error) {
@@ -181,10 +179,22 @@ export async function DeleteUserFromClassroom(email: string) {
     console.error('Error deleting user from classroom:', error);
   }
 }
-
+export const generateSlug = (projectName: String) => {
+  if (!projectName){
+    return ''
+  } 
+  return projectName
+    .toLowerCase()
+    .replace(/\s+/g, '_')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
 
 export const AddClassroom = async (classroomInfo: Omit<Classroom, 'id' | 'createdAt'>) => {
   try {
+    console.log("mon classroomInfo est", classroomInfo)
+    classroomInfo.classroomName = generateSlug(classroomInfo.classroomName)
     const Classrooms = await GetCollection('classrooms'); // Obtient la collection 'classrooms'
     const result = await Classrooms.insertOne({ 
       ...classroomInfo, 
