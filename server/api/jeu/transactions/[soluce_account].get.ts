@@ -1,13 +1,21 @@
-import { defineEventHandler, createError } from 'h3';
+import { defineEventHandler, createError, getQuery } from 'h3';
 import { Client } from 'xrpl';
 
 export default defineEventHandler(async (event) => {
   const { soluce_account } = event.context.params;
+  const { personal_account } = getQuery(event);
 
   if (!soluce_account) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Soluce account is required'
+    });
+  }
+
+  if (!personal_account) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Personal account is required'
     });
   }
 
@@ -28,7 +36,16 @@ export default defineEventHandler(async (event) => {
 
     await client.disconnect();
 
-    return response.result.transactions;
+    // Filter transactions from the personal account
+    const transactions = response.result.transactions.filter(tx => tx.tx.Account === personal_account);
+
+    // Sort transactions by date
+    const sortedTransactions = transactions.sort((a, b) => a.tx.date - b.tx.date);
+
+    // Return the oldest transaction
+    const oldestTransaction = sortedTransactions[0] || null;
+
+    return oldestTransaction;
   } catch (error) {
     console.error('Error fetching transactions:', error);
     throw createError({

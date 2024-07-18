@@ -1,6 +1,6 @@
 import { Client } from "xrpl";
+import { defineEventHandler, createError } from 'h3';
 
-// Fonction pour générer des comptes Ripple
 export const generateRippleAccounts = async () => {
   const client = new Client("wss://s.altnet.rippletest.net:51233");
   try {

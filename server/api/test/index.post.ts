@@ -1,11 +1,12 @@
-import { Client, Wallet, Payment } from "xrpl";
+import { defineEventHandler, createError, readBody } from 'h3';
+import { Client, Wallet, Payment } from 'xrpl';
 
 export const sendTransaction = async (account: any, solution_account: any) => {
   const client = new Client("wss://s.altnet.rippletest.net:51233");
   try {
     await client.connect();
 
-    const wallet = Wallet.fromSeed(account.seed); // Convertir l'objet `account` en un objet `Wallet` correctement
+    const wallet = Wallet.fromSeed(account.seed);
 
     const tx: Payment = {
       TransactionType: "Payment",

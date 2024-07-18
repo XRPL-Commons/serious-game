@@ -10,6 +10,7 @@
       <UButton color="primary" variant="solid" @click="onAddStudent">Add Student</UButton>
       <UButton color="green" variant="solid" @click="updateAccounts">Update Accounts</UButton>
       <UButton color="red" variant="solid" @click="sendFinalTransaction">Send Final Tx</UButton>
+      <UButton color="orange" variant="solid" @click="addOldestTransaction">Add Oldest Transaction</UButton>
     </div>
     <div class="flex justify-center space-x-4 mb-4">
       <div v-if="loading" class="flex justify-center mt-8">
@@ -130,6 +131,39 @@ const sendFinalTransaction = async () => {
   }
 };
 
+const addOldestTransaction = async () => {
+  try {
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    const body = JSON.stringify({ classroomName });
+
+    const result = await fetch('/api/jeu/oldest-transaction', {
+      method: 'PUT',
+      headers,
+      body
+    });
+
+    if (!result.ok) {
+      throw new Error('Failed to add oldest transactions');
+    }
+
+    toast.add({
+      title: 'Oldest transactions added successfully!',
+      id: 'oldest-tx-success'
+    });
+
+    fetchStudents();
+  } catch (error) {
+    console.error('Error adding oldest transactions:', error);
+    toast.add({
+      title: 'Failed to add oldest transactions',
+      id: 'oldest-tx-error',
+      type: 'error'
+    });
+  }
+};
+
 onMounted(() => {
   fetchStudents();
 });
@@ -149,6 +183,7 @@ const columns = [
   { key: 'rank', label: 'Rank', sortable: true },
   { key: 'account', label: 'Personnal Account' },
   { key: 'solution_account.classicAddress', label: 'Solution Account' },
+  { key: 'oldestTransaction', label: 'Oldest Transaction Date', sortable: true },
   { key: 'actions', label: 'Actions' }
 ];
 

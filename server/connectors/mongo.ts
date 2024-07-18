@@ -247,6 +247,31 @@ export const UpdateStudentAccounts = async (email: string, account: any, solutio
   }
 };
 
+export const UpdateStudentOldestTransaction = async (email: string, oldestTransaction: number | null) => {
+  const Classrooms = await GetCollection('classrooms');
+
+  try {
+    const result = await Classrooms.updateOne(
+      { 'students.email': email },
+      {
+        $set: {
+          'students.$.oldestTransaction': oldestTransaction
+        }
+      }
+    );
+
+    if (result.modifiedCount !== 1) {
+      throw new Error('Failed to update student oldest transaction');
+    }
+
+    console.log(`Updated oldest transaction for student ${email}`);
+  } catch (error) {
+    console.error('Error updating student oldest transaction:', error);
+    throw error;
+  }
+};
+
+
 export default {
   AddUser,
   DB,
@@ -261,5 +286,6 @@ export default {
   ListClassrooms,
   AddClassroom,
   DeleteClassroom,
-  UpdateStudentAccounts
+  UpdateStudentAccounts,
+  UpdateStudentOldestTransaction
 }
