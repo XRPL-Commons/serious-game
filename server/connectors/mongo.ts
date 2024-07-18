@@ -105,6 +105,32 @@ export const ListUsersTeacher = async (TeacherEmail: string) => { // a définir 
     // await client.close(); // Consider when to close the connection based on your app's use case
   }
 }
+export const ListUsersStudent = async (studentEmail: string) => {
+  try {
+    const classroomsCollection = await GetCollection('classrooms');
+    const classrooms = await classroomsCollection.find({}).toArray();
+
+    for (const classroom of classrooms) {
+      const students = classroom.students;
+      const student = students.find((s) => s.email === studentEmail);
+
+      if (student && student.account) {
+        const result = {
+          classroomName: classroom.classroomName,
+          seed: student.account.seed, // Assuming student.account has seed and classicAddress
+          classicAddress: student.account.classicAddress,
+        };
+        return result;
+      }
+    }
+
+    return null; 
+  } catch (error) {
+    console.error('Error finding student:', error);
+    throw error; // Rethrow or handle as needed
+  }
+};
+
 
 
 export interface Classroom {
@@ -305,6 +331,7 @@ export default {
   GetClassroomStudents,
   AddStudentToClassroom,
   ListUsersTeacher,
+  ListUsersStudent,
   ListClassrooms,
   AddClassroom,
   DeleteClassroom,

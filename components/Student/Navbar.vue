@@ -9,9 +9,6 @@ console.log('userName est ', userName);
 const links = [{
   label: 'Home',
   to: '/student'
-}, {
-  label: 'Dashboard',
-  to: `/Student/dashboard`
 },{
   label: `Logged in as : ${userName}`,
 }, {

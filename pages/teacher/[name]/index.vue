@@ -5,26 +5,26 @@
         <UButton color="blue" @click="goToDashboard">Go back to Dashboard</UButton>
       </nav>
     </div>
-    <div class="flex-row transform translate-y-1">
+    <div class="flex-row transform translate-y-1 mb-4">
       <h2 class="text-lg font-bold mb-2">Students</h2>
       <UButton color="primary" variant="solid" @click="onAddStudent">Add Student</UButton>
-      <div>
+      <div class="mt-2">
         <label for="numStages">Number of Stages:</label>
-        <input type="number" v-model="numStages" id="numStages" />
-        <UButton color="green" variant="solid" @click="updateMultipleStages">Update Multiple Stages</UButton>
+        <input type="number" v-model="numStages" id="numStages" class="ml-2 mt-4 mb-2 p-1 border rounded" />
+        <UButton color="green" variant="solid" class="ml-2" @click="updateMultipleStages">Update Multiple Stages</UButton>
       </div>
-      <UButton color="green" variant="solid" @click="updateAccounts">Update Accounts</UButton>
-      <UButton color="red" variant="solid" @click="sendFinalTransaction">Send Final Tx</UButton>
-      <UButton color="orange" variant="solid" @click="addOldestTransaction">Add Oldest Transaction</UButton>
-      <UButton color="purple" variant="solid" @click="resetGameStages">Reset Game Stages</UButton>
-      <UButton color="blue" variant="solid" @click="sendMemo">Send Memo</UButton>
+      <UButton color="green" variant="solid" class="mt-2 ml-2 mr-5" @click="updateAccounts">Update Accounts</UButton>
+      <UButton color="red" variant="solid" class="mt-2 mr-5" @click="sendFinalTransaction">Send Final Tx</UButton>
+      <UButton color="orange" variant="solid" class="mt-2 mr-5" @click="addOldestTransaction">Add Oldest Transaction</UButton>
+      <UButton color="purple" variant="solid" class="mt-2 mr-5" @click="resetGameStages">Reset Game Stages</UButton>
+      <UButton color="blue" variant="solid" class="mt-2" @click="sendMemo">Send Memo</UButton>
     </div>
-    <div class="flex justify-center space-x-4 mb-4">
+    <div class="max-h-[calc(70vh-9rem)] overflow-y-auto w-full px-4">
       <div v-if="loading" class="flex justify-center mt-8">
         Loading...
       </div>
-      <div v-else>
-        <UTable :sort="sort" :rows="students" :columns="columns" class="w-full">
+      <div v-else class="max-w-full overflow-x-auto">
+        <UTable v-model:selected="selected" :sort="sort" :rows="students" :columns="columns" class="min-w-full max-w-full" @select="select">          
           <template #actions-data="{ row }">
             <UButton color="gray" variant="ghost" label="Delete" @click="deleteStudent(row.email)" />
           </template>
@@ -32,8 +32,12 @@
       </div>
     </div>
     <TeacherAddStudent @success="handleStudentAdded" />
+    <div v-if="selected.length > 0" class="mt-4">
+      <UButton color="green" variant="solid" @click="generateKeysForSelected">Generate Keys for selected people</UButton>
+    </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
@@ -49,6 +53,8 @@ const loading = ref<boolean>(true);
 const numStages = ref<number>(3); // Default number of stages
 const router = useRouter();
 const classroomName = router.currentRoute.value.params.name;
+
+
 
 const fetchStudents = async () => {
   try {
@@ -288,11 +294,28 @@ const columns = [
   { key: 'name', label: 'Name', sortable: true },
   { key: 'email', label: 'Email' },
   { key: 'rank', label: 'Rank', sortable: true },
-  { key: 'account', label: 'Personal Account' },
+  { key: 'account', label: 'Personal Account'},
   { key: 'solution_account.classicAddress', label: 'Solution Account' },
   { key: 'oldestTransaction', label: 'Oldest Transaction Date', sortable: true },
   { key: 'actions', label: 'Actions' },
 ];
+
+const selected = ref<User[]>([]);
+
+function select(row: User) {
+  const index = selected.value.findIndex((item) => item.email === row.email);
+  if (index === -1) {
+    selected.value.push(row);
+  } else {
+    selected.value.splice(index, 1);
+  }
+}
+
+const generateKeysForSelected = async () => {
+  console.log('Generating keys for selected students:', selected.value);
+
+};
+
 
 const addStudent = async (userData: User) => {
   try {
