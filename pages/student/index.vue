@@ -1,16 +1,17 @@
 <template>
   <div>
-    <div v-if="!pending" class="flex items-center justify-center h-32 flex-col">
+    <div v-if=" accountInfoLoaded === false" class="flex items-center justify-center h-32 flex-col">
       <div class="flex items-center justify-center">
         <i class="loader --6" />
       </div>
-      <p class="text-white text-lg mt-4 transform translate-y-[-10rem]">Waiting for teacher to start the Serious Game...</p>
+      <p class="text-red text-lg mt-4 transform translate-y-[-10rem]">Waiting for teacher to start the Serious Game...</p>
     </div>
     <div v-else>
+      <h1 class="text-center text-blue text-3xl">You can now start the game good luck</h1>
       <div class="flex items-center justify-center h-32 flex-col">
-        <p class="text-white text-lg">Classroom Name: {{ classroomName }}</p>
-        <p class="text-white text-lg">Classic Address: {{ classicAddress }}</p>
-        <p class="text-white text-lg">Seed: {{ seed }}</p>
+        <p class="text-blue text-lg">Classroom Name: {{ classroomName }}</p>
+        <p class="text-blue text-lg">Classic Address: {{ classicAddress }}</p>
+        <p class="text-blue text-lg">Seed: {{ seed }}</p>
       </div>
     </div>
   </div>
@@ -30,49 +31,23 @@ var classroomName = ref('');
 var classicAddress = ref('');
 var seed = ref('');
 
-const fetchToken = async () => {
-  const response = await fetch('/api/users/verify', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to verify token');
-  }
-
-  return await response.json();
-};
-const decodedToken = await fetchToken();
-const StudentMail = decodedToken.email
 
 const startPolling = () => {
-  while ( pending.value === true ) {
+  while ( accountInfoLoaded.value === false ) {
     return setInterval(fetchAccountInfo, 5000); // Poll every 5 seconds
   } 
 };
 
-
 const fetchAccountInfo = async () => {
   pending.value = true;
-  accountInfoLoaded.value = false;
   try {
-    const body = {
-      email: StudentMail, // Assuming StudentMail is defined somewhere in your code
-    };
-
+    const headers = {
+      'content-type': 'application/json'
+    }
     const response = await fetch('/api/users', {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
+      headers,
     });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch account info');
-    }
 
     const data = await response.json();
 
