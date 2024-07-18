@@ -82,7 +82,6 @@ export const ListUsers = async () => {
   try {
     const Users = await GetCollection('users')
     const result = await Users.find({}).project({ name:1, email: 1, role: 1 }).toArray()
-    console.log('listed users:'+  result)
     return result
   } catch (error) {
     console.error('Error listing User:', error);
@@ -96,7 +95,6 @@ export const ListUsersTeacher = async (TeacherEmail: string) => { // a définir 
   try {
     const Users = await GetCollection('users')
     const result = await Users.find({}).project({ name:1, email: 1, role: 1 }).toArray()
-    console.log('listed users:'+  result)
     return result
   } catch (error) {
     console.error('Error listing User:', error);
@@ -145,14 +143,11 @@ export const ListClassrooms = async (Mail?: string) => {
   try {
     const Classrooms = await GetCollection('classrooms'); // Obtient la collection 'classrooms'
     if (Mail) {
-      console.log("mail dans list classrooms", Mail)
       const result = await Classrooms.find({ teacherMail: Mail }).toArray(); // Récupère toutes les classrooms avec certains champs projetés
-      console.log('listed classrooms:'+  result)
       return result;
     }
     else {
     const result = await Classrooms.find().toArray(); // Récupère toutes les classrooms avec certains champs projetés
-    console.log('listed classrooms de admin:'+  result)
     return result;
     }
 
@@ -184,8 +179,6 @@ export async function AddStudentToClassroom(classroomName: string, student: any)
       { classroomName },
       { $push: { students: student } }
     );
-
-    console.log(`Added student to classroom ${classroomName}`);
   } catch (error) {
     console.error('Error adding student to classroom:', error);
     throw error;
@@ -200,7 +193,6 @@ export async function DeleteUserFromClassroom(email: string) {
       { 'students.email': email },
       { $pull: { students: { email } } }
     );
-    console.log(`Deleted user ${email} from classroom`);
   } catch (error) {
     console.error('Error deleting user from classroom:', error);
   }
@@ -219,7 +211,6 @@ export const generateSlug = (projectName: String) => {
 
 export const AddClassroom = async (classroomInfo: Omit<Classroom, 'id' | 'createdAt'>) => {
   try {
-    console.log("mon classroomInfo est", classroomInfo)
     classroomInfo.classroomName = generateSlug(classroomInfo.classroomName)
     const Classrooms = await GetCollection('classrooms'); // Obtient la collection 'classrooms'
     const result = await Classrooms.insertOne({ 
@@ -265,8 +256,6 @@ export const UpdateStudentAccounts = async (email: string, account: any, solutio
     if (result.modifiedCount !== 1) {
       throw new Error('Failed to update student accounts');
     }
-
-    console.log(`Updated accounts for student ${email}`);
   } catch (error) {
     console.error('Error updating student accounts:', error);
     throw error;
@@ -289,8 +278,6 @@ export const UpdateStudentOldestTransaction = async (email: string, oldestTransa
     if (result.modifiedCount !== 1) {
       throw new Error('Failed to update student oldest transaction');
     }
-
-    console.log(`Updated oldest transaction for student ${email}`);
   } catch (error) {
     console.error('Error updating student oldest transaction:', error);
     throw error;

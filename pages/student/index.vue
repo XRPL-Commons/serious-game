@@ -34,7 +34,7 @@ var seed = ref('');
 
 const startPolling = () => {
   while ( accountInfoLoaded.value === false ) {
-    return setInterval(fetchAccountInfo, 5000); // Poll every 5 seconds
+    return setInterval(fetchAccountInfo, 2000); 
   } 
 };
 

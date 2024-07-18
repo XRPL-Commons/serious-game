@@ -1,8 +1,6 @@
 import { ListClassrooms, Classroom } from '~/server/connectors/mongo'
 
 export default defineEventHandler(async (event) => {
-  console.log("mon event est", event, "fin du event")
-
   const userInfo = event.context.user
 
   if (!userInfo || !['admin', 'teacher'].includes(userInfo.role)) {

@@ -21,8 +21,6 @@ const getOldestTransaction = async (soluce_account: string, personal_account: st
   const oldestTransaction = transactions.reduce((oldest, tx) => {
     return !oldest || tx.tx.date < oldest.tx.date ? tx : oldest;
   }, null);
-
-  console.log("Je suis dans oldest-transaction.put.ts qui retourne :", oldestTransaction);
   return oldestTransaction ? oldestTransaction.tx.date : null;
 };
 

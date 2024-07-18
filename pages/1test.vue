@@ -92,7 +92,6 @@
   
       const result = await response.json();
       transactionResult.value = result;
-      console.log('Transaction result:', result);
     } catch (err) {
       error.value = err.message;
       console.error('Error sending transaction:', err);

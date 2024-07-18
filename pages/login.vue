@@ -46,7 +46,6 @@ const state = reactive({
 
 async function onSubmit (event: FormSubmitEvent<Schema>) {
   // Do something with event.data
-  console.log(event.data)
 }
 
 const router = useRouter()
@@ -57,18 +56,12 @@ const working = ref(false)
 const token = ref<string | null>(null);
 const setUserInfo = inject('setUserInfo') as any
 
-
-// const token = inject('token')
-// console.log( "mon token de inject est ce qui suit ", {token} );
-
 const DoLogin = async () => {
   working.value = true
 
   //Let's factorize the code above thanks to /secret/api/plugins/clients.ts
   const resultJSON = await alex_first_api.login({email: state.email,
       password: state.password})
-
-    console.log({ resultJSON})
     if (resultJSON.success) {
       const userRole = resultJSON.role;
       setUserInfo(resultJSON)
@@ -99,10 +92,7 @@ const fetchToken = async () => {
 
 const CheckLogin = async () => {
   try {
-    console.log('Checking token...');
-
     const decodedToken = await fetchToken();
-    console.log({ decodedToken });
 
     if (decodedToken.role) {
       router.push(`/${decodedToken.role}`);

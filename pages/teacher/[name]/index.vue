@@ -312,7 +312,6 @@ function select(row: User) {
 }
 
 const generateKeysForSelected = async () => {
-  console.log('Generating keys for selected students:', selected.value);
 
 };
 
@@ -386,7 +385,6 @@ const deleteStudent = async (email: string) => {
         'content-type': 'application/json',
       };
       const body = { email };
-      console.log({ body });
 
       await fetch('/api/users', {
         method: 'DELETE',

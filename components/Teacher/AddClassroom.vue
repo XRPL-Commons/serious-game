@@ -34,7 +34,6 @@ const state = reactive({
 })
 
 async function onSubmit (event: FormSubmitEvent<Schema>) {
-  console.log(state, 'Adding classroom')
   emit('success', state)
 }
 </script>

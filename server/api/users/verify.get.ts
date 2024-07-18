@@ -10,26 +10,18 @@ export default defineEventHandler(async (event) => {
     if (!token) {
       throw new Error('No token provided');
     }
-    console.log('Token:', token);
-    console.log('Secret key base:', SECRET_KEY_BASE);
 
     const decodedToken = jwt.decode(token) as { email: string; role: string };
     if (!decodedToken) {
       throw new Error('Invalid token');
     }
 
-    console.log('Decoded token:', decodedToken);
-
     const uniqueSecretKey = await getSecretKeyForUser(decodedToken.email);
-    console.log('Unique secret key:', uniqueSecretKey);
     if (!uniqueSecretKey) {
       throw new Error('Unauthorized');
     }
 
     jwt.verify(token as string, `${SECRET_KEY_BASE}${uniqueSecretKey}`);
-
-    console.log('Token verified successfully');
-
     return {
       success: true,
       email: decodedToken.email,

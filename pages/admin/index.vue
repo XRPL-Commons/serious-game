@@ -20,7 +20,6 @@ function onAddUser () {
       })
   modal.open(AdminAddUser, {
     async onSuccess (state : any) {
-      console.log(state,'celui de users.vue')
       await insertUser(state)
       toast.add({
         title: 'Success !',
@@ -42,7 +41,6 @@ const insertUser = async (user: any) => {
       body})
 
     const resultJSON = await result.json()
-    console.log({ resultJSON })
 
   } catch (error) {
     console.error('Error adding user:', error);
@@ -94,7 +92,6 @@ const deleteUser = async (email: string) => {
     const body = {
       email,
     }
-    console.log({ body })
     const result = await fetch('/api/users', {
       method: 'DELETE',
       headers,

@@ -36,7 +36,6 @@ export default defineEventHandler(async (event) => {
         email: result.email,
         name: result.name,
       };
-      console.log(report)
       return report;
     } else {
       return {

@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const userInfo = inject('userInfo') as any;
 const userName = userInfo.value?.name;
-console.log('userName est ', userName);
 
 const links = [{
   label: 'Dashboard',
@@ -31,7 +30,6 @@ const logout = async () => {
     });
 
     const result = await response.json();
-    console.log( 'result success est ' ,result.success);
     if (result.success) {
       alert('You have been logged out');
       router.push('/login');

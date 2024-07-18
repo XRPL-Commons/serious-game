@@ -22,9 +22,6 @@ export default defineEventHandler(async (event) => {
         account: undefined, 
         solution_account: undefined, 
       };
-      console.log("mon student est", student, "fin du student")
-      console.log("mon classname est", name, "fin du classname")
-
 
     await AddStudentToClassroom(classroomName, student);
 
