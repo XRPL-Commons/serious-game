@@ -11,6 +11,7 @@
       <UButton color="green" variant="solid" @click="updateAccounts">Update Accounts</UButton>
       <UButton color="red" variant="solid" @click="sendFinalTransaction">Send Final Tx</UButton>
       <UButton color="orange" variant="solid" @click="addOldestTransaction">Add Oldest Transaction</UButton>
+      <UButton color="purple" variant="solid" @click="startGame">Start Game</UButton>
     </div>
     <div class="flex justify-center space-x-4 mb-4">
       <div v-if="loading" class="flex justify-center mt-8">
@@ -164,6 +165,39 @@ const addOldestTransaction = async () => {
   }
 };
 
+const startGame = async () => {
+  try {
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    const body = JSON.stringify({ classroomName });
+
+    const result = await fetch('/api/jeu/start-game', {
+      method: 'POST',
+      headers,
+      body
+    });
+
+    if (!result.ok) {
+      throw new Error('Failed to start game');
+    }
+
+    toast.add({
+      title: 'Game started successfully!',
+      id: 'start-game-success'
+    });
+
+    fetchStudents();
+  } catch (error) {
+    console.error('Error starting game:', error);
+    toast.add({
+      title: 'Failed to start game',
+      id: 'start-game-error',
+      type: 'error'
+    });
+  }
+};
+
 onMounted(() => {
   fetchStudents();
 });
@@ -181,7 +215,7 @@ const columns = [
   { key: 'name', label: 'Name', sortable: true },
   { key: 'email', label: 'Email' },
   { key: 'rank', label: 'Rank', sortable: true },
-  { key: 'account', label: 'Personnal Account' },
+  { key: 'account', label: 'Personal Account' },
   { key: 'solution_account.classicAddress', label: 'Solution Account' },
   { key: 'oldestTransaction', label: 'Oldest Transaction Date', sortable: true },
   { key: 'actions', label: 'Actions' }
