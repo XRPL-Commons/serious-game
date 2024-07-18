@@ -8,10 +8,16 @@
     <div class="flex-row transform translate-y-1">
       <h2 class="text-lg font-bold mb-2">Students</h2>
       <UButton color="primary" variant="solid" @click="onAddStudent">Add Student</UButton>
+      <div>
+        <label for="numStages">Number of Stages:</label>
+        <input type="number" v-model="numStages" id="numStages" />
+        <UButton color="green" variant="solid" @click="updateMultipleStages">Update Multiple Stages</UButton>
+      </div>
       <UButton color="green" variant="solid" @click="updateAccounts">Update Accounts</UButton>
       <UButton color="red" variant="solid" @click="sendFinalTransaction">Send Final Tx</UButton>
       <UButton color="orange" variant="solid" @click="addOldestTransaction">Add Oldest Transaction</UButton>
-      <UButton color="purple" variant="solid" @click="startGame">Start Game</UButton>
+      <UButton color="purple" variant="solid" @click="resetGameStages">Reset Game Stages</UButton>
+      <UButton color="blue" variant="solid" @click="sendMemo">Send Memo</UButton>
     </div>
     <div class="flex justify-center space-x-4 mb-4">
       <div v-if="loading" class="flex justify-center mt-8">
@@ -40,6 +46,7 @@ const modal = useModal();
 
 const students = ref<User[]>([]);
 const loading = ref<boolean>(true);
+const numStages = ref<number>(3); // Default number of stages
 const router = useRouter();
 const classroomName = router.currentRoute.value.params.name;
 
@@ -47,7 +54,7 @@ const fetchStudents = async () => {
   try {
     loading.value = true;
     const headers = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     };
     const result = await fetch(`/api/classrooms/${classroomName}`, {
       method: 'GET',
@@ -69,14 +76,14 @@ const fetchStudents = async () => {
 const updateAccounts = async () => {
   try {
     const headers = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     };
     const body = JSON.stringify({ classroomName });
 
     const result = await fetch(`/api/jeu`, {
       method: 'PUT',
       headers,
-      body
+      body,
     });
 
     if (!result.ok) {
@@ -85,7 +92,7 @@ const updateAccounts = async () => {
 
     toast.add({
       title: 'Accounts Updated Successfully!',
-      id: 'update-success'
+      id: 'update-success',
     });
 
     fetchStudents();
@@ -94,7 +101,40 @@ const updateAccounts = async () => {
     toast.add({
       title: 'Error updating accounts',
       id: 'update-error',
-      variant: 'error'
+      variant: 'error',
+    });
+  }
+};
+
+const updateMultipleStages = async () => {
+  try {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const body = JSON.stringify({ classroomName, numStages: numStages.value });
+
+    const result = await fetch('/api/jeu/update-multiple-stages', {
+      method: 'PUT',
+      headers,
+      body,
+    });
+
+    if (!result.ok) {
+      throw new Error('Failed to update multiple stages');
+    }
+
+    toast.add({
+      title: 'Multiple Stages Updated Successfully!',
+      id: 'update-stages-success',
+    });
+
+    fetchStudents();
+  } catch (error) {
+    console.error('Error updating multiple stages:', error);
+    toast.add({
+      title: 'Error updating multiple stages',
+      id: 'update-stages-error',
+      variant: 'error',
     });
   }
 };
@@ -102,14 +142,14 @@ const updateAccounts = async () => {
 const sendFinalTransaction = async () => {
   try {
     const headers = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     };
     const body = JSON.stringify({ classroomName });
 
     const result = await fetch('/api/jeu', {
       method: 'POST',
       headers,
-      body
+      body,
     });
 
     if (!result.ok) {
@@ -118,7 +158,7 @@ const sendFinalTransaction = async () => {
 
     toast.add({
       title: 'Transactions sent successfully!',
-      id: 'send-tx-success'
+      id: 'send-tx-success',
     });
 
     fetchStudents();
@@ -127,7 +167,7 @@ const sendFinalTransaction = async () => {
     toast.add({
       title: 'Failed to send transactions',
       id: 'send-tx-error',
-      type: 'error'
+      type: 'error',
     });
   }
 };
@@ -135,14 +175,14 @@ const sendFinalTransaction = async () => {
 const addOldestTransaction = async () => {
   try {
     const headers = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     };
     const body = JSON.stringify({ classroomName });
 
     const result = await fetch('/api/jeu/oldest-transaction', {
       method: 'PUT',
       headers,
-      body
+      body,
     });
 
     if (!result.ok) {
@@ -151,7 +191,7 @@ const addOldestTransaction = async () => {
 
     toast.add({
       title: 'Oldest transactions added successfully!',
-      id: 'oldest-tx-success'
+      id: 'oldest-tx-success',
     });
 
     fetchStudents();
@@ -160,40 +200,73 @@ const addOldestTransaction = async () => {
     toast.add({
       title: 'Failed to add oldest transactions',
       id: 'oldest-tx-error',
-      type: 'error'
+      type: 'error',
     });
   }
 };
 
-const startGame = async () => {
+const resetGameStages = async () => {
   try {
     const headers = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     };
     const body = JSON.stringify({ classroomName });
 
-    const result = await fetch('/api/jeu/start-game', {
+    const result = await fetch('/api/jeu/reset-game-stages', {
       method: 'POST',
       headers,
-      body
+      body,
     });
 
     if (!result.ok) {
-      throw new Error('Failed to start game');
+      throw new Error('Failed to reset game stages');
     }
 
     toast.add({
-      title: 'Game started successfully!',
-      id: 'start-game-success'
+      title: 'Game stages reset successfully!',
+      id: 'reset-stages-success',
     });
 
     fetchStudents();
   } catch (error) {
-    console.error('Error starting game:', error);
+    console.error('Error resetting game stages:', error);
     toast.add({
-      title: 'Failed to start game',
-      id: 'start-game-error',
-      type: 'error'
+      title: 'Failed to reset game stages',
+      id: 'reset-stages-error',
+      type: 'error',
+    });
+  }
+};
+
+const sendMemo = async () => {
+  try {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const body = JSON.stringify({ classroomName });
+
+    const result = await fetch('/api/jeu/send-memo', {
+      method: 'POST',
+      headers,
+      body,
+    });
+
+    if (!result.ok) {
+      throw new Error('Failed to send memo transactions');
+    }
+
+    toast.add({
+      title: 'Memo transactions sent successfully!',
+      id: 'send-memo-success',
+    });
+
+    fetchStudents();
+  } catch (error) {
+    console.error('Error sending memo transactions:', error);
+    toast.add({
+      title: 'Failed to send memo transactions',
+      id: 'send-memo-error',
+      type: 'error',
     });
   }
 };
@@ -208,7 +281,7 @@ const goToDashboard = () => {
 
 const sort = ref({
   column: 'rank',
-  direction: 'asc'
+  direction: 'asc',
 });
 
 const columns = [
@@ -218,19 +291,19 @@ const columns = [
   { key: 'account', label: 'Personal Account' },
   { key: 'solution_account.classicAddress', label: 'Solution Account' },
   { key: 'oldestTransaction', label: 'Oldest Transaction Date', sortable: true },
-  { key: 'actions', label: 'Actions' }
+  { key: 'actions', label: 'Actions' },
 ];
 
 const addStudent = async (userData: User) => {
   try {
     userData.role = 'student';
     const headers = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     };
     const result = await fetch('/api/users', {
       method: 'POST',
       headers,
-      body: JSON.stringify(userData)
+      body: JSON.stringify(userData),
     });
 
     if (!result.ok) {
@@ -248,12 +321,12 @@ const addStudent = async (userData: User) => {
 const addToClassroom = async (classroomName: string, userData: User) => {
   try {
     const headers = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     };
     await fetch(`/api/classrooms/${classroomName}`, {
       method: 'POST',
       headers,
-      body: JSON.stringify(userData)
+      body: JSON.stringify(userData),
     });
 
     fetchStudents();
@@ -269,17 +342,17 @@ const handleStudentAdded = (userData: User) => {
 function onAddStudent() {
   toast.add({
     title: 'Adding Student',
-    id: 'modal-success'
+    id: 'modal-success',
   });
   modal.open(TeacherAddStudent, {
     async onSuccess(state: any) {
       await addStudent(state);
       toast.add({
         title: 'Success!',
-        id: 'modal-success'
+        id: 'modal-success',
       });
       modal.close();
-    }
+    },
   });
 }
 
@@ -287,7 +360,7 @@ const deleteStudent = async (email: string) => {
   if (confirm('Are you sure you want to delete this user?')) {
     try {
       const headers = {
-        'content-type': 'application/json'
+        'content-type': 'application/json',
       };
       const body = { email };
       console.log({ body });
@@ -295,13 +368,13 @@ const deleteStudent = async (email: string) => {
       await fetch('/api/users', {
         method: 'DELETE',
         headers,
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       });
 
       await fetch(`/api/classrooms/${classroomName}`, {
         method: 'DELETE',
         headers,
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       });
 
       fetchStudents();
@@ -312,6 +385,6 @@ const deleteStudent = async (email: string) => {
 };
 
 definePageMeta({
-  layout: 'teacher'
+  layout: 'teacher',
 });
 </script>

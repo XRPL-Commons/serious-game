@@ -271,6 +271,28 @@ export const UpdateStudentOldestTransaction = async (email: string, oldestTransa
   }
 };
 
+export const UpdateStudentGameStages = async (email: string, gameStages: any[]) => {
+  const Classrooms = await GetCollection('classrooms');
+  await Classrooms.updateOne(
+    { 'students.email': email },
+    { $set: { 'students.$.gameStages': gameStages } },
+    { upsert: true }
+  );
+};
+
+
+export const ResetStudentGameStages = async (email: string) => {
+  const Classrooms = await GetCollection('classrooms');
+  await Classrooms.updateOne(
+    { 'students.email': email },
+    {
+      $unset: {
+        'students.$.gameStages': ""
+      }
+    }
+  );
+};
+
 
 export default {
   AddUser,
@@ -286,6 +308,8 @@ export default {
   ListClassrooms,
   AddClassroom,
   DeleteClassroom,
+  ResetStudentGameStages,
   UpdateStudentAccounts,
-  UpdateStudentOldestTransaction
+  UpdateStudentOldestTransaction,
+  UpdateStudentGameStages
 }
