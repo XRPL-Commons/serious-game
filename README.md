@@ -59,6 +59,8 @@ Now that you are setup you can start the development server : o
 ```bash
 # npm
 npm run dev
+OR
+npm run luc
 
 # pnpm
 pnpm run dev
@@ -120,6 +122,12 @@ Users
     
 
 # Structure of the project : 
+Generated using : 
+```bash
+tree -I 'file1|file2|file3' > structure.txt
+```
+This command will ignore file1,file2,file3 and output the structure to structure.txt.
+
 ```javascript
 .  // Root directory of the project
 ├── app.vue  // Main application component
