@@ -9,4 +9,5 @@ Things left to do:
     - Improve the graphical interface.
     - Add a classrooms field in the User table that contains an array of all the classes the student is enrolled in. This will optimize the ListUsersStudent function in mongo.ts, which currently iterates over all classrooms.
     - If a teacher wants to add a student to their class, our function should add the student to both the users database and the specific classroom. However, if the student is already in a classroom, they will already be in the users database. This will cause an error when trying to add the student, as there cannot be duplicates in the users database.
+    - Write the tsconfig.json
     - Implement security measures to restrict access to routes such as /admin or /teacher based on the user's role.

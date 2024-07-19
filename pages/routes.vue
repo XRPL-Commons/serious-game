@@ -29,6 +29,7 @@
 export default {
   layout: "routes"
 }
+
 </script>
 <style>
 .header {

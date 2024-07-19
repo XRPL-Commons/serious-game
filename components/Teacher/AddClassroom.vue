@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-const emit = defineEmits(['success'])
 
 import { object, string, type InferType } from 'yup'
 import type { FormSubmitEvent } from '#ui/types'
 
-
+const emit = defineEmits(['success'])
 const schema = object({
   classroomName: string().required('Required'),
 })
@@ -17,11 +16,9 @@ type Schema = InferType<typeof schema>
       'Content-Type': 'application/json'
     }
   });
-
   if (!response.ok) {
     throw new Error('Failed to verify token');
   }
-
   return await response.json();
 };
 
@@ -36,8 +33,8 @@ const state = reactive({
 async function onSubmit (event: FormSubmitEvent<Schema>) {
   emit('success', state)
 }
-</script>
 
+</script>
 
 <template>
     <UModal>
@@ -45,7 +42,6 @@ async function onSubmit (event: FormSubmitEvent<Schema>) {
         <template #header>
           <p class="font-title">Add a classroom</p>
         </template>
-        
         <UFormGroup label="Name" name="name">
           <UInput v-model="state.classroomName" />
         </UFormGroup>

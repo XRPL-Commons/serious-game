@@ -15,7 +15,6 @@ export const sendTransaction = async (account: any, solution_account: any) => {
       Destination: solution_account.classicAddress,
       Amount: "42"  // 42 drops
     };
-
     const result = await client.submitAndWait(tx, {
       autofill: true,
       wallet
@@ -26,7 +25,6 @@ export const sendTransaction = async (account: any, solution_account: any) => {
     if (result.result.meta.TransactionResult !== 'tesSUCCESS') {
       throw new Error(`Transaction failed: ${result.result.meta.TransactionResult}`);
     }
-
     return result;
   } catch (error) {
     console.error('Error sending transaction:', error);
@@ -38,20 +36,17 @@ export default defineEventHandler(async (event) => {
   try {
     const { classroomName } = await readBody(event);
     const students = await GetClassroomStudents(classroomName);
-
     if (!students) {
       throw createError({
         statusCode: 404,
         statusMessage: 'Classroom not found'
       });
     }
-
     for (const student of students) {
       if (student.account && student.solution_account) {
         await sendTransaction(student.account, student.solution_account);
       }
     }
-
     return { success: true };
   } catch (error) {
     console.error('Error sending transactions:', error);

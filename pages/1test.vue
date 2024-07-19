@@ -79,17 +79,14 @@
         account: accounts.value.account,
         solution_account: accounts.value.solution_account
       });
-  
       const response = await fetch('/api/test', {
         method: 'POST',
         headers,
         body
       });
-  
       if (!response.ok) {
         throw new Error('Failed to send transaction');
       }
-  
       const result = await response.json();
       transactionResult.value = result;
     } catch (err) {

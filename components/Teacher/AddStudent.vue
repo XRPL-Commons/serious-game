@@ -1,20 +1,15 @@
 <script lang="ts" setup>
 
-
-const emit = defineEmits(['success'])
-
 import { object, string, type InferType } from 'yup'
 import type { FormSubmitEvent } from '#ui/types'
 
-
+const emit = defineEmits(['success'])
 const schema = object({
   email: string().email('Invalid email').required('Required'),
   name: string().required('Required'),
   password: string().min(8, 'Must be at least 8 characters').required('Required'),
 });
-
 type Schema = InferType<typeof schema>;
-
 
 const state = reactive({
   email: undefined,
@@ -22,7 +17,6 @@ const state = reactive({
   name: undefined,
   role: 'student',
 })
-
 
 async function onSubmit (event: FormSubmitEvent<Schema>) {
   emit('success', state)

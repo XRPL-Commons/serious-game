@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -17,10 +18,9 @@ const links = [{
     logout()
   }
 }];
+
 const logout = async () => {
-  if (confirm('Are you sure you want to log out ?'))
-  {
-    
+  if (confirm('Are you sure you want to log out ?')){ 
   try {
     const response = await fetch('/api/users/logout', {
       method: 'POST',
@@ -28,7 +28,6 @@ const logout = async () => {
         'Content-Type': 'application/json'
       }
     });
-
     const result = await response.json();
     if (result.success) {
       alert('You have been logged out');
@@ -40,10 +39,10 @@ const logout = async () => {
     console.error('Error during logout:', error);
     alert('Error during logout');
   }
-
   }
   else return;
 };
+
 </script>
 
 <template>

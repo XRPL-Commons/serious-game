@@ -1,7 +1,6 @@
 import { Xumm } from "xumm";
 import { Wallet, Client } from 'xrpl';
 
-
 export function getXumm() {
     const xumm = new Xumm(
         process.env.XAMAN_API_KEY || '',

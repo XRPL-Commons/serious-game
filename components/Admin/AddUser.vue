@@ -1,10 +1,8 @@
 <script lang="ts" setup>
-
-
-const emit = defineEmits(['success'])
-
 import { object, string, type InferType } from 'yup'
 import type { FormSubmitEvent } from '#ui/types'
+
+const emit = defineEmits(['success'])
 
 const schema = object({
   email: string().email('Invalid email').required('Required'),
@@ -15,7 +13,6 @@ const schema = object({
     role: string().oneOf(["student", "admin", "teacher"], 'Role must be one of: student, admin, teacher').required('Required'),
 })
 
-
 type Schema = InferType<typeof schema>
 
 const state = reactive({
@@ -24,8 +21,8 @@ const state = reactive({
   name: undefined,
   role: undefined
 })
-const roles = ['student', 'admin', 'teacher']
 
+const roles = ['student', 'admin', 'teacher']
 async function onSubmit (event: FormSubmitEvent<Schema>) {
   emit('success', state)
 }
@@ -44,15 +41,12 @@ async function onSubmit (event: FormSubmitEvent<Schema>) {
         <UFormGroup label="Email" name="email">
       <UInput v-model="state.email" />
     </UFormGroup>
-    
-
     <UFormGroup label="Password" name="password">
       <UInput v-model="state.password" type="password" />
     </UFormGroup>
     <UFormGroup label="Role" name="role">
-      <USelect v-model="state.role" :options="roles" />    </UFormGroup>
-
-    
+      <USelect v-model="state.role" :options="roles" />    
+    </UFormGroup>
         <template #footer>
           <UButton type="submit" @click="onSubmit">
       Submit

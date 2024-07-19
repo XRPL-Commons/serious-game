@@ -121,15 +121,12 @@ export const ListUsersStudent = async (studentEmail: string) => {
         return result;
       }
     }
-
     return null; 
   } catch (error) {
     console.error('Error finding student:', error);
     throw error; // Rethrow or handle as needed
   }
 };
-
-
 
 export interface Classroom {
   id: string;

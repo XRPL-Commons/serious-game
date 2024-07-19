@@ -22,15 +22,14 @@
   </template>
   
   <script setup lang="ts">
+
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   
   const toast = useToast();
-  
   const numStages = ref<number>(3); // Default number of stages
   const router = useRouter();
   const classroomName = router.currentRoute.value.params.name;
-  
   const goBack = () => {
     router.push(`/teacher/${classroomName}`);
   };
@@ -41,17 +40,14 @@
         'Content-Type': 'application/json',
       };
       const body = JSON.stringify({ classroomName });
-  
       const result = await fetch(`/api/jeu`, {
         method: 'PUT',
         headers,
         body,
       });
-  
       if (!result.ok) {
         throw new Error('Failed to update accounts');
       }
-  
       toast.add({
         title: 'Accounts Updated Successfully!',
         id: 'update-success',
@@ -72,17 +68,14 @@
         'Content-Type': 'application/json',
       };
       const body = JSON.stringify({ classroomName, numStages: numStages.value });
-  
       const result = await fetch('/api/jeu/update-multiple-stages', {
         method: 'PUT',
         headers,
         body,
       });
-  
       if (!result.ok) {
         throw new Error('Failed to update multiple stages');
       }
-  
       toast.add({
         title: 'Multiple Stages Updated Successfully!',
         id: 'update-stages-success',
@@ -103,17 +96,14 @@
         'Content-Type': 'application/json',
       };
       const body = JSON.stringify({ classroomName });
-  
       const result = await fetch('/api/jeu/send-memo', {
         method: 'POST',
         headers,
         body,
       });
-  
       if (!result.ok) {
         throw new Error('Failed to send memo');
       }
-  
       toast.add({
         title: 'Memo sent successfully!',
         id: 'send-memo-success',
@@ -134,17 +124,14 @@
         'Content-Type': 'application/json',
       };
       const body = JSON.stringify({ classroomName });
-  
       const result = await fetch('/api/jeu/oldest-transaction', {
         method: 'PUT',
         headers,
         body,
       });
-  
       if (!result.ok) {
         throw new Error('Failed to add oldest transactions');
       }
-  
       toast.add({
         title: 'Oldest transactions added successfully!',
         id: 'oldest-tx-success',
@@ -165,17 +152,14 @@
         'Content-Type': 'application/json',
       };
       const body = JSON.stringify({ classroomName });
-  
       const result = await fetch('/api/jeu/reset-game-stages', {
         method: 'PUT',
         headers,
         body,
       });
-  
       if (!result.ok) {
         throw new Error('Failed to reset game stages');
       }
-  
       toast.add({
         title: 'Game stages reset successfully!',
         id: 'reset-stages-success',
@@ -196,17 +180,14 @@
         'Content-Type': 'application/json',
       };
       const body = JSON.stringify({ classroomName });
-  
       const result = await fetch('/api/jeu/big-send-memo', {
         method: 'POST',
         headers,
         body,
       });
-  
       if (!result.ok) {
         throw new Error('Failed to send big memo');
       }
-  
       toast.add({
         title: 'Big memo sent successfully!',
         id: 'big-send-memo-success',
@@ -220,5 +201,6 @@
       });
     }
   };
+  
   </script>
   

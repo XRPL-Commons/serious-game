@@ -6,12 +6,9 @@ export const generateRippleAccounts = async () => {
   const client = new Client("wss://s.altnet.rippletest.net:51233");
   try {
     await client.connect();
-
     const { wallet: wallet1 } = await client.fundWallet();
     const { wallet: wallet2 } = await client.fundWallet();
-
     await client.disconnect();
-
     return {
       account: {
         classicAddress: wallet1.classicAddress,
@@ -27,17 +24,14 @@ export const generateRippleAccounts = async () => {
     throw error;
   }
 };
-
 export default defineEventHandler(async (event) => {
   try {
     const { classroomName } = await readBody(event);
     const students = await GetClassroomStudents(classroomName); // Assurez-vous que cette fonction existe pour récupérer les étudiants d'une classe
-
     for (const student of students) {
       const accounts = await generateRippleAccounts();
       await UpdateStudentAccounts(student.email, accounts.account, accounts.solution_account);
     }
-
     return { success: true };
   } catch (error) {
     console.error('Error generating and updating Ripple accounts:', error);

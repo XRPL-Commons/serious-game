@@ -38,7 +38,6 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
@@ -47,14 +46,11 @@ import { TeacherAddStudent } from '#components';
 
 const toast = useToast();
 const modal = useModal();
-
 const students = ref<User[]>([]);
 const loading = ref<boolean>(true);
 const numStages = ref<number>(3); // Default number of stages
 const router = useRouter();
 const classroomName = router.currentRoute.value.params.name;
-
-
 
 const fetchStudents = async () => {
   try {
@@ -66,11 +62,9 @@ const fetchStudents = async () => {
       method: 'GET',
       headers,
     });
-
     if (!result.ok) {
       throw new Error('Failed to fetch students');
     }
-
     students.value = await result.json();
   } catch (error) {
     console.error('Error fetching students:', error);
@@ -85,22 +79,18 @@ const updateAccounts = async () => {
       'Content-Type': 'application/json',
     };
     const body = JSON.stringify({ classroomName });
-
     const result = await fetch(`/api/jeu`, {
       method: 'PUT',
       headers,
       body,
     });
-
     if (!result.ok) {
       throw new Error('Failed to update accounts');
     }
-
     toast.add({
       title: 'Accounts Updated Successfully!',
       id: 'update-success',
     });
-
     fetchStudents();
   } catch (error) {
     console.error('Error updating accounts:', error);
@@ -118,22 +108,18 @@ const updateMultipleStages = async () => {
       'Content-Type': 'application/json',
     };
     const body = JSON.stringify({ classroomName, numStages: numStages.value });
-
     const result = await fetch('/api/jeu/update-multiple-stages', {
       method: 'PUT',
       headers,
       body,
     });
-
     if (!result.ok) {
       throw new Error('Failed to update multiple stages');
     }
-
     toast.add({
       title: 'Multiple Stages Updated Successfully!',
       id: 'update-stages-success',
     });
-
     fetchStudents();
   } catch (error) {
     console.error('Error updating multiple stages:', error);
@@ -151,22 +137,18 @@ const sendFinalTransaction = async () => {
       'Content-Type': 'application/json',
     };
     const body = JSON.stringify({ classroomName });
-
     const result = await fetch('/api/jeu', {
       method: 'POST',
       headers,
       body,
     });
-
     if (!result.ok) {
       throw new Error('Failed to send transactions');
     }
-
     toast.add({
       title: 'Transactions sent successfully!',
       id: 'send-tx-success',
     });
-
     fetchStudents();
   } catch (error) {
     console.error('Error sending transactions:', error);
@@ -184,22 +166,18 @@ const addOldestTransaction = async () => {
       'Content-Type': 'application/json',
     };
     const body = JSON.stringify({ classroomName });
-
     const result = await fetch('/api/jeu/oldest-transaction', {
       method: 'PUT',
       headers,
       body,
     });
-
     if (!result.ok) {
       throw new Error('Failed to add oldest transactions');
     }
-
     toast.add({
       title: 'Oldest transactions added successfully!',
       id: 'oldest-tx-success',
     });
-
     fetchStudents();
   } catch (error) {
     console.error('Error adding oldest transactions:', error);
@@ -217,22 +195,18 @@ const resetGameStages = async () => {
       'Content-Type': 'application/json',
     };
     const body = JSON.stringify({ classroomName });
-
     const result = await fetch('/api/jeu/reset-game-stages', {
       method: 'POST',
       headers,
       body,
     });
-
     if (!result.ok) {
       throw new Error('Failed to reset game stages');
     }
-
     toast.add({
       title: 'Game stages reset successfully!',
       id: 'reset-stages-success',
     });
-
     fetchStudents();
   } catch (error) {
     console.error('Error resetting game stages:', error);
@@ -250,22 +224,18 @@ const sendMemo = async () => {
       'Content-Type': 'application/json',
     };
     const body = JSON.stringify({ classroomName });
-
     const result = await fetch('/api/jeu/send-memo', {
       method: 'POST',
       headers,
       body,
     });
-
     if (!result.ok) {
       throw new Error('Failed to send memo transactions');
     }
-
     toast.add({
       title: 'Memo transactions sent successfully!',
       id: 'send-memo-success',
     });
-
     fetchStudents();
   } catch (error) {
     console.error('Error sending memo transactions:', error);
@@ -312,9 +282,8 @@ function select(row: User) {
 }
 
 const generateKeysForSelected = async () => {
-
+  // TODO: Add logic to generate keys for selected students
 };
-
 
 const addStudent = async (userData: User) => {
   try {
@@ -327,13 +296,10 @@ const addStudent = async (userData: User) => {
       headers,
       body: JSON.stringify(userData),
     });
-
     if (!result.ok) {
       throw new Error('Failed to add student');
     }
-
     await addToClassroom(classroomName as string, userData);
-
     fetchStudents();
   } catch (error) {
     console.error('Error adding student:', error);
@@ -350,7 +316,6 @@ const addToClassroom = async (classroomName: string, userData: User) => {
       headers,
       body: JSON.stringify(userData),
     });
-
     fetchStudents();
   } catch (error) {
     console.error('Error adding student to classroom:', error);
@@ -385,19 +350,16 @@ const deleteStudent = async (email: string) => {
         'content-type': 'application/json',
       };
       const body = { email };
-
       await fetch('/api/users', {
         method: 'DELETE',
         headers,
         body: JSON.stringify(body),
       });
-
       await fetch(`/api/classrooms/${classroomName}`, {
         method: 'DELETE',
         headers,
         body: JSON.stringify(body),
       });
-
       fetchStudents();
     } catch (error) {
       console.error('Error deleting user:', error);

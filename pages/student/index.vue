@@ -18,19 +18,18 @@
 </template>
 
 <script setup lang="ts">
+
 import { ref, onMounted } from 'vue';
 
 definePageMeta({
   layout: 'student',
 });
 
-
 const pending = ref(true);
 const accountInfoLoaded = ref(false);
 var classroomName = ref('');
 var classicAddress = ref('');
 var seed = ref('');
-
 
 const startPolling = () => {
   while ( accountInfoLoaded.value === false ) {
@@ -48,17 +47,13 @@ const fetchAccountInfo = async () => {
       method: 'GET',
       headers,
     });
-
     const data = await response.json();
-
     if (data === null) {
         return;    
       }
-
     classroomName = data.classroomName;
     seed = data.seed;
     classicAddress = data.classicAddress;
-
     pending.value = false;
     accountInfoLoaded.value = true;
   } catch (error) {
@@ -69,7 +64,6 @@ const fetchAccountInfo = async () => {
   }
 };
 
-// Simulate loading account information
 onMounted(() => {
   startPolling(); 
 });

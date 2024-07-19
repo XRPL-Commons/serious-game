@@ -36,6 +36,7 @@
   </template>
   
   <script setup>
+
   import { ref, onMounted } from 'vue';
   
   const accounts = ref(null);
@@ -43,7 +44,7 @@
   const transactionResult = ref(null);
   const oldestTransaction = ref(null);
   const loading = ref(false);
-  
+
   const fetchAccounts = async () => {
     try {
       const response = await fetch('/api/jeu');
@@ -58,13 +59,11 @@
     try {
       const headers = { 'Content-Type': 'application/json' };
       const body = JSON.stringify({ account: accounts.value.account, solution_account: accounts.value.solution_account });
-  
       const response = await fetch('/api/test/', {
         method: 'POST',
         headers,
         body
       });
-  
       if (!response.ok) throw new Error('Failed to send transaction');
       transactionResult.value = await response.json();
     } catch (err) {
@@ -95,6 +94,7 @@
   onMounted(() => {
     fetchAccounts();
   });
+  
   </script>
   
   <style scoped>

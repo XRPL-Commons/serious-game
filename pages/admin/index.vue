@@ -13,6 +13,7 @@ const loading = ref<boolean>(true);
 const router = useRouter();
 const toast = useToast()
 const modal = useModal()
+
 function onAddUser () {
   toast.add({
         title: 'TEST !',
@@ -29,6 +30,7 @@ function onAddUser () {
     }
   })
 }
+
 const insertUser = async (user: any) => {
   try {
     const headers = {
@@ -39,15 +41,14 @@ const insertUser = async (user: any) => {
       method: 'POST',
       headers,
       body})
-
     const resultJSON = await result.json()
-
   } catch (error) {
     console.error('Error adding user:', error);
   } finally {
     fetchUsers();
   }
 }
+
 const columns = [{
   key: 'name',
   label: 'Name',
@@ -96,13 +97,10 @@ const deleteUser = async (email: string) => {
       method: 'DELETE',
       headers,
       body: JSON.stringify(body)
-    })
-
-      
+    })  
     } catch (error) {
       console.error('Error deleting user:', error);
     }
-
     fetchUsers();
   }
 };

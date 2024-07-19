@@ -6,7 +6,7 @@ import { getCookie } from 'h3';
 
 
 const SECRET_KEY_BASE = process.env.SECRET_KEY_BASE;
-// const authorized_routes = [
+// const authorized_routes = [ //Might need to be used later
 //   '/login',
 //   '/',
 // ]
