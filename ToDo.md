@@ -1,12 +1,12 @@
-Chose qu'il reste à faire :
+Things left to do:
 
-- [name].vue, refresh la page dès qu'on a update les accounts
-- Dans l'interface de teacher, il doit être possible de générer une paire de clé pour un seul étudiant en l'ayant sélectionné, on a déjà commencé à le faire (voir page/teacher/[name]/[name].vue)
-- Crée une colonne rank dans l'interface teacher qui attribue à chaque élève son rank en fonction de la colonne oldest transaction.
-- Lorsque qu'un teacher ajoute un éleve on doit envoyer un mail à l'étudiant contenant son mail/nom sur la plateforme / mot de passe provisoire.
-- Crée un système de sign up pour que le teacher montre simplement un QR code à sa classe et chacun arrive sur une page pour sign up. Ou faire quelque chose de similaire à Kahoot avec un code permettant d'accéder à la partie.
-- Automatiser le système de génération de scénario pour le serious-game. En utilisant une clé Open AI qui génère le scénario et qui est ensuite disponible sur l'interface de l'élève.
-- Améliorer l'interface graphique.
-- Rajouter un champ classrooms dans la table User qui contient un tableau avec toutes les classes dans lesquelles l'étudiant est inscrit. Ceci permet d'optimiser la fonction ListUsersStudent dans mongo.ts qui itère sur toutes les classroom.
-- Si un teacher souhaite ajouter dans sa classe un student notre fonction l'ajoute à la fois dans la BD users et dans la classroom en question. Sauf que si le student est déjà dans une classroom il est par conséquent déjà dans la BD user. Donc en voulant l'ajouter, le teacher rencontrera une erreur car il ne peux y avoir de duplica dans la BD user.
-- Mesure de sécurité interdisant l'accès à des routes telles que /admin ou /teacher , en fonction du rôle de l'utilisateur.
+    - Refresh the [name].vue page as soon as the accounts are updated.
+    - In the teacher interface, it should be possible to generate a key pair for a single selected student. We have already started implementing this (see page/teacher/[name]/[name].vue).
+    - Create a rank column in the teacher interface that assigns each student a rank based on the oldest transaction column.
+    - When a teacher adds a student, an email should be sent to the student containing their email/username on the platform and a temporary password.
+    - Create a signup system where the teacher can simply show a QR code to the class, and each student arrives on a signup page. Alternatively, implement something similar to Kahoot with a code that allows access to the game.
+    - Automate the scenario generation system for the serious game by using an OpenAI key to generate the scenario, which will then be available on the student interface.
+    - Improve the graphical interface.
+    - Add a classrooms field in the User table that contains an array of all the classes the student is enrolled in. This will optimize the ListUsersStudent function in mongo.ts, which currently iterates over all classrooms.
+    - If a teacher wants to add a student to their class, our function should add the student to both the users database and the specific classroom. However, if the student is already in a classroom, they will already be in the users database. This will cause an error when trying to add the student, as there cannot be duplicates in the users database.
+    - Implement security measures to restrict access to routes such as /admin or /teacher based on the user's role.
