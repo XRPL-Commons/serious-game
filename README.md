@@ -2,31 +2,18 @@
 
 Docs :
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+
 Nuxt UI : https://ui.nuxt.com/
 
-## Setup
+# Setup
 
-In the root of your project, create a file named .env. This file will contain the environment variables necessary for the application to function correctly.
+## 1) Clone the repository
 
-Add environment variables:
+```bash
+git clone https://github.com/XRPL-Commons/serious-game.git
+```
 
-In the .env file, add the following lines, replacing <your_mongo_uri> and <your_secret_key_base> with your respective values:
-
-MONGO_URI=<your_mongo_uri>
-SECRET_KEY_BASE=<your_secret_key_base>
-
-'MONGO_URI': The connection URI to your MongoDB database. For example: mongodb+srv://<username>:<password>@cluster0.mongodb.net/myDatabase?retryWrites=true&w=majority
-
-SECRET_KEY_BASE: A base secret key used for generating and verifying JWT tokens. This key should be a complex and secure string to ensure the security of your tokens. You can generate a secure key using the following Python command:
-
-```python
-
-# Generating a secret key
-import os
-print(os.urandom(64).hex())``
-
-
-# Now make sure to install the dependencies:
+## 2) Now make sure to install the dependencies:
 
 ```bash
 # npm
@@ -39,9 +26,35 @@ pnpm install
 yarn install
 ````
 
+## Generating a secret key
+
+Here is how you can generate a secret key which will be later required , using a python compiler.
+```python
+import os
+print(os.urandom(64).hex())
+```
+
+## Add environment variables:
+
+In the root of your project, create a file named .env. This file will contain the environment variables necessary for the application to function correctly.
+
+In the .env file, add the following lines, replacing <your_mongo_uri> and <your_secret_key_base> with your respective values:
+
+```bash
+MONGO_URI=<your_mongo_uri>
+SECRET_KEY_BASE=<your_secret_key_base>
+```
+
+'MONGO_URI': The connection URI to your MongoDB database. For example: mongodb+srv://<username>:<password>@cluster0.mongodb.net/myDatabase?retryWrites=true&w=majority
+
+SECRET_KEY_BASE: A base secret key used for generating and verifying JWT tokens. This key should be a complex and secure string to ensure the security of your tokens. You can generate a secure key using the following 
+
+
 ## Running the app
 
-Start the development server on `http://localhost:3000`:
+Now that you are setup you can start the development server : o
+1) Open your browser on `http://localhost:3000`
+2) Type in a terminal at the root of the project the following command : 
 
 ```bash
 # npm
@@ -69,8 +82,45 @@ pnpm run build
 yarn build
 ```
 
-Structure of the project : 
+# API Endpoints
 
+Classrooms
+
+    GET /api/classrooms - Fetch all classrooms
+    POST /api/classrooms - Create a new classroom
+    DELETE /api/classrooms - Delete all classrooms
+    GET /api/classrooms/:name - Fetch a specific classroom
+    POST /api/classrooms/:name - Update a specific classroom
+    DELETE /api/classrooms/:name - Delete a specific classroom
+
+Game
+
+    POST /api/jeu - Create a game instance
+    PUT /api/jeu - Update a game instance
+    PUT /api/jeu/oldest-transaction - Update the oldest transaction
+    POST /api/jeu/reset-game-stages - Reset game stages
+    POST /api/jeu/send-memo - Send a memo
+    PUT /api/jeu/update-multiple-stages - Update multiple game stages
+    GET /api/jeu/transactions/:soluce_account - Fetch transactions for a specific account
+
+Test
+
+    GET /api/test - Fetch test data
+    POST /api/test - Post test data
+    GET /api/test/transactions/:soluce_account - Fetch test transactions for a specific account
+
+Users
+
+    GET /api/users - Fetch all users
+    POST /api/users - Create a new user
+    DELETE /api/users - Delete all users
+    POST /api/users/login - User login
+    POST /api/users/logout - User logout
+    GET /api/users/verify - Verify user token
+    
+
+# Structure of the project : 
+```javascript
 .  // Root directory of the project
 ├── app.vue  // Main application component
 ├── components  // Directory containing reusable Vue components
@@ -153,6 +203,7 @@ Structure of the project :
 ├── tailwind.config.ts  // Configuration file for Tailwind CSS
 ├── ToDo.md  // Markdown file listing tasks to be done
 ├── tsconfig.json  // TypeScript configuration file for the project
+
 
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
