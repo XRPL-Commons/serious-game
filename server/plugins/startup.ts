@@ -12,7 +12,6 @@ export default defineNitroPlugin(async (nitroApp) => {
   // create admin user if he doesnt exist
 
   const Users = await GetCollection('users')
-  console.log(Users)
   const adminInfo = await Users.findOne({ email: defaultAdmin.email })
   if (!adminInfo) {
     // create admin user

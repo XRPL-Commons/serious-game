@@ -1,4 +1,4 @@
-import { ListClassrooms, Classroom } from '~/server/connectors/mongo'
+import { ListClassrooms } from '~/server/connectors/mongo'
 
 export default defineEventHandler(async (event) => {
   const userInfo = event.context.user

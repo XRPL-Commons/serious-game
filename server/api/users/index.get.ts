@@ -12,6 +12,4 @@ export default defineEventHandler(async (event) => {
   else if (userInfo.role === 'student') {
     return ListUsersStudent(userInfo.email as string);
     }
-
-  return ListUsers()
 })

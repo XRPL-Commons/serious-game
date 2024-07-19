@@ -3,16 +3,10 @@
 import jwt from 'jsonwebtoken';
 import { getSecretKeyForUser } from '~/server/connectors/mongo';
 import { getCookie } from 'h3';
-import { provide, ref } from 'vue'
-
 
 
 const SECRET_KEY_BASE = process.env.SECRET_KEY_BASE;
 // const authorized_routes = [
-//   '/api/users/login',
-//   '/api/classrooms/',
-//   '/api/users/verify',
-//   '/api/users/logout',
 //   '/login',
 //   '/',
 // ]
@@ -26,7 +20,6 @@ export default defineEventHandler(async (event) => {
       throw new Error('Route path is undefined');
 
     }
-
     // if (authorized_routes.includes(currentRoute)) {
     //   return;
     // }

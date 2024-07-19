@@ -67,7 +67,6 @@ const fetchClassrooms = async () => {
     })
   
   classrooms.value = await result.json();
-  //console.log( classrooms.value );
   } catch (error) {
     console.error('Error fetching classrooms:', error);
   } finally {
@@ -90,8 +89,6 @@ const insertClassroom = async (classroom: any) => {
     });
 
     const resultJSON = await result.json();
-    console.log({ resultJSON });
-
   } catch (error) {
     console.error('Error adding classroom:', error);
   } finally {
@@ -112,7 +109,6 @@ function onAddClassroom() {
 
   modal.open(TeacherAddClassroom, {
     async onSuccess(state: any) {
-      console.log(state, 'Adding classroom from dashboard');
       await insertClassroom(state);
       toast.add({
         title: 'Classroom Added Successfully!',
