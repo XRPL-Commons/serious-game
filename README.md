@@ -1,9 +1,6 @@
 # Serious Game Starter
 
-Docs :
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
-
-Nuxt UI : https://ui.nuxt.com/
+The Serious Game App is a web-based application designed to facilitate interactive learning experiences in a classroom setting. It allows teachers to manage students, create classrooms, and initiate serious games where students can participate and learn through engaging activities on the XRP Ledger. It was made using Nuxt.js, Vue.js and MongoDB for the Database management
 
 # Setup
 
@@ -221,3 +218,8 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 ```sudo apt-get update
 sudo apt-get install libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 ```
+# Docs :
+Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+
+Nuxt UI : https://ui.nuxt.com/
+
