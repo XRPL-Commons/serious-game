@@ -1,12 +1,22 @@
 <template>
   <div>
+
+    <!-- Header Section -->
     <div class="header">
       <h1>Routes overview</h1>
+
+    <!-- Link to go back to the home/index page -->
       <nuxt-link to="/">Go back to index</nuxt-link>
     </div>
+  
+    <!-- Information Section -->
     <div class="info">
+
+    <!-- Display the total number of available routes -->
       <h1>There are {{ $router.options.routes.length }} available routes by nuxtjs</h1>
     </div>
+
+    <!-- Table to display all routes -->
     <div class="wrapper">
       <table id="routes">
         <tr>

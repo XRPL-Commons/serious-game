@@ -8,13 +8,15 @@ export const DB = async () => {
   await client.connect()
   return client.db(defaultDB)
 }
-export async function getSecretKeyForUser(email: string): Promise<string | null> {
+  // Retrieves the secret key for a user based on their email.
+  export async function getSecretKeyForUser(email: string): Promise<string | null> {
   await client.connect()
   const Users = await GetCollection('users')
   const userSecret = await Users.findOne({ email });
   return userSecret ? userSecret.secretKey : null;
 }
 
+// Sets or updates the secret key for a user based on their email.
 export async function setSecretKeyForUser(email: string, secretKey: string) {
   await client.connect() // En partant du principe que l'adresse mail est unique
   const Users = await GetCollection('users')
@@ -33,11 +35,13 @@ export interface User {
   secretKey: string | null;
 }
 
+// Returns a MongoDB collection based on the given collection name.
 export const GetCollection = async (collectionName: string) => {
   await client.connect()
   return client.db(defaultDB).collection(collectionName)
 }
 
+// Logs in a user by verifying their email and password.
 export const LoginUser = async ({ email, password }: { email: string, password: string }) => {
   try {
     const Users = await GetCollection('users') //est-ce que l'user existe
@@ -51,6 +55,7 @@ export const LoginUser = async ({ email, password }: { email: string, password: 
   }
 }
 
+// Adds a new user to the 'users' collection after generating a slug for their name.
 export const AddUser = async (userInfo: User) => {
   try {
     userInfo.name = generateSlug(userInfo.name)
@@ -65,6 +70,7 @@ export const AddUser = async (userInfo: User) => {
   }
 }
 
+// Deletes a user from the 'users' collection by their email.
 export const DeleteUser = async (email: string) => {
   try {
     const Users = await GetCollection('users')
@@ -78,6 +84,7 @@ export const DeleteUser = async (email: string) => {
   }
 }
 
+// Lists all users with their name, email, and role from the 'users' collection.
 export const ListUsers = async () => {
   try {
     const Users = await GetCollection('users')
@@ -91,6 +98,7 @@ export const ListUsers = async () => {
   }
 }
 
+// Lists users based on the provided teacher's email
 export const ListUsersTeacher = async (TeacherEmail: string) => { // a définir la logique 
   try {
     const Users = await GetCollection('users')
@@ -136,6 +144,7 @@ export interface Classroom {
   createdAt: Date;
 }
 
+// Lists classrooms, optionally filtered by the teacher's email.
 export const ListClassrooms = async (Mail?: string) => {
   try {
     const Classrooms = await GetCollection('classrooms'); // Obtient la collection 'classrooms'
@@ -156,6 +165,7 @@ export const ListClassrooms = async (Mail?: string) => {
   }
 };
 
+// Retrieves the students from a specific classroom by its name.
 export const GetClassroomStudents = async (Name: string) => {
   try {
     const Classrooms = await GetCollection('classrooms');
@@ -167,6 +177,7 @@ export const GetClassroomStudents = async (Name: string) => {
   }
 };
 
+// Adds a student to a specific classroom.
 export async function AddStudentToClassroom(classroomName: string, student: any) {
   const classrooms = await GetCollection('classrooms');
 
@@ -182,6 +193,7 @@ export async function AddStudentToClassroom(classroomName: string, student: any)
   }
 }
 
+// Removes a student from a classroom based on their email.
 export async function DeleteUserFromClassroom(email: string) {
   const classrooms = await GetCollection('classrooms');
 
@@ -206,6 +218,7 @@ export const generateSlug = (projectName: String) => {
     .replace(/^-+|-+$/g, '');
 }
 
+// Adds a new classroom to the 'classrooms' collection with a generated slug and current date.
 export const AddClassroom = async (classroomInfo: Omit<Classroom, 'id' | 'createdAt'>) => {
   try {
     classroomInfo.classroomName = generateSlug(classroomInfo.classroomName)
@@ -223,6 +236,7 @@ export const AddClassroom = async (classroomInfo: Omit<Classroom, 'id' | 'create
   }
 };
 
+// Deletes a classroom by its name from the 'classrooms' collection.
 export const DeleteClassroom = async (name: string) => {
   try {
     const Classrooms = await GetCollection('classrooms')
@@ -236,6 +250,7 @@ export const DeleteClassroom = async (name: string) => {
   }
 }
 
+// Updates a student's accounts (primary and solution accounts) in a classroom.
 export const UpdateStudentAccounts = async (email: string, account: any, solution_account: any) => {
   const Classrooms = await GetCollection('classrooms');
 
@@ -259,6 +274,7 @@ export const UpdateStudentAccounts = async (email: string, account: any, solutio
   }
 };
 
+// Updates a student's oldest transaction value in a classroom.
 export const UpdateStudentOldestTransaction = async (email: string, oldestTransaction: number | null) => {
   const Classrooms = await GetCollection('classrooms');
 
@@ -281,6 +297,7 @@ export const UpdateStudentOldestTransaction = async (email: string, oldestTransa
   }
 };
 
+// Updates a student's game stages in a classroom.
 export const UpdateStudentGameStages = async (email: string, gameStages: any[]) => {
   const Classrooms = await GetCollection('classrooms');
   await Classrooms.updateOne(
@@ -290,7 +307,7 @@ export const UpdateStudentGameStages = async (email: string, gameStages: any[]) 
   );
 };
 
-
+// Resets a student's game stages in a classroom.
 export const ResetStudentGameStages = async (email: string) => {
   const Classrooms = await GetCollection('classrooms');
   await Classrooms.updateOne(

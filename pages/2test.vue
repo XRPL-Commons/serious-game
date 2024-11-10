@@ -1,50 +1,68 @@
 <template>
-    <div>
-      <h1>Ripple Account Transactions</h1>
-      <div v-if="error" class="error">{{ error }}</div>
-      <div v-else-if="accounts">
-        <div>
-          <h2>Personal Account</h2>
-          <p>Classic Address: {{ accounts.account.classicAddress }}</p>
-          <p>Seed: {{ accounts.account.seed }}</p>
-        </div>
-        <div>
-          <h2>Solution Account</h2>
-          <p>Classic Address: {{ accounts.solution_account.classicAddress }}</p>
-          <p>Seed: {{ accounts.solution_account.seed }}</p>
-        </div>
-        <UButton color="primary" @click="sendTransaction">Send Transaction</UButton>
-        <UButton color="red" @click="fetchOldestTransaction">Fetch Oldest Transaction</UButton>
-        <div v-if="transactionResult">
-          <h2>Transaction Result</h2>
-          <p>Transaction Hash: {{ transactionResult.result.hash }}</p>
-          <p>Transaction Status: {{ transactionResult.result.meta.TransactionResult }}</p>
-        </div>
-        <div v-if="oldestTransaction">
-          <h2>Oldest Transaction</h2>
-          <p>Date: {{ formatDate(oldestTransaction.tx.date) }}</p>
-          <p>Amount (drops): {{ oldestTransaction.tx.Amount }}</p>
-          <p>From Address: {{ oldestTransaction.tx.Account }}</p>
-          <p>To Address: {{ oldestTransaction.tx.Destination }}</p>
-          <p>Transaction Hash: {{ oldestTransaction.tx.hash }}</p>
-        </div>
+  <div>
+    <!-- Page Header -->
+    <h1>Ripple Account Transactions</h1>
+
+    <!-- Error Handling -->
+    <div v-if="error" class="error">{{ error }}</div>
+
+    <!-- Display Account Information -->
+    <div v-else-if="accounts">
+      <!-- Personal Account Details -->
+      <div>
+        <h2>Personal Account</h2>
+        <p>Classic Address: {{ accounts.account.classicAddress }}</p>
+        <p>Seed: {{ accounts.account.seed }}</p>
       </div>
-      <div v-else>
-        Loading...
+
+      <!-- Solution Account Details -->
+      <div>
+        <h2>Solution Account</h2>
+        <p>Classic Address: {{ accounts.solution_account.classicAddress }}</p>
+        <p>Seed: {{ accounts.solution_account.seed }}</p>
+      </div>
+
+      <!-- Action Buttons -->
+      <UButton color="primary" @click="sendTransaction">Send Transaction</UButton>
+      <UButton color="red" @click="fetchOldestTransaction">Fetch Oldest Transaction</UButton>
+
+      <!-- Display Transaction Result -->
+      <div v-if="transactionResult">
+        <h2>Transaction Result</h2>
+        <p>Transaction Hash: {{ transactionResult.result.hash }}</p>
+        <p>Transaction Status: {{ transactionResult.result.meta.TransactionResult }}</p>
+      </div>
+
+      <!-- Display Oldest Transaction -->
+      <div v-if="oldestTransaction">
+        <h2>Oldest Transaction</h2>
+        <p>Date: {{ formatDate(oldestTransaction.tx.date) }}</p>
+        <p>Amount (drops): {{ oldestTransaction.tx.Amount }}</p>
+        <p>From Address: {{ oldestTransaction.tx.Account }}</p>
+        <p>To Address: {{ oldestTransaction.tx.Destination }}</p>
+        <p>Transaction Hash: {{ oldestTransaction.tx.hash }}</p>
       </div>
     </div>
-  </template>
+
+    <!-- Loading State -->
+    <div v-else>
+      Loading...
+    </div>
+  </div>
+</template>
   
   <script setup>
 
   import { ref, onMounted } from 'vue';
   
-  const accounts = ref(null);
+  // Reactive state variables
+  const accounts = ref(null); // Stores account details (personal & solution accounts)
   const error = ref(null);
-  const transactionResult = ref(null);
+  const transactionResult = ref(null); // Stores the result of the latest transaction
   const oldestTransaction = ref(null);
-  const loading = ref(false);
+  const loading = ref(false); // Loading state for fetching the oldest transaction
 
+  // Fetches account details on component mount
   const fetchAccounts = async () => {
     try {
       const response = await fetch('/api/jeu');
@@ -55,6 +73,7 @@
     }
   };
   
+  // Sends a transaction between personal and solution accounts
   const sendTransaction = async () => {
     try {
       const headers = { 'Content-Type': 'application/json' };
@@ -71,6 +90,7 @@
     }
   };
   
+  // Fetches the oldest transaction related to the accounts
   const fetchOldestTransaction = async () => {
     try {
       loading.value = true;
@@ -84,6 +104,7 @@
     }
   };
   
+  // Formats the ledger timestamp into a human-readable date
   const formatDate = (ledgerTime) => {
     const epoch = 946684800;
     const unixTime = epoch + ledgerTime;
@@ -97,9 +118,9 @@
   
   </script>
   
-  <style scoped>
-  .error {
-    color: red;
-  }
-  </style>
-  
+<style scoped>
+/* Error message style */
+.error {
+  color: red;
+}
+</style>

@@ -12,7 +12,8 @@ export const ERROR_MESSAGES = {
     ACCESS_DENIED: 'Access denied. You do not have the required permissions.',
     NO_ACTIVE_GAMES: 'No active games found.',
     STUDENT_NOT_FOUND: 'The student does not exist in the system.',
-    UNEXPECTED_ERROR: 'An unexpected error occurred. Please contact support.'
+    UNEXPECTED_ERROR: 'An unexpected error occurred. Please contact support.',
+    WRONG_ID: ' Wrong username or password.'
     // To be completed
   };
   

@@ -132,10 +132,48 @@ export const actions: Action[] = [
         method: 'POST',
     },
     {
-        name: 'verifyUser',
+        name: 'verify',
         path: '/api/users/verify',
         method: 'GET',
     },
 ];
 
+
+
 export default actions;
+
+export const callApi = async (actionName: string, body?: any) => {
+    try {
+      console.log(`Calling API for action: ${actionName}`); // Log the action name
+      
+      const action = actions.find(a => a.name === actionName);
+      if (!action) throw new Error(`Action "${actionName}" not found`);
+  
+      console.log(`Found action:`, action); // Log the found action object
+  
+      const response = await fetch(action.path, {
+        method: action.method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: body ? JSON.stringify(body) : undefined,
+      });
+  
+      // Log the response
+      console.log(`Response from API (${actionName}):`, response);
+  
+      if (!response.ok) {
+        console.error(`API Error: ${response.statusText}`);
+        throw new Error(`API Error: ${response.statusText}`);
+      }
+  
+      const result = await response.json();
+      console.log(`API result for ${actionName}:`, result);
+  
+      return result;
+    } catch (error) {
+      console.error(`Error with ${actionName}:`, error);
+      throw error;
+    }
+  };
+  

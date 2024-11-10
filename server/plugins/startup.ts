@@ -1,5 +1,6 @@
 import { GetCollection, AddUser } from "../connectors/mongo"
 
+// Define the default admin user
 const defaultAdmin = {
   name: 'Luc Bocahut',
   email: 'luc@xrpl-commons.org',

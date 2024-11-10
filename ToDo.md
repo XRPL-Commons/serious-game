@@ -1,5 +1,6 @@
 Things left to do:
 
+    - Hashing passwords before writing in DB
     - Refresh the [name].vue page as soon as the accounts are updated.
     - In the teacher interface, it should be possible to generate a key pair for a single selected student. We have already started implementing this (see page/teacher/[name]/[name].vue).
     - Create a rank column in the teacher interface that assigns each student a rank based on the oldest transaction column.

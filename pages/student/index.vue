@@ -1,11 +1,17 @@
 <template>
   <div>
+
+     <!-- Display loading message if teacher has not started the game -->
     <div v-if=" accountInfoLoaded === false" class="flex items-center justify-center h-32 flex-col">
       <div class="flex items-center justify-center">
+
+        <!-- Loader icon -->
         <i class="loader --6" />
       </div>
       <p class="text-red text-lg mt-4 transform translate-y-[-10rem]">Waiting for teacher to start the Serious Game...</p>
     </div>
+
+    <!-- Display classroom details if account info is loaded -->
     <div v-else>
       <h1 class="text-center text-blue text-3xl">You can now start the game good luck</h1>
       <div class="flex items-center justify-center h-32 flex-col">
@@ -21,22 +27,30 @@
 
 import { ref, onMounted } from 'vue';
 
+// Use the 'student' layout for this page
 definePageMeta({
   layout: 'student',
 });
 
+// Tracks if the data is being fetched
 const pending = ref(true);
+
+// Tracks if the account info has been loaded
 const accountInfoLoaded = ref(false);
+
+// Store the data 
 var classroomName = ref('');
 var classicAddress = ref('');
 var seed = ref('');
 
+// Polling function to fetch account info every 2 seconds
 const startPolling = () => {
   while ( accountInfoLoaded.value === false ) {
     return setInterval(fetchAccountInfo, 2000); 
   } 
 };
 
+// Function to fetch account information from the server 
 const fetchAccountInfo = async () => {
   pending.value = true;
   try {
@@ -48,12 +62,18 @@ const fetchAccountInfo = async () => {
       headers,
     });
     const data = await response.json();
+
+    // If no data returned, stop
     if (data === null) {
         return;    
       }
+
+    // Update the reactive variables with the fetched data
     classroomName = data.classroomName;
     seed = data.seed;
     classicAddress = data.classicAddress;
+
+    // Data fetching is done
     pending.value = false;
     accountInfoLoaded.value = true;
   } catch (error) {
@@ -64,6 +84,7 @@ const fetchAccountInfo = async () => {
   }
 };
 
+// Fetch account info when the component is mounted
 onMounted(() => {
   startPolling(); 
 });
