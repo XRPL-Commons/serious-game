@@ -67,6 +67,8 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import type { User } from '~/server/connectors/mongo';
 import { TeacherAddStudent } from '#components';
+import { callApi } from '~/constants';
+
 
 // Reactive variables
 const toast = useToast();
@@ -86,17 +88,9 @@ const classroomName = router.currentRoute.value.params.name;
 const fetchStudents = async () => {
   try {
     loading.value = true;
-    const headers = {
-      'Content-Type': 'application/json',
-    };
-    const result = await fetch(`/api/classrooms/${classroomName}`, {
-      method: 'GET',
-      headers,
-    });
-    if (!result.ok) {
-      throw new Error('Failed to fetch students');
-    }
-    students.value = await result.json();
+    const path = `/api/classrooms/${classroomName}`;
+    const result = await callApi('GetClassroomStudents', { path }); 
+    students.value = result; // Résultat déjà transformé en JSON dans callApi
   } catch (error) {
     console.error('Error fetching students:', error);
   } finally {

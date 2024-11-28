@@ -26,6 +26,8 @@
 <script setup lang="ts">
 
 import { ref, onMounted } from 'vue';
+import { callApi } from '~/constants';
+
 
 // Use the 'student' layout for this page
 definePageMeta({
@@ -54,14 +56,8 @@ const startPolling = () => {
 const fetchAccountInfo = async () => {
   pending.value = true;
   try {
-    const headers = {
-      'content-type': 'application/json'
-    }
-    const response = await fetch('/api/users', {
-      method: 'GET',
-      headers,
-    });
-    const data = await response.json();
+    // Utilisation de callApi pour appeler l'API
+    const data = await callApi('getUsers');
 
     // If no data returned, stop
     if (data === null) {

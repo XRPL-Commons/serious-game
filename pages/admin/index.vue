@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import type { User } from '~/server/connectors/mongo'; 
 import { AdminAddUser } from '#components'  
+import { callApi } from '~/constants';
 
 // Reactive variables to hold users and loading state
 const users = ref<User[]>([]);
@@ -39,21 +40,13 @@ function onAddUser () {
 // Function to send a POST request to add a new user, might need to be updated with callApi
 const insertUser = async (user: any) => {
   try {
-    const headers = {
-      'content-type': 'application/json'
-    }
-    const body = JSON.stringify(user)
-    const result = await fetch('/api/users/', {
-      method: 'POST',
-      headers,
-      body})
-    const resultJSON = await result.json()
+    const result = await callApi('createUser', { body: user }); 
+    console.log('User created:', result);
+    fetchUsers();
   } catch (error) {
     console.error('Error adding user:', error);
-  } finally {
-    fetchUsers();
   }
-}
+};
 
 // Columns for the user table
 const columns = [{
@@ -75,16 +68,9 @@ const columns = [{
 // Function to fetch the list of users from the server
 const fetchUsers = async () => {
   try {
-
     loading.value = true;
-    const headers = {
-      'content-type': 'application/json'
-    }
-    const result = await fetch('/api/users/', {
-      method: 'GET',
-      headers,
-    })
-    users.value = await result.json();
+    const result = await callApi('getUsers');
+    users.value = result; // `result` est déjà un objet JSON pas besoin de le convertir
   } catch (error) {
     console.error('Error fetching users:', error);
   } finally {
@@ -96,17 +82,8 @@ const fetchUsers = async () => {
 const deleteUser = async (email: string) => {
   if (confirm('Are you sure you want to delete this user?')) {
     try {
-      const headers = {
-      'content-type': 'application/json'
-    }
-    const body = {
-      email,
-    }
-    const result = await fetch('/api/users', {
-      method: 'DELETE',
-      headers,
-      body: JSON.stringify(body)
-    })  
+      const result = await callApi('deleteUser', { email });
+      console.log('User deleted successfully:', result);
     } catch (error) {
       console.error('Error deleting user:', error);
     }

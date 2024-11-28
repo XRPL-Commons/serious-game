@@ -142,32 +142,40 @@ export const actions: Action[] = [
 
 export default actions;
 
-export const callApi = async (actionName: string, body?: any) => {
+export const callApi = async (actionName: string, params?: any) => {
     try {
-      console.log(`Calling API for action: ${actionName}`); // Log the action name
-      
-      const action = actions.find(a => a.name === actionName);
+      console.log(`Calling API for action: ${actionName}`);
+            const action = actions.find(a => a.name === actionName);
       if (!action) throw new Error(`Action "${actionName}" not found`);
+      console.log(`Found action:`, action);
   
-      console.log(`Found action:`, action); // Log the found action object
-  
-      const response = await fetch(action.path, {
+      // Gestion du path dynamique : si l'action contient un paramètre (ex: :name), on le remplace
+      let path = action.path;
+      if (params?.name) {
+        // Remplacer :name par la valeur dans les paramètres (utile pour des URL comme "/api/classrooms/:name")
+        path = path.replace(':name', params.name);
+      }
+        if (params?.path) {
+        path = params.path; // Permet de remplacer complètement le path par un path donné
+      }
+      const requestOptions: RequestInit = {
         method: action.method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: body ? JSON.stringify(body) : undefined,
-      });
+      };
+        if (params?.body) {
+        requestOptions.body = JSON.stringify(params.body);
+      }
+        const response = await fetch(path, requestOptions);
   
-      // Log the response
       console.log(`Response from API (${actionName}):`, response);
   
       if (!response.ok) {
         console.error(`API Error: ${response.statusText}`);
         throw new Error(`API Error: ${response.statusText}`);
       }
-  
-      const result = await response.json();
+        const result = await response.json();
       console.log(`API result for ${actionName}:`, result);
   
       return result;
@@ -176,4 +184,5 @@ export const callApi = async (actionName: string, body?: any) => {
       throw error;
     }
   };
+  
   
