@@ -82,7 +82,7 @@ const fetchUsers = async () => {
 const deleteUser = async (email: string) => {
   if (confirm('Are you sure you want to delete this user?')) {
     try {
-      const result = await callApi('deleteUser', { email });
+      const result = await callApi('deleteUser', { body: { email } });
       console.log('User deleted successfully:', result);
     } catch (error) {
       console.error('Error deleting user:', error);

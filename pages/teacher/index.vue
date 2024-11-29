@@ -40,7 +40,8 @@ Key operations here include:
 import { ref } from 'vue'; 
 import { useRouter } from 'vue-router'; 
 import type { Classroom } from '~/server/connectors/mongo'; 
-import { TeacherAddClassroom } from '#components'; // Assurez-vous que le chemin est correct
+import { TeacherAddClassroom } from '#components';
+import { callApi } from '~/constants';
 
 
 // State variables
@@ -72,14 +73,12 @@ const classroomColumns = [ {
 const fetchClassrooms = async () => {
   try {
     loading.value = true;
-    const headers = {
-      'content-type': 'application/json'
-    }
-    const result = await fetch('/api/classrooms/', {
-      method: 'GET',
-      headers,
-    })
-  classrooms.value = await result.json();
+
+    // Use callApi for the GET request instead of fetch directly
+    const result = await callApi('getClassrooms', {});  // 'getClassrooms' should be the action name from actions list
+
+    classrooms.value = result; // Assign the API result to the classrooms variable
+
   } catch (error) {
     console.error('Error fetching classrooms:', error);
   } finally {
@@ -101,7 +100,6 @@ const insertClassroom = async (classroom: any) => {
       headers,
       body
     });
-    const resultJSON = await result.json();
   } catch (error) {
     console.error('Error adding classroom:', error);
   } finally {

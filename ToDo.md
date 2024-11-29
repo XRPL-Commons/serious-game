@@ -1,5 +1,6 @@
 Things left to do:
 
+    - We should allow only teachers to create new students so they are directly assigned to a classroom
     - Hashing passwords before writing in DB
     - Refresh the [name].vue page as soon as the accounts are updated.
     - In the teacher interface, it should be possible to generate a key pair for a single selected student. We have already started implementing this (see page/teacher/[name]/[name].vue).

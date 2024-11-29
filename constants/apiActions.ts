@@ -49,7 +49,7 @@ export const actions: Action[] = [
     // Game API
     // -----------------
     {
-        name: 'createGame',
+        name: 'sendFinalTransaction',
         path: '/api/jeu',
         method: 'POST',
     },
@@ -82,6 +82,11 @@ export const actions: Action[] = [
         name: 'getTransactionsForAccount',
         path: '/api/jeu/transactions/:soluce_account',
         method: 'GET',
+    },
+    {
+        name: 'updateRanks',
+        path: '/api/jeu/update-ranks',
+        method: 'PUT',
     },
 
     // -----------------

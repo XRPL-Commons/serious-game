@@ -320,6 +320,35 @@ export const ResetStudentGameStages = async (email: string) => {
   );
 };
 
+// Updates ranks for all students in a classroom based on their oldest transaction values.
+export const UpdateRanks = async (classroomName: string) => {
+  try {
+    // Get the classrooms collection
+    const classroomsCollection = await GetCollection('classrooms');
+    const classroom = await classroomsCollection.findOne({ classroomName });
+    if (!classroom) {
+      throw new Error('Classroom non trouvée');
+    }
+
+    // Sort students by oldest transaction value
+    classroom.students.sort((a, b) => a.oldestTransaction - b.oldestTransaction);
+
+    // Update ranks for each student
+    classroom.students.forEach((student, index) => {
+      student.rank = index + 1;
+    });
+
+    // Update the students in the database
+    await classroomsCollection.updateOne(
+      { classroomName },
+      { $set: { students: classroom.students } }
+    );
+  } catch (error) {
+    console.error('Error updating ranks:', error);
+    throw error;
+  }
+};
+
 
 export default {
   AddUser,
@@ -339,5 +368,6 @@ export default {
   ResetStudentGameStages,
   UpdateStudentAccounts,
   UpdateStudentOldestTransaction,
-  UpdateStudentGameStages
+  UpdateStudentGameStages,
+  UpdateRanks,
 }
