@@ -6,10 +6,11 @@ Finalize the centralized callApi structure and refactor all API calls in the pro
 Implement a mongo function to calculate the rank of students based on the oldest transaction
 Implement password hashing for user authentication (bcrypt or similar library).
 Create a secure authentication middleware to restrict access to routes (/admin, /teacher, /student) based on user roles.
+Add a reset classroom that removes the student adresses
 
 DB
 
-Update ListUsersStudent to add a classroom field for students
+Add a classrooms field in the User table that contains an array of all the classes the student is enrolled in. This will time optimize the ListUsersStudent function in mongo.ts, which currently iterates over all classrooms.
 Fix the "duplicate student" issue by ensuring students can be added to multiple classrooms without conflicting in the users database.
 We should only allow teachers to add students so they directly have a classroom assigned. The admin only adds teachers
 When a teacher adds a student, an email should be sent to the student containing their email/username on the platform and a temporary password. ( using magic link for example )
