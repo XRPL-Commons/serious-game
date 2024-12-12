@@ -75,6 +75,10 @@ Key operations here include:
           <i class="fa fa-envelope"></i>
           <span>Send Memo</span>
         </UButton>
+        <UButton color="red" variant="solid" @click="resetAccounts" class="flex items-center justify-center space-x-2">
+          <i class="fa fa-trash"></i>
+          <span>Reset Accounts</span>
+        </UButton>
       </div>
 
       <!-- Student List Table -->
@@ -236,6 +240,28 @@ const sendFinalTransaction = async () => {
     fetchStudents();
   }
 };
+
+// Action: Reset account information
+const resetAccounts = async () => {
+  try {
+    const response = await callApi('resetAccounts', { name: classroomName });
+    console.log(response.message);
+
+    toast.add({
+      title: 'Accounts reset successfully!',
+      id: 'reset-success',
+    });
+  } catch (error) {
+    console.error('Error resetting accounts:', error);
+    toast.add({
+      title: 'Failed to reset accounts',
+      id: 'reset-error',
+    });
+  } finally {
+    fetchStudents(); // Recharge les étudiants dans tous les cas
+  }
+};
+
 
 // Action: Add oldest transaction
 const addOldestTransaction = async () => {

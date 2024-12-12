@@ -20,6 +20,11 @@ export const actions: Action[] = [
         method: 'GET',
     },
     {
+        name: 'resetAccounts',
+        path: '/api/classrooms/:name/reset-accounts',
+        method: 'POST',
+      },
+    {
         name: 'createClassroom',
         path: '/api/classrooms',
         method: 'POST',

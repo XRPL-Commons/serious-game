@@ -320,6 +320,34 @@ export const ResetStudentGameStages = async (email: string) => {
   );
 };
 
+// Resets all student's accounts in a classroom.
+export const ResetStudentAccounts = async (Name: string) => {
+  const Classrooms = await GetCollection('classrooms');
+  const classroom = await Classrooms.findOne({ classroomName: Name });
+
+  if (!classroom) {
+    throw new Error('Classroom not found');
+  }
+
+  for (const student of classroom.students) {
+    try {
+      await Classrooms.updateOne(
+        { 'students.email': student.email },
+        {
+          $unset: {
+            'students.$.account': "",
+            'students.$.solution_account': "",
+            'students.$.rank': "",
+            'students.$.oldestTransaction': ""
+          }
+        }
+      );
+    } catch (error) {
+      console.error(`Error resetting account for student ${student.email}:`, error);
+    }
+  }
+};
+
 // Updates ranks for all students in a classroom based on their oldest transaction values.
 export const UpdateRanks = async (classroomName: string) => {
   try {
