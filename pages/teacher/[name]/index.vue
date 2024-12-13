@@ -367,9 +367,10 @@ const columns = [
   { key: 'name', label: 'Name', sortable: true },
   { key: 'email', label: 'Email' },
   { key: 'rank', label: 'Rank', sortable: true },
-  { key: 'account', label: 'Personal Account'},
+  { key: 'account.classicAddress', label: 'Personal Account (Classic Address)' },
+  { key: 'account.seed', label: 'Personal Account (Seed)' },
   { key: 'solution_account.classicAddress', label: 'Solution Account' },
-  { key: 'oldestTransaction', label: 'Oldest Transaction Date', sortable: true },
+  // { key: 'oldestTransaction', label: 'Oldest Transaction Date', sortable: true }, // We don't need it on the interface because we already have the rank
   { key: 'actions', label: 'Actions' },
 ];
 
@@ -383,6 +384,7 @@ const generateKeysForSelected = async () => {
 const addStudent = async (userData: User) => {
   try {
     userData.role = 'student';
+    userData.classrooms = [classroomName as string];
     const headers = {
       'Content-Type': 'application/json',
     };
@@ -449,11 +451,7 @@ const deleteStudent = async (email: string) => {
         'content-type': 'application/json',
       };
       const body = { email };
-      await fetch('/api/users', {
-        method: 'DELETE',
-        headers,
-        body: JSON.stringify(body),
-      });
+      // Only delete the user from the classroom
       await fetch(`/api/classrooms/${classroomName}`, {
         method: 'DELETE',
         headers,

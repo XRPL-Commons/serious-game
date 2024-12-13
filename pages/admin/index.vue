@@ -61,6 +61,9 @@ const columns = [{
   label: 'Role',
   sortable : true
 }, {
+  key: 'classrooms',
+  label: 'Classrooms',
+}, {
   key: 'actions',
   label : 'Actions'
 }]
