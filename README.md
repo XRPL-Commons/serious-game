@@ -21,11 +21,12 @@ pnpm install
 
 # yarn
 yarn install
-````
+```
 
 ## Generating a secret key
 
 Here is how you can generate a secret key which will be later required , using a python compiler.
+
 ```python
 import os
 print(os.urandom(64).hex())
@@ -44,14 +45,14 @@ SECRET_KEY_BASE=<your_secret_key_base>
 
 'MONGO_URI': The connection URI to your MongoDB database. For example: mongodb+srv://<username>:<password>@cluster0.mongodb.net/myDatabase?retryWrites=true&w=majority
 
-SECRET_KEY_BASE: A base secret key used for generating and verifying JWT tokens. This key should be a complex and secure string to ensure the security of your tokens. You can generate a secure key using the following 
-
+SECRET_KEY_BASE: A base secret key used for generating and verifying JWT tokens. This key should be a complex and secure string to ensure the security of your tokens. You can generate a secure key using the following
 
 ## Running the app
 
 Now that you are setup you can start the development server : o
-1) Open your browser on `http://localhost:3000`
-2) Type in a terminal at the root of the project the following command : 
+
+1. Open your browser on `http://localhost:3000`
+2. Type in a terminal at the root of the project the following command :
 
 ```bash
 # npm
@@ -89,8 +90,8 @@ Classrooms
     POST /api/classrooms - Create a new classroom
     DELETE /api/classrooms - Delete all classrooms
     GET /api/classrooms/:name - Fetch a specific classroom
-    POST /api/classrooms/:name - Update a specific classroom
-    DELETE /api/classrooms/:name - Delete a specific classroom
+    POST /api/classrooms/:name - Add a student in a specific classroom
+    DELETE /api/classrooms/:name - Delete a student in a specific classroom
 
 Game
 
@@ -112,20 +113,22 @@ Users
 
     GET /api/users - Fetch all users
     POST /api/users - Create a new user
-    DELETE /api/users - Delete all users
+    DELETE /api/users - Delete an users
     POST /api/users/login - User login
     POST /api/users/logout - User logout
     GET /api/users/verify - Verify user token
-    
 
-# Structure of the project : 
-Generated using : 
+# Structure of the project :
+
+Generated using :
+
 ```bash
 tree -I 'file1|file2|file3' > structure.txt
 ```
+
 This command will ignore file1,file2,file3 and output the structure to structure.txt.
 
-```javascript
+````javascript
 .  // Root directory of the project
 ├── app.vue  // Main application component
 ├── components  // Directory containing reusable Vue components
@@ -217,9 +220,10 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 
 ```sudo apt-get update
 sudo apt-get install libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
-```
+````
+
 # Docs :
+
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
 Nuxt UI : https://ui.nuxt.com/
-

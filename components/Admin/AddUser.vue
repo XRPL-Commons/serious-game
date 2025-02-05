@@ -2,8 +2,10 @@
 import { object, string, type InferType } from 'yup'
 import type { FormSubmitEvent } from '#ui/types'
 
+// Emit event when form is successfully submitted
 const emit = defineEmits(['success'])
 
+// Define form schema
 const schema = object({
   email: string().email('Invalid email').required('Required'),
   password: string()
@@ -13,8 +15,10 @@ const schema = object({
     role: string().oneOf(["student", "admin", "teacher"], 'Role must be one of: student, admin, teacher').required('Required'),
 })
 
+// Define form schema type
 type Schema = InferType<typeof schema>
 
+// Initializing form state
 const state = reactive({
   email: undefined,
   password: undefined,
@@ -22,7 +26,10 @@ const state = reactive({
   role: undefined
 })
 
+// Defining user roles
 const roles = ['student', 'admin', 'teacher']
+
+// Handle form submission
 async function onSubmit (event: FormSubmitEvent<Schema>) {
   emit('success', state)
 }
@@ -32,9 +39,12 @@ async function onSubmit (event: FormSubmitEvent<Schema>) {
 <template>
   <UModal>
       <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+        <!-- Modal header -->
         <template #header>
          <p class="font-title">Add a user.</p>
         </template>
+
+        <!-- Form fields -->
         <UFormGroup label="Name" name="name">
       <UInput v-model="state.name" />
     </UFormGroup>
@@ -48,7 +58,9 @@ async function onSubmit (event: FormSubmitEvent<Schema>) {
       <USelect v-model="state.role" :options="roles" />    
     </UFormGroup>
         <template #footer>
-          <UButton type="submit" @click="onSubmit">
+
+        <!-- Submit button -->
+    <UButton type="submit" @click="onSubmit">
       Submit
     </UButton>
         </template>
